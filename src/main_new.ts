@@ -171,7 +171,6 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   return res.json()
 }
 
-
 function updateIndicatorState(id: string, state: 'online' | 'error' | 'warning' | 'unknown', text?: string) {
   const pill = document.getElementById(id)!
   pill.setAttribute('data-state', state)
@@ -214,6 +213,7 @@ async function loadSessions() {
     const data = await fetchJson<{ sessions: SessionItem[] }>(`${apiBase}/openclaw/sessions`)
     const items = data.sessions || []
     updateIndicatorState('session-pill', items.length > 0 ? 'online' : 'warning', `Workers: ${items.length}`)
+
     wrap.innerHTML = items.length
       ? items.map((s) => `
           <div class="session-card neon-card">
