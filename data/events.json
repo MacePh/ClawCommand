@@ -1,5 +1,65 @@
 [
   {
+    "id": "1774625134065-d00f6a",
+    "ts": "2026-03-27T15:25:34.065Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "Command failed: cmd.exe /c C:\\Users\\theve\\AppData\\Roaming\\npm\\openclaw.cmd status\n"
+    }
+  },
+  {
+    "id": "1774625117301-6eaeec",
+    "ts": "2026-03-27T15:25:17.301Z",
+    "type": "openclaw.refresh",
+    "message": "Manual OpenClaw refresh requested",
+    "meta": {}
+  },
+  {
+    "id": "1774625050038-cb590e",
+    "ts": "2026-03-27T15:24:10.038Z",
+    "type": "openclaw.session.started",
+    "message": "Session appeared: agent:main:main",
+    "meta": {
+      "key": "agent:main:main",
+      "age": 1774623857798,
+      "model": "gpt-5.4",
+      "kind": "direct",
+      "tokens": ""
+    }
+  },
+  {
+    "id": "1774625050038-ce1c32",
+    "ts": "2026-03-27T15:24:10.038Z",
+    "type": "openclaw.session.started",
+    "message": "Session appeared: agent:main:telegram:direct:1636853070",
+    "meta": {
+      "key": "agent:main:telegram:direct:1636853070",
+      "age": 1774625021884,
+      "model": "gpt-5.4",
+      "kind": "direct",
+      "tokens": ""
+    }
+  },
+  {
+    "id": "1774625050037-795b81",
+    "ts": "2026-03-27T15:24:10.037Z",
+    "type": "openclaw.status.change",
+    "message": "Gateway snapshot changed",
+    "meta": {
+      "gatewayState": "online",
+      "telegramState": "configured",
+      "sessionsSummary": "2 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
+    }
+  },
+  {
+    "id": "1774625043717-8815db",
+    "ts": "2026-03-27T15:24:03.717Z",
+    "type": "server.started",
+    "message": "ClawCommand API started on 4310",
+    "meta": {}
+  },
+  {
     "id": "1774621520652-de3dd1",
     "ts": "2026-03-27T14:25:20.652Z",
     "type": "openclaw.error",
