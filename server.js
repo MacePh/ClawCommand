@@ -17,6 +17,7 @@ const telemetryState = {
   lastGatewaySummary: null,
   sessionsByKey: new Map(),
   lastSessionCount: null,
+  lastStatusParsed: null,
 }
 
 app.use(cors())
@@ -81,11 +82,13 @@ function parseSessionRow(session) {
   return { key, age, model, kind, tokens }
 }
 
-function summarizeStatus(output) {
-  const lines = String(output || '').split(/\r?\n/)
-  const gatewayLine = lines.find((line) => line.includes('Gateway')) || ''
-  const sessionsLine = lines.find((line) => line.includes('Sessions')) || ''
-  return `${gatewayLine} | ${sessionsLine}`.trim()
+function parseStatusDetails(output) {
+  const text = String(output || '')
+  const gatewayState = text.includes('RPC probe: ok') || text.includes('reachable') ? 'online' : 'unknown'
+  const telegramState = text.includes('Telegram │ ON │ OK') || text.includes('Telegram') ? 'configured' : 'missing'
+  const sessionMatch = text.match(/Sessions\s*│\s*([^\n]+)/)
+  const sessionsSummary = sessionMatch ? sessionMatch[1].trim() : 'unknown'
+  return { gatewayState, telegramState, sessionsSummary }
 }
 
 async function collectTelemetry() {
@@ -95,10 +98,12 @@ async function collectTelemetry() {
   ])
 
   if (!statusResult.error) {
-    const summary = summarizeStatus(statusResult.stdout)
-    if (summary && summary !== telemetryState.lastGatewaySummary) {
+    const parsedStatus = parseStatusDetails(statusResult.stdout)
+    const summary = JSON.stringify(parsedStatus)
+    if (summary !== telemetryState.lastGatewaySummary) {
       telemetryState.lastGatewaySummary = summary
-      addEvent('openclaw.status.change', `Gateway snapshot changed`, { summary })
+      telemetryState.lastStatusParsed = parsedStatus
+      addEvent('openclaw.status.change', 'Gateway snapshot changed', parsedStatus)
     }
   }
 
@@ -154,6 +159,23 @@ app.post('/api/tasks', (req, res) => {
   res.json(task)
 })
 
+app.put('/api/tasks/:taskId', (req, res) => {
+  const { taskId } = req.params
+  const { title, detail } = req.body || {}
+  const data = readJson(TASKS_FILE)
+  for (const lane of Object.keys(data.columns)) {
+    const task = data.columns[lane].find((t) => t.id === taskId)
+    if (task) {
+      task.title = String(title ?? task.title).trim()
+      task.detail = String(detail ?? task.detail)
+      writeJson(TASKS_FILE, data)
+      addEvent('task.updated', `Task updated: ${task.title}`, { lane })
+      return res.json(task)
+    }
+  }
+  return res.status(404).json({ error: 'task not found' })
+})
+
 app.post('/api/tasks/move', (req, res) => {
   const { taskId, toLane } = req.body || {}
   const data = readJson(TASKS_FILE)
@@ -199,7 +221,7 @@ app.get('/api/openclaw/status', async (_req, res) => {
     addEvent('openclaw.error', 'Failed to fetch OpenClaw status', { error: String(result.error.message || result.error) })
     return res.status(500).json({ error: String(result.error.message || result.error), stdout: result.stdout, stderr: result.stderr })
   }
-  res.json({ output: result.stdout })
+  res.json({ output: result.stdout, parsed: parseStatusDetails(result.stdout) })
 })
 
 app.get('/api/openclaw/sessions', async (_req, res) => {

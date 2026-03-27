@@ -11,17 +11,17 @@
 - OpenClaw integration: shell-outs to `openclaw status` and `openclaw sessions --json`
 
 ## Current status
-- Hybrid dashboard now has a **real telemetry collector** on the backend.
-- Every 10s, the backend polls OpenClaw status + sessions, detects diffs, and emits feed events for:
-  - gateway/status snapshot changes
-  - session count changes
-  - session appeared
-  - session disappeared
-- Frontend feed now shows event metadata too.
-- Existing kanban/task actions remain intact.
+- Added single-command dev startup:
+  - `npm run dev:all`
+- Added task editing (inline edit/save/cancel).
+- Improved status parsing so pills now expose:
+  - gateway state
+  - telegram state
+- Telemetry collector still emits feed events for session/gateway changes.
 
 ## Relevant files
 - `package.json`
+- `scripts/dev-all.js`
 - `server.js`
 - `src/main.ts`
 - `src/style.css`
@@ -29,11 +29,11 @@
 - `data/events.json`
 
 ## Next steps
-1. Add a single command to run frontend + backend together.
-2. Improve telemetry quality (parse more useful structured status details instead of crude snapshot summaries).
-3. Add richer worker cards and state badges.
-4. Add task editing and persistent ordering.
-5. Optionally add log-tail or SSE/WebSocket streaming instead of polling.
+1. Improve task ordering persistence and drag precision.
+2. Add richer worker cards and state badges.
+3. Improve telemetry quality further (more structured parsing / better summaries).
+4. Optionally add log-tail or SSE/WebSocket streaming instead of polling.
+5. Clean remaining template assets/public leftovers if they are no longer useful.
 
 ## Notes
 - Web-first was chosen to stay dual-boot / cross-platform friendly.

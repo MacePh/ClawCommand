@@ -4,9 +4,11 @@ type Task = { id: string; title: string; detail: string; lane: string }
 type TasksPayload = { columns: Record<string, Task[]> }
 type EventItem = { id: string; ts: string; type: string; message: string; meta?: Record<string, unknown> }
 type SessionItem = { key: string; age: string; model: string; kind: string; tokens?: string }
+type StatusParsed = { gatewayState: string; telegramState: string; sessionsSummary: string }
 
 const apiBase = 'http://127.0.0.1:4310/api'
 let draggedTaskId: string | null = null
+let editingTaskId: string | null = null
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 app.innerHTML = `
@@ -24,6 +26,7 @@ app.innerHTML = `
         <div class="pill" id="health-pill">API: ...</div>
         <div class="pill" id="gateway-pill">Gateway: ...</div>
         <div class="pill" id="session-pill">Workers: ...</div>
+        <div class="pill" id="telegram-pill">Telegram: ...</div>
         <button id="refresh-btn" class="primary-btn">Refresh OpenClaw</button>
       </div>
     </header>
@@ -83,14 +86,17 @@ async function loadHealth() {
 
 async function loadStatus() {
   const out = document.getElementById('status-output')!
-  const pill = document.getElementById('gateway-pill')!
+  const gatewayPill = document.getElementById('gateway-pill')!
+  const telegramPill = document.getElementById('telegram-pill')!
   try {
-    const data = await fetchJson<{ output: string }>(`${apiBase}/openclaw/status`)
+    const data = await fetchJson<{ output: string; parsed: StatusParsed }>(`${apiBase}/openclaw/status`)
     out.textContent = data.output || 'No output'
-    pill.textContent = data.output.includes('Gateway') ? 'Gateway: visible' : 'Gateway: unknown'
+    gatewayPill.textContent = `Gateway: ${data.parsed.gatewayState}`
+    telegramPill.textContent = `Telegram: ${data.parsed.telegramState}`
   } catch (err) {
     out.textContent = `Status fetch failed\n\n${String(err)}`
-    pill.textContent = 'Gateway: error'
+    gatewayPill.textContent = 'Gateway: error'
+    telegramPill.textContent = 'Telegram: error'
   }
 }
 
@@ -142,8 +148,49 @@ async function deleteTask(taskId: string) {
   await Promise.all([loadTasks(), loadEvents()])
 }
 
+async function saveTask(taskId: string) {
+  const title = (document.querySelector(`[data-edit-title="${taskId}"]`) as HTMLInputElement).value
+  const detail = (document.querySelector(`[data-edit-detail="${taskId}"]`) as HTMLTextAreaElement).value
+  await fetchJson(`${apiBase}/tasks/${taskId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, detail })
+  })
+  editingTaskId = null
+  await Promise.all([loadTasks(), loadEvents()])
+}
+
 function laneClass(lane: string) {
   return `lane lane-${lane}`
+}
+
+function renderTask(task: Task, lane: string) {
+  const isEditing = editingTaskId === task.id
+  if (isEditing) {
+    return `
+      <div class="task-card neon-card" draggable="false" data-task-card="${task.id}">
+        <input data-edit-title="${task.id}" value="${task.title.replace(/"/g, '&quot;')}" />
+        <textarea data-edit-detail="${task.id}">${task.detail || ''}</textarea>
+        <div class="task-actions">
+          <button data-save="${task.id}">Save</button>
+          <button data-cancel="${task.id}">Cancel</button>
+        </div>
+      </div>
+    `
+  }
+  return `
+    <div class="task-card neon-card" draggable="true" data-task-card="${task.id}">
+      <div class="task-title">${task.title}</div>
+      <div class="task-detail">${task.detail || ''}</div>
+      <div class="task-actions">
+        <button data-edit="${task.id}">Edit</button>
+        ${lane !== 'todo' ? `<button data-task="${task.id}" data-move="todo">To Do</button>` : ''}
+        ${lane !== 'doing' ? `<button data-task="${task.id}" data-move="doing">Doing</button>` : ''}
+        ${lane !== 'done' ? `<button data-task="${task.id}" data-move="done">Done</button>` : ''}
+        <button class="danger" data-delete="${task.id}">Delete</button>
+      </div>
+    </div>
+  `
 }
 
 async function loadTasks() {
@@ -156,18 +203,7 @@ async function loadTasks() {
         <div class="lane-count">${laneSummary(tasks)}</div>
       </div>
       <div class="lane-body" data-dropzone="${lane}">
-        ${tasks.map((task) => `
-          <div class="task-card neon-card" draggable="true" data-task-card="${task.id}">
-            <div class="task-title">${task.title}</div>
-            <div class="task-detail">${task.detail || ''}</div>
-            <div class="task-actions">
-              ${lane !== 'todo' ? `<button data-task="${task.id}" data-move="todo">To Do</button>` : ''}
-              ${lane !== 'doing' ? `<button data-task="${task.id}" data-move="doing">Doing</button>` : ''}
-              ${lane !== 'done' ? `<button data-task="${task.id}" data-move="done">Done</button>` : ''}
-              <button class="danger" data-delete="${task.id}">Delete</button>
-            </div>
-          </div>
-        `).join('') || '<div class="muted">Empty</div>'}
+        ${tasks.map((task) => renderTask(task, lane)).join('') || '<div class="muted">Empty</div>'}
       </div>
     </div>
   `).join('')
@@ -180,7 +216,26 @@ async function loadTasks() {
     btn.onclick = async () => deleteTask(btn.dataset.delete!)
   })
 
+  wrap.querySelectorAll<HTMLButtonElement>('button[data-edit]').forEach((btn) => {
+    btn.onclick = async () => {
+      editingTaskId = btn.dataset.edit!
+      await loadTasks()
+    }
+  })
+
+  wrap.querySelectorAll<HTMLButtonElement>('button[data-save]').forEach((btn) => {
+    btn.onclick = async () => saveTask(btn.dataset.save!)
+  })
+
+  wrap.querySelectorAll<HTMLButtonElement>('button[data-cancel]').forEach((btn) => {
+    btn.onclick = async () => {
+      editingTaskId = null
+      await loadTasks()
+    }
+  })
+
   wrap.querySelectorAll<HTMLElement>('[data-task-card]').forEach((card) => {
+    if (editingTaskId) return
     card.addEventListener('dragstart', () => {
       draggedTaskId = card.dataset.taskCard || null
       card.classList.add('dragging')
