@@ -1,0 +1,1802 @@
+[
+  {
+    "id": "1774590186315-2685d9",
+    "ts": "2026-03-27T05:43:06.315Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590185630-2918e9",
+    "ts": "2026-03-27T05:43:05.630Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590184772-dbd199",
+    "ts": "2026-03-27T05:43:04.772Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590176208-416168",
+    "ts": "2026-03-27T05:42:56.208Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590175618-421ac6",
+    "ts": "2026-03-27T05:42:55.618Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590174659-10dd69",
+    "ts": "2026-03-27T05:42:54.659Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590166034-0663d9",
+    "ts": "2026-03-27T05:42:46.034Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590165616-e3e045",
+    "ts": "2026-03-27T05:42:45.616Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590164574-5874a4",
+    "ts": "2026-03-27T05:42:44.574Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590155944-55d3e7",
+    "ts": "2026-03-27T05:42:35.944Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590155615-09a149",
+    "ts": "2026-03-27T05:42:35.615Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590154482-ca8f47",
+    "ts": "2026-03-27T05:42:34.482Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590145807-6e081a",
+    "ts": "2026-03-27T05:42:25.807Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590145607-2bc76c",
+    "ts": "2026-03-27T05:42:25.607Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590144352-0a7e27",
+    "ts": "2026-03-27T05:42:24.352Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590135720-13ebd7",
+    "ts": "2026-03-27T05:42:15.720Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590135594-bf9325",
+    "ts": "2026-03-27T05:42:15.594Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590134235-34620d",
+    "ts": "2026-03-27T05:42:14.235Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590125633-69c676",
+    "ts": "2026-03-27T05:42:05.633Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590125585-9bd54b",
+    "ts": "2026-03-27T05:42:05.585Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590124144-c32525",
+    "ts": "2026-03-27T05:42:04.144Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590115583-acca0c",
+    "ts": "2026-03-27T05:41:55.583Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590115522-9aa6ad",
+    "ts": "2026-03-27T05:41:55.522Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590114046-1e4392",
+    "ts": "2026-03-27T05:41:54.046Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590105533-3a1e0e",
+    "ts": "2026-03-27T05:41:45.533Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590105311-508b9e",
+    "ts": "2026-03-27T05:41:45.311Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590103915-4cd29b",
+    "ts": "2026-03-27T05:41:43.915Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590099525-02599c",
+    "ts": "2026-03-27T05:41:39.525Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590095215-dcc7a8",
+    "ts": "2026-03-27T05:41:35.215Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590093806-dee6c4",
+    "ts": "2026-03-27T05:41:33.806Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590089515-42c793",
+    "ts": "2026-03-27T05:41:29.515Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590085124-f6c364",
+    "ts": "2026-03-27T05:41:25.124Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590083701-51c52a",
+    "ts": "2026-03-27T05:41:23.701Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590079515-bd7696",
+    "ts": "2026-03-27T05:41:19.515Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590075022-ef22ba",
+    "ts": "2026-03-27T05:41:15.022Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590073590-5e3244",
+    "ts": "2026-03-27T05:41:13.590Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590069505-c09703",
+    "ts": "2026-03-27T05:41:09.505Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590064912-9a2229",
+    "ts": "2026-03-27T05:41:04.912Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590063475-e342a0",
+    "ts": "2026-03-27T05:41:03.475Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590059491-a2e797",
+    "ts": "2026-03-27T05:40:59.491Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590054810-68d743",
+    "ts": "2026-03-27T05:40:54.810Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590053359-61f910",
+    "ts": "2026-03-27T05:40:53.359Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590049485-c3e2dd",
+    "ts": "2026-03-27T05:40:49.485Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590044607-9936cc",
+    "ts": "2026-03-27T05:40:44.607Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590043229-c55039",
+    "ts": "2026-03-27T05:40:43.229Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590039475-4f4f91",
+    "ts": "2026-03-27T05:40:39.475Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590034497-694e78",
+    "ts": "2026-03-27T05:40:34.497Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590033102-92dc15",
+    "ts": "2026-03-27T05:40:33.102Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590029475-e34537",
+    "ts": "2026-03-27T05:40:29.475Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590024381-82243f",
+    "ts": "2026-03-27T05:40:24.381Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590022989-ff3b77",
+    "ts": "2026-03-27T05:40:22.989Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590019476-d1132e",
+    "ts": "2026-03-27T05:40:19.476Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590014251-efe8ec",
+    "ts": "2026-03-27T05:40:14.251Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590012880-08e1b5",
+    "ts": "2026-03-27T05:40:12.880Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590009464-bedaec",
+    "ts": "2026-03-27T05:40:09.464Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590004141-311f69",
+    "ts": "2026-03-27T05:40:04.141Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774590002787-c29171",
+    "ts": "2026-03-27T05:40:02.787Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589999450-6f4bb2",
+    "ts": "2026-03-27T05:39:59.450Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589994022-0e6e42",
+    "ts": "2026-03-27T05:39:54.022Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589992681-102402",
+    "ts": "2026-03-27T05:39:52.681Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589989435-92d399",
+    "ts": "2026-03-27T05:39:49.435Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589983844-f75c46",
+    "ts": "2026-03-27T05:39:43.844Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589982601-94faea",
+    "ts": "2026-03-27T05:39:42.601Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589979423-08b1aa",
+    "ts": "2026-03-27T05:39:39.423Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589973736-c673c0",
+    "ts": "2026-03-27T05:39:33.736Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589972522-85a171",
+    "ts": "2026-03-27T05:39:32.522Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589969412-5ba987",
+    "ts": "2026-03-27T05:39:29.412Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589963623-495a55",
+    "ts": "2026-03-27T05:39:23.623Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589962402-95f8e0",
+    "ts": "2026-03-27T05:39:22.402Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589959400-1a094f",
+    "ts": "2026-03-27T05:39:19.401Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589953507-b401fd",
+    "ts": "2026-03-27T05:39:13.507Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589952272-7f0171",
+    "ts": "2026-03-27T05:39:12.272Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589949392-508974",
+    "ts": "2026-03-27T05:39:09.392Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589943402-897c2a",
+    "ts": "2026-03-27T05:39:03.402Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589942172-c78a51",
+    "ts": "2026-03-27T05:39:02.172Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589939389-57800e",
+    "ts": "2026-03-27T05:38:59.389Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589933314-6cd876",
+    "ts": "2026-03-27T05:38:53.314Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589932051-13a4a3",
+    "ts": "2026-03-27T05:38:52.051Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589929389-13f048",
+    "ts": "2026-03-27T05:38:49.389Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589923129-ace70a",
+    "ts": "2026-03-27T05:38:43.129Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589921935-f51de1",
+    "ts": "2026-03-27T05:38:41.935Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589919384-15dbc3",
+    "ts": "2026-03-27T05:38:39.384Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589913034-35db3d",
+    "ts": "2026-03-27T05:38:33.034Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589911819-aedfe2",
+    "ts": "2026-03-27T05:38:31.819Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589909374-6f5e25",
+    "ts": "2026-03-27T05:38:29.374Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589902922-cea225",
+    "ts": "2026-03-27T05:38:22.922Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589901704-008ede",
+    "ts": "2026-03-27T05:38:21.704Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589899371-683d3a",
+    "ts": "2026-03-27T05:38:19.371Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589892810-7107b6",
+    "ts": "2026-03-27T05:38:12.810Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589891611-4fe352",
+    "ts": "2026-03-27T05:38:11.611Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589889363-7aef6e",
+    "ts": "2026-03-27T05:38:09.363Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589882679-1cb385",
+    "ts": "2026-03-27T05:38:02.679Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589881526-7203d7",
+    "ts": "2026-03-27T05:38:01.526Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589879349-b65776",
+    "ts": "2026-03-27T05:37:59.349Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589872566-09729e",
+    "ts": "2026-03-27T05:37:52.566Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589871415-b48044",
+    "ts": "2026-03-27T05:37:51.415Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589869343-c74d08",
+    "ts": "2026-03-27T05:37:49.343Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589862400-1cb21f",
+    "ts": "2026-03-27T05:37:42.400Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589861299-e5bf6c",
+    "ts": "2026-03-27T05:37:41.299Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589859330-1e1989",
+    "ts": "2026-03-27T05:37:39.330Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589852306-8c0387",
+    "ts": "2026-03-27T05:37:32.306Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589851186-57a501",
+    "ts": "2026-03-27T05:37:31.186Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589849331-473658",
+    "ts": "2026-03-27T05:37:29.331Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589842197-b65404",
+    "ts": "2026-03-27T05:37:22.197Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589841089-cef228",
+    "ts": "2026-03-27T05:37:21.089Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589839317-756126",
+    "ts": "2026-03-27T05:37:19.317Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589832035-90af2f",
+    "ts": "2026-03-27T05:37:12.035Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589830992-d52ed9",
+    "ts": "2026-03-27T05:37:10.992Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589829308-c281dd",
+    "ts": "2026-03-27T05:37:09.308Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589821922-e83263",
+    "ts": "2026-03-27T05:37:01.922Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589820893-aa2311",
+    "ts": "2026-03-27T05:37:00.893Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589819311-f55c5b",
+    "ts": "2026-03-27T05:36:59.311Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589811810-816a0c",
+    "ts": "2026-03-27T05:36:51.810Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589810771-d25dff",
+    "ts": "2026-03-27T05:36:50.771Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589809293-79171f",
+    "ts": "2026-03-27T05:36:49.293Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589801673-1d294b",
+    "ts": "2026-03-27T05:36:41.673Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589800665-fc3448",
+    "ts": "2026-03-27T05:36:40.665Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589799299-47e757",
+    "ts": "2026-03-27T05:36:39.299Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589791516-d05fdc",
+    "ts": "2026-03-27T05:36:31.516Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589790564-49f2e0",
+    "ts": "2026-03-27T05:36:30.564Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589789278-f44ccd",
+    "ts": "2026-03-27T05:36:29.278Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589781399-9090f4",
+    "ts": "2026-03-27T05:36:21.399Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589780452-b193fe",
+    "ts": "2026-03-27T05:36:20.452Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589779269-478c59",
+    "ts": "2026-03-27T05:36:19.269Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589771271-d93384",
+    "ts": "2026-03-27T05:36:11.271Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589770321-67500d",
+    "ts": "2026-03-27T05:36:10.321Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589769266-f86712",
+    "ts": "2026-03-27T05:36:09.266Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589761168-58abaf",
+    "ts": "2026-03-27T05:36:01.168Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589760230-8801f7",
+    "ts": "2026-03-27T05:36:00.230Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589759260-67ba16",
+    "ts": "2026-03-27T05:35:59.260Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589751087-0ee440",
+    "ts": "2026-03-27T05:35:51.087Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589750122-342878",
+    "ts": "2026-03-27T05:35:50.122Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589749246-751718",
+    "ts": "2026-03-27T05:35:49.246Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589740969-32237f",
+    "ts": "2026-03-27T05:35:40.969Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589740019-524473",
+    "ts": "2026-03-27T05:35:40.019Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589739241-fb79c5",
+    "ts": "2026-03-27T05:35:39.241Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589730851-26d8cb",
+    "ts": "2026-03-27T05:35:30.851Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589729903-595a16",
+    "ts": "2026-03-27T05:35:29.903Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589729244-e7c13b",
+    "ts": "2026-03-27T05:35:29.244Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589720738-cd61f8",
+    "ts": "2026-03-27T05:35:20.738Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589719729-b0dea4",
+    "ts": "2026-03-27T05:35:19.729Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589719236-325693",
+    "ts": "2026-03-27T05:35:19.236Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589710564-9d5a5b",
+    "ts": "2026-03-27T05:35:10.564Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589709402-007f65",
+    "ts": "2026-03-27T05:35:09.402Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589709216-05adcf",
+    "ts": "2026-03-27T05:35:09.216Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589699503-a4cd50",
+    "ts": "2026-03-27T05:34:59.503Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589699300-5d6502",
+    "ts": "2026-03-27T05:34:59.300Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589699167-ea0960",
+    "ts": "2026-03-27T05:34:59.167Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589696354-ba9fd8",
+    "ts": "2026-03-27T05:34:56.354Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589696119-23a4b8",
+    "ts": "2026-03-27T05:34:56.119Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589694238-cc54ea",
+    "ts": "2026-03-27T05:34:54.238Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589686154-87c84f",
+    "ts": "2026-03-27T05:34:46.154Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589685920-2a4259",
+    "ts": "2026-03-27T05:34:45.920Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589684229-50a115",
+    "ts": "2026-03-27T05:34:44.229Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589676047-d13443",
+    "ts": "2026-03-27T05:34:36.047Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589675811-1e244f",
+    "ts": "2026-03-27T05:34:35.811Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589674224-7f4a8f",
+    "ts": "2026-03-27T05:34:34.224Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589665772-e6f87d",
+    "ts": "2026-03-27T05:34:25.772Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589665554-164fe9",
+    "ts": "2026-03-27T05:34:25.554Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589664219-4796d2",
+    "ts": "2026-03-27T05:34:24.219Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589655590-905af1",
+    "ts": "2026-03-27T05:34:15.590Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589655403-d6d7a8",
+    "ts": "2026-03-27T05:34:15.403Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589654224-81e6bf",
+    "ts": "2026-03-27T05:34:14.224Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589645380-42487c",
+    "ts": "2026-03-27T05:34:05.380Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589645210-1d6d50",
+    "ts": "2026-03-27T05:34:05.210Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589644215-1e34be",
+    "ts": "2026-03-27T05:34:04.215Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589635104-3f8580",
+    "ts": "2026-03-27T05:33:55.104Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589634900-70d882",
+    "ts": "2026-03-27T05:33:54.900Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589634200-2f3d70",
+    "ts": "2026-03-27T05:33:54.200Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589624740-3a0024",
+    "ts": "2026-03-27T05:33:44.740Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589624723-4acb5b",
+    "ts": "2026-03-27T05:33:44.723Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589624195-6a386d",
+    "ts": "2026-03-27T05:33:44.195Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589614532-e47375",
+    "ts": "2026-03-27T05:33:34.532Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589614516-5d5578",
+    "ts": "2026-03-27T05:33:34.516Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589614190-06226c",
+    "ts": "2026-03-27T05:33:34.190Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589604413-56a091",
+    "ts": "2026-03-27T05:33:24.413Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589604385-0f2a5d",
+    "ts": "2026-03-27T05:33:24.385Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589604132-81d374",
+    "ts": "2026-03-27T05:33:24.132Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589603700-776597",
+    "ts": "2026-03-27T05:33:23.700Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589603358-ff7571",
+    "ts": "2026-03-27T05:33:23.358Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589602927-35227a",
+    "ts": "2026-03-27T05:33:22.927Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589593642-3467f2",
+    "ts": "2026-03-27T05:33:13.642Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589593190-62efc6",
+    "ts": "2026-03-27T05:33:13.190Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589592766-706fa7",
+    "ts": "2026-03-27T05:33:12.766Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589592234-4148d0",
+    "ts": "2026-03-27T05:33:12.234Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589583106-b861fb",
+    "ts": "2026-03-27T05:33:03.106Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589582671-cb8481",
+    "ts": "2026-03-27T05:33:02.671Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589582178-adb6a7",
+    "ts": "2026-03-27T05:33:02.178Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589577637-18e53d",
+    "ts": "2026-03-27T05:32:57.637Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589572994-65d9db",
+    "ts": "2026-03-27T05:32:52.994Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589572368-880f17",
+    "ts": "2026-03-27T05:32:52.368Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589567635-44304f",
+    "ts": "2026-03-27T05:32:47.635Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589562721-38b3ed",
+    "ts": "2026-03-27T05:32:42.721Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589562125-ddc079",
+    "ts": "2026-03-27T05:32:42.125Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589557637-01bb27",
+    "ts": "2026-03-27T05:32:37.637Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589552506-075666",
+    "ts": "2026-03-27T05:32:32.506Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589552005-eee907",
+    "ts": "2026-03-27T05:32:32.005Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589547629-a83ea6",
+    "ts": "2026-03-27T05:32:27.629Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589542388-9705db",
+    "ts": "2026-03-27T05:32:22.388Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  },
+  {
+    "id": "1774589541779-1c6c74",
+    "ts": "2026-03-27T05:32:21.779Z",
+    "type": "openclaw.error",
+    "message": "Failed to fetch OpenClaw status",
+    "meta": {
+      "error": "spawn openclaw ENOENT"
+    }
+  }
+]

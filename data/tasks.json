@@ -1,0 +1,21 @@
+{
+  "columns": {
+    "todo": [
+      {
+        "id": "seed-1",
+        "title": "Inspect active OpenClaw sessions",
+        "detail": "Baseline visibility into Boris activity.",
+        "lane": "todo"
+      }
+    ],
+    "doing": [
+      {
+        "id": "seed-2",
+        "title": "Build ClawCommand v1 shell",
+        "detail": "Hybrid dashboard with local persistence + OpenClaw adapters.",
+        "lane": "doing"
+      }
+    ],
+    "done": []
+  }
+}
