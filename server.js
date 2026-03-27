@@ -16,6 +16,7 @@ const EVENTS_FILE = path.join(DATA_DIR, 'events.json')
 const WORKSPACE_DIR = path.join(process.env.USERPROFILE || __dirname, '.openclaw', 'workspace')
 const MEMORY_DIR = path.join(WORKSPACE_DIR, 'memory')
 const ACTIVITY_LOG_FILE = path.join(MEMORY_DIR, 'activity.log')
+const OPENCLAW_PATH = path.join(process.env.USERPROFILE || '', 'AppData', 'Roaming', 'npm', 'openclaw.cmd')
 
 const telemetryState = {
   lastGatewaySummary: null,
@@ -65,7 +66,7 @@ function addEvent(type, message, meta = {}) {
 
 function runOpenClaw(args) {
   return new Promise((resolve) => {
-    execFile('openclaw', args, { timeout: 20000, windowsHide: true }, (error, stdout, stderr) => {
+    execFile(OPENCLAW_PATH, args, { timeout: 20000, windowsHide: true }, (error, stdout, stderr) => {
       resolve({ error, stdout: stdout || '', stderr: stderr || '' })
     })
   })
