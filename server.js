@@ -220,7 +220,12 @@ app.get('/api/tasks', (_req, res) => {
 
 app.get('/api/task-queue', (_req, res) => {
   const data = readJson(TASK_QUEUE_FILE)
-  const tasks = Array.isArray(data.tasks) ? [...data.tasks].reverse() : []
+  const taskList = Array.isArray(data.tasks)
+    ? data.tasks
+    : Array.isArray(data)
+      ? data
+      : []
+  const tasks = [...taskList].reverse()
   res.json({ tasks, activeTaskId: data.activeTaskId ?? null })
 })
 

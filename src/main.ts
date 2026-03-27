@@ -2,7 +2,6 @@ import './style.css'
 
 type Task = { id: string; title: string; detail: string; lane: string }
 type TasksPayload = { columns: Record<string, Task[]> }
-type EventItem = { id: string; ts: string; type: string; message: string; meta?: Record<string, unknown> }
 type SessionItem = { key: string; age: string; model: string; kind: string; tokens?: string }
 type StatusParsed = { gatewayState: string; telegramState: string; sessionsSummary: string }
 type CommandCenterStatus = { lastActivity: string; lastTask: string; status: 'idle' | 'running' }
@@ -202,18 +201,23 @@ function renderTask(task: Task, lane: string) {
 
 async function loadTasks() {
   const wrap = document.getElementById('kanban')!
-  const data = await fetchJson<TasksPayload>(`${apiBase}/tasks`)
-  wrap.innerHTML = Object.entries(data.columns).map(([lane, tasks]) => `
-    <div class="${laneClass(lane)}" data-lane="${lane}">
-      <div class="lane-title-row">
-        <div class="lane-title">${laneLabel(lane)}</div>
-        <div class="lane-count">${laneSummary(tasks)}</div>
+  try {
+    const data = await fetchJson<TasksPayload>(`${apiBase}/tasks`)
+    wrap.innerHTML = Object.entries(data.columns).map(([lane, tasks]) => `
+      <div class="${laneClass(lane)}" data-lane="${lane}">
+        <div class="lane-title-row">
+          <div class="lane-title">${laneLabel(lane)}</div>
+          <div class="lane-count">${laneSummary(tasks)}</div>
+        </div>
+        <div class="lane-body" data-dropzone="${lane}">
+          ${tasks.map((task) => renderTask(task, lane)).join('') || '<div class="muted">Empty</div>'}
+        </div>
       </div>
-      <div class="lane-body" data-dropzone="${lane}">
-        ${tasks.map((task) => renderTask(task, lane)).join('') || '<div class="muted">Empty</div>'}
-      </div>
-    </div>
-  `).join('')
+    `).join('')
+  } catch (err) {
+    wrap.innerHTML = `<div class="muted">Kanban load failed: ${String(err)}</div>`
+    return
+  }
 
   wrap.querySelectorAll<HTMLButtonElement>('button[data-task]').forEach((btn) => {
     btn.onclick = async () => moveTask(btn.dataset.task!, btn.dataset.move!)
@@ -270,37 +274,54 @@ async function loadTasks() {
 }
 
 async function loadEvents() {
-  const lines = await fetchJson<string[]>(`${apiBase}/activity`)
   const panel = document.getElementById('activity-panel')!
-  panel.textContent = lines.length ? lines.join('\n') : 'No activity yet.'
+  try {
+    const lines = await fetchJson<string[]>(`${apiBase}/activity`)
+    panel.textContent = lines.length ? lines.join('\n') : 'No activity yet.'
+  } catch (err) {
+    panel.textContent = `Activity load failed\n\n${String(err)}`
+  }
 }
 
 async function loadMemoryPanel() {
   const panel = document.getElementById('memory-panel')!
-  const data = await fetchJson<{ text: string }>(`${apiBase}/memory`)
-  panel.textContent = data.text || 'No recent memory.'
+  try {
+    const data = await fetchJson<{ text: string }>(`${apiBase}/memory`)
+    panel.textContent = data.text || 'No recent memory.'
+  } catch (err) {
+    panel.textContent = `Memory load failed\n\n${String(err)}`
+  }
 }
 
 async function loadCommandStatus() {
   const panel = document.getElementById('command-status-panel')!
-  const data = await fetchJson<CommandCenterStatus>(`${apiBase}/status`)
-  panel.textContent = [
-    `last activity: ${data.lastActivity || 'none'}`,
-    `last task: ${data.lastTask || 'none'}`,
-    `system status: ${data.status}`,
-  ].join('\n')
+  try {
+    const data = await fetchJson<CommandCenterStatus>(`${apiBase}/status`)
+    panel.textContent = [
+      `last activity: ${data.lastActivity || 'none'}`,
+      `last task: ${data.lastTask || 'none'}`,
+      `system status: ${data.status}`,
+    ].join('\n')
+  } catch (err) {
+    panel.textContent = `Status load failed\n\n${String(err)}`
+  }
 }
 
 async function loadQueueTasks() {
   const wrap = document.getElementById('queue-task-list')!
-  const data = await fetchJson<{ tasks: QueueTask[] }>(`${apiBase}/task-queue`)
-  wrap.innerHTML = (data.tasks || []).map((task) => `
-    <div class="queue-task-card neon-card">
-      <div class="task-title">${task.text}</div>
-      <div class="session-meta">${task.status} · ${new Date(task.createdAt).toLocaleString()}</div>
-      ${task.result ? `<div class="task-detail">${task.result}</div>` : ''}
-    </div>
-  `).join('') || '<div class="muted">No queued tasks.</div>'
+  try {
+    const data = await fetchJson<{ tasks: QueueTask[] }>(`${apiBase}/task-queue`)
+    const tasks = Array.isArray(data.tasks) ? data.tasks : []
+    wrap.innerHTML = tasks.map((task) => `
+      <div class="queue-task-card neon-card">
+        <div class="task-title">${task.text}</div>
+        <div class="session-meta">${task.status} · ${new Date(task.createdAt).toLocaleString()}</div>
+        ${task.result ? `<div class="task-detail">${task.result}</div>` : ''}
+      </div>
+    `).join('') || '<div class="muted">No queued tasks.</div>'
+  } catch (err) {
+    wrap.innerHTML = `<div class="muted">Queue load failed: ${String(err)}</div>`
+  }
 }
 
 document.getElementById('task-form')!.addEventListener('submit', async (event) => {
@@ -337,11 +358,21 @@ document.getElementById('queue-task-submit')!.addEventListener('click', async ()
 })
 
 async function boot() {
-  await Promise.all([loadHealth(), loadStatus(), loadSessions(), loadTasks(), loadEvents(), loadMemoryPanel(), loadCommandStatus(), loadQueueTasks()])
+  await Promise.allSettled([
+    loadHealth(),
+    loadStatus(),
+    loadSessions(),
+    loadTasks(),
+    loadEvents(),
+    loadMemoryPanel(),
+    loadCommandStatus(),
+    loadQueueTasks(),
+  ])
   setInterval(() => {
     loadHealth()
     loadStatus()
     loadSessions()
+    loadTasks()
     loadEvents()
     loadCommandStatus()
     loadQueueTasks()
