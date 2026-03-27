@@ -12,6 +12,9 @@ const PORT = process.env.CLAWCOMMAND_PORT || 4310
 const DATA_DIR = path.join(__dirname, 'data')
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json')
 const EVENTS_FILE = path.join(DATA_DIR, 'events.json')
+const WORKSPACE_DIR = path.join(process.env.USERPROFILE || __dirname, '.openclaw', 'workspace')
+const MEMORY_DIR = path.join(WORKSPACE_DIR, 'memory')
+const ACTIVITY_LOG_FILE = path.join(MEMORY_DIR, 'activity.log')
 
 const telemetryState = {
   lastGatewaySummary: null,
@@ -89,6 +92,31 @@ function parseStatusDetails(output) {
   const sessionMatch = text.match(/Sessions\s*│\s*([^\n]+)/)
   const sessionsSummary = sessionMatch ? sessionMatch[1].trim() : 'unknown'
   return { gatewayState, telegramState, sessionsSummary }
+}
+
+function getActivityLines(limit = 100) {
+  if (!fs.existsSync(ACTIVITY_LOG_FILE)) return []
+  const lines = fs.readFileSync(ACTIVITY_LOG_FILE, 'utf-8').split(/\r?\n/).filter(Boolean)
+  return lines.slice(-limit)
+}
+
+function getRecentMemoryText() {
+  const now = new Date()
+  const today = now.toISOString().slice(0, 10)
+  const yesterdayDate = new Date(now)
+  yesterdayDate.setDate(now.getDate() - 1)
+  const yesterday = yesterdayDate.toISOString().slice(0, 10)
+  const files = [path.join(MEMORY_DIR, `${today}.md`), path.join(MEMORY_DIR, `${yesterday}.md`)]
+  return files.map((file) => fs.existsSync(file) ? fs.readFileSync(file, 'utf-8') : '').filter(Boolean).join('\n\n')
+}
+
+function getCommandCenterStatus() {
+  const lines = getActivityLines(100)
+  const lastActivity = lines.length ? lines[lines.length - 1] : ''
+  const taskLines = [...lines].reverse().filter((line) => line.includes('TASK START'))
+  const lastTask = taskLines.length ? taskLines[0] : ''
+  const status = lines.length && lastTask && !lines.slice().reverse().find((line) => line.includes('TASK COMPLETE')) ? 'running' : 'idle'
+  return { lastActivity, lastTask, status }
 }
 
 async function collectTelemetry() {
@@ -213,6 +241,18 @@ app.delete('/api/tasks/:taskId', (req, res) => {
 
 app.get('/api/events', (_req, res) => {
   res.json(readJson(EVENTS_FILE))
+})
+
+app.get('/api/activity', (_req, res) => {
+  res.json(getActivityLines(100))
+})
+
+app.get('/api/memory', (_req, res) => {
+  res.json({ text: getRecentMemoryText() })
+})
+
+app.get('/api/status', (_req, res) => {
+  res.json(getCommandCenterStatus())
 })
 
 app.get('/api/openclaw/status', async (_req, res) => {

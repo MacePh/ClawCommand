@@ -169,6 +169,8 @@ h1 {
   padding: 14px;
   border: 1px solid rgba(116, 156, 255, 0.1);
 }
+.stack-panel { display: grid; gap: 16px; }
+.compact-output { max-height: 220px; }
 .wide { min-height: 500px; }
 
 @media (max-width: 1100px) {

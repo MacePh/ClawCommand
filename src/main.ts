@@ -5,6 +5,7 @@ type TasksPayload = { columns: Record<string, Task[]> }
 type EventItem = { id: string; ts: string; type: string; message: string; meta?: Record<string, unknown> }
 type SessionItem = { key: string; age: string; model: string; kind: string; tokens?: string }
 type StatusParsed = { gatewayState: string; telegramState: string; sessionsSummary: string }
+type CommandCenterStatus = { lastActivity: string; lastTask: string; status: 'idle' | 'running' }
 
 const apiBase = 'http://127.0.0.1:4310/api'
 let draggedTaskId: string | null = null
@@ -33,21 +34,18 @@ app.innerHTML = `
 
     <section class="hero-grid">
       <div class="panel glass">
-        <div class="panel-title">Live Activity Feed</div>
-        <div id="events" class="feed"></div>
+        <div class="panel-title">Activity</div>
+        <pre id="activity-panel" class="status-output">Loading...</pre>
       </div>
-      <div class="panel glass">
-        <div class="panel-title">Quick Task Intake</div>
-        <form id="task-form" class="task-form">
-          <input id="task-title" placeholder="Create a task..." />
-          <textarea id="task-detail" placeholder="Why it matters / next step"></textarea>
-          <select id="task-lane">
-            <option value="todo">To Do</option>
-            <option value="doing">Doing</option>
-            <option value="done">Done</option>
-          </select>
-          <button type="submit" class="primary-btn">Add Task</button>
-        </form>
+      <div class="panel glass stack-panel">
+        <div>
+          <div class="panel-title">Status</div>
+          <pre id="command-status-panel" class="status-output compact-output">Loading...</pre>
+        </div>
+        <div>
+          <div class="panel-title">Memory</div>
+          <pre id="memory-panel" class="status-output compact-output">Loading...</pre>
+        </div>
       </div>
     </section>
 
@@ -263,16 +261,25 @@ async function loadTasks() {
 }
 
 async function loadEvents() {
-  const wrap = document.getElementById('events')!
-  const events = await fetchJson<EventItem[]>(`${apiBase}/events`)
-  wrap.innerHTML = events.map((event) => `
-    <div class="event-item neon-card">
-      <div class="event-type">${event.type}</div>
-      <div class="event-message">${event.message}</div>
-      ${event.meta ? `<div class="event-meta">${JSON.stringify(event.meta)}</div>` : ''}
-      <div class="event-ts">${new Date(event.ts).toLocaleString()}</div>
-    </div>
-  `).join('') || '<div class="muted">No events yet.</div>'
+  const lines = await fetchJson<string[]>(`${apiBase}/activity`)
+  const panel = document.getElementById('activity-panel')!
+  panel.textContent = lines.length ? lines.join('\n') : 'No activity yet.'
+}
+
+async function loadMemoryPanel() {
+  const panel = document.getElementById('memory-panel')!
+  const data = await fetchJson<{ text: string }>(`${apiBase}/memory`)
+  panel.textContent = data.text || 'No recent memory.'
+}
+
+async function loadCommandStatus() {
+  const panel = document.getElementById('command-status-panel')!
+  const data = await fetchJson<CommandCenterStatus>(`${apiBase}/status`)
+  panel.textContent = [
+    `last activity: ${data.lastActivity || 'none'}`,
+    `last task: ${data.lastTask || 'none'}`,
+    `system status: ${data.status}`,
+  ].join('\n')
 }
 
 document.getElementById('task-form')!.addEventListener('submit', async (event) => {
@@ -296,13 +303,17 @@ document.getElementById('refresh-btn')!.addEventListener('click', async () => {
 })
 
 async function boot() {
-  await Promise.all([loadHealth(), loadStatus(), loadSessions(), loadTasks(), loadEvents()])
+  await Promise.all([loadHealth(), loadStatus(), loadSessions(), loadTasks(), loadEvents(), loadMemoryPanel(), loadCommandStatus()])
   setInterval(() => {
     loadHealth()
     loadStatus()
     loadSessions()
     loadEvents()
-  }, 10000)
+    loadCommandStatus()
+  }, 2000)
+  setInterval(() => {
+    loadMemoryPanel()
+  }, 5000)
 }
 
 boot()
