@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { execFile } from 'child_process'
@@ -13,7 +14,8 @@ const DATA_DIR = path.join(__dirname, 'data')
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json')
 const TASK_QUEUE_FILE = path.join(DATA_DIR, 'task_queue.json') // legacy — replaced by workspace queue tree.
 const EVENTS_FILE = path.join(DATA_DIR, 'events.json')
-const BORIS_WORKSPACE = process.env.BORIS_WORKSPACE || path.join(__dirname, '..', '.openclaw', 'workspace')
+const BORIS_WORKSPACE =
+  process.env.BORIS_WORKSPACE || path.join(os.homedir(), '.openclaw', 'workspace')
 const WORKSPACE_QUEUE = path.join(BORIS_WORKSPACE, 'queue')
 const WORKSPACE_ACTIVITY_LOG = path.join(BORIS_WORKSPACE, 'memory', 'activity.log')
 const WORKSPACE_MEMORY_DIR = path.join(BORIS_WORKSPACE, 'memory')
