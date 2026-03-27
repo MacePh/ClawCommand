@@ -130,14 +130,25 @@ function appendActivityLine(message) {
   fs.writeFileSync(ACTIVITY_LOG_FILE, next, 'utf-8')
 }
 
+function logActivity(type, message) {
+  appendActivityLine(`${type} ${message}`)
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-async function processQueuedTask(task) {
-  appendActivityLine(`TASK START ${task.text}`)
-  await sleep(1500)
-  appendActivityLine('TASK COMPLETE success')
+// NOTE: This is a simulated execution layer.
+// Replace with real transport when available.
+async function executeTask(task) {
+  logActivity('TASK START', task.text)
+  logActivity('TASK SENT', 'simulated transport')
+  await new Promise((resolve) => setTimeout(resolve, 2000))
+  logActivity('TASK COMPLETE', 'success')
+  return {
+    status: 'done',
+    result: 'simulated execution'
+  }
 }
 
 async function runTaskQueueWorker() {
@@ -151,9 +162,9 @@ async function runTaskQueueWorker() {
   writeJson(TASK_QUEUE_FILE, queue)
 
   try {
-    await processQueuedTask(nextTask)
-    nextTask.status = 'done'
-    nextTask.result = 'completed'
+    const result = await executeTask(nextTask)
+    nextTask.status = result.status
+    nextTask.result = result.result
     queue.activeTaskId = null
     writeJson(TASK_QUEUE_FILE, queue)
   } catch (error) {
@@ -161,6 +172,7 @@ async function runTaskQueueWorker() {
     nextTask.result = String(error)
     queue.activeTaskId = null
     writeJson(TASK_QUEUE_FILE, queue)
+    logActivity('ERROR', String(error))
   }
 }
 
