@@ -324,21 +324,6 @@ async function loadQueueTasks() {
   }
 }
 
-document.getElementById('task-form')!.addEventListener('submit', async (event) => {
-  event.preventDefault()
-  const title = (document.getElementById('task-title') as HTMLInputElement).value
-  const detail = (document.getElementById('task-detail') as HTMLTextAreaElement).value
-  const lane = (document.getElementById('task-lane') as HTMLSelectElement).value
-  await fetchJson(`${apiBase}/tasks`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, detail, lane })
-  })
-  ;(document.getElementById('task-title') as HTMLInputElement).value = ''
-  ;(document.getElementById('task-detail') as HTMLTextAreaElement).value = ''
-  await Promise.all([loadTasks(), loadEvents()])
-})
-
 document.getElementById('refresh-btn')!.addEventListener('click', async () => {
   await fetchJson(`${apiBase}/openclaw/refresh`, { method: 'POST' })
   await Promise.all([loadStatus(), loadSessions(), loadEvents()])
@@ -383,3 +368,4 @@ async function boot() {
 }
 
 boot()
+
