@@ -44,7 +44,7 @@ function writeJson(file, value) {
 function addEvent(type, message, meta = {}) {
   const events = readJson(EVENTS_FILE)
   events.unshift({ id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`, ts: new Date().toISOString(), type, message, meta })
-  writeJson(EVENTS_FILE, events.slice(0, 200))
+  writeJson(EVENTS_FILE, events.slice(0, 300))
 }
 
 function runOpenClaw(args) {
@@ -53,6 +53,22 @@ function runOpenClaw(args) {
       resolve({ error, stdout: stdout || '', stderr: stderr || '' })
     })
   })
+}
+
+function normalizeSessions(data) {
+  if (Array.isArray(data)) return data
+  if (Array.isArray(data.sessions)) return data.sessions
+  if (Array.isArray(data.items)) return data.items
+  return []
+}
+
+function parseSessionRow(session) {
+  const key = session.key || session.sessionKey || session.id || 'session'
+  const age = session.age || session.updatedAt || session.lastUpdated || 'unknown'
+  const model = session.model || session.modelName || 'unknown'
+  const kind = session.kind || session.type || 'unknown'
+  const tokens = session.tokens || session.tokenUsage || session.context || ''
+  return { key, age, model, kind, tokens }
 }
 
 app.get('/api/health', (_req, res) => {
@@ -97,6 +113,21 @@ app.post('/api/tasks/move', (req, res) => {
   res.json(found)
 })
 
+app.delete('/api/tasks/:taskId', (req, res) => {
+  const { taskId } = req.params
+  const data = readJson(TASKS_FILE)
+  for (const lane of Object.keys(data.columns)) {
+    const idx = data.columns[lane].findIndex((t) => t.id === taskId)
+    if (idx >= 0) {
+      const [deleted] = data.columns[lane].splice(idx, 1)
+      writeJson(TASKS_FILE, data)
+      addEvent('task.deleted', `Task deleted: ${deleted.title}`, { lane })
+      return res.json({ ok: true })
+    }
+  }
+  return res.status(404).json({ error: 'task not found' })
+})
+
 app.get('/api/events', (_req, res) => {
   res.json(readJson(EVENTS_FILE))
 })
@@ -116,9 +147,12 @@ app.get('/api/openclaw/sessions', async (_req, res) => {
     return res.status(500).json({ error: String(result.error.message || result.error), stdout: result.stdout, stderr: result.stderr })
   }
   try {
-    res.json(JSON.parse(result.stdout || '[]'))
+    const parsed = JSON.parse(result.stdout || '[]')
+    const sessions = normalizeSessions(parsed).map(parseSessionRow)
+    addEvent('openclaw.sessions', `Fetched ${sessions.length} session(s)`, { count: sessions.length })
+    res.json({ sessions })
   } catch {
-    res.json({ raw: result.stdout })
+    res.json({ sessions: [], raw: result.stdout })
   }
 })
 

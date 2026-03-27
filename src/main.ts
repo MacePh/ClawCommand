@@ -3,8 +3,10 @@ import './style.css'
 type Task = { id: string; title: string; detail: string; lane: string }
 type TasksPayload = { columns: Record<string, Task[]> }
 type EventItem = { id: string; ts: string; type: string; message: string }
+type SessionItem = { key: string; age: string; model: string; kind: string; tokens?: string }
 
 const apiBase = 'http://127.0.0.1:4310/api'
+let draggedTaskId: string | null = null
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 app.innerHTML = `
@@ -17,6 +19,7 @@ app.innerHTML = `
       <div class="status-strip">
         <div class="pill" id="health-pill">API: ...</div>
         <div class="pill" id="gateway-pill">Gateway: ...</div>
+        <div class="pill" id="session-pill">Workers: ...</div>
         <button id="refresh-btn">Refresh OpenClaw</button>
       </div>
     </header>
@@ -89,13 +92,23 @@ async function loadStatus() {
 
 async function loadSessions() {
   const wrap = document.getElementById('sessions')!
+  const pill = document.getElementById('session-pill')!
   try {
-    const data = await fetchJson<any>(`${apiBase}/openclaw/sessions`)
-    const items = Array.isArray(data) ? data : (data.sessions || [])
+    const data = await fetchJson<{ sessions: SessionItem[] }>(`${apiBase}/openclaw/sessions`)
+    const items = data.sessions || []
+    pill.textContent = `Workers: ${items.length}`
     wrap.innerHTML = items.length
-      ? items.map((s: any) => `<div class="session-card"><div class="session-key">${s.key || s.sessionKey || 'session'}</div><div class="session-meta">${s.kind || 'unknown'} · ${s.model || 'model?'}</div></div>`).join('')
+      ? items.map((s) => `
+          <div class="session-card">
+            <div class="session-key">${s.key}</div>
+            <div class="session-meta">${s.kind} · ${s.model}</div>
+            <div class="session-meta">age: ${s.age}</div>
+            ${s.tokens ? `<div class="session-meta">tokens: ${s.tokens}</div>` : ''}
+          </div>
+        `).join('')
       : '<div class="muted">No sessions returned yet.</div>'
   } catch (err) {
+    pill.textContent = 'Workers: error'
     wrap.innerHTML = `<div class="muted">Session load failed: ${String(err)}</div>`
   }
 }
@@ -107,21 +120,43 @@ function laneLabel(key: string) {
   return key
 }
 
+function laneSummary(tasks: Task[]) {
+  return `${tasks.length} item${tasks.length === 1 ? '' : 's'}`
+}
+
+async function moveTask(taskId: string, toLane: string) {
+  await fetchJson(`${apiBase}/tasks/move`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ taskId, toLane })
+  })
+  await Promise.all([loadTasks(), loadEvents()])
+}
+
+async function deleteTask(taskId: string) {
+  await fetchJson(`${apiBase}/tasks/${taskId}`, { method: 'DELETE' })
+  await Promise.all([loadTasks(), loadEvents()])
+}
+
 async function loadTasks() {
   const wrap = document.getElementById('kanban')!
   const data = await fetchJson<TasksPayload>(`${apiBase}/tasks`)
   wrap.innerHTML = Object.entries(data.columns).map(([lane, tasks]) => `
-    <div class="lane">
-      <div class="lane-title">${laneLabel(lane)}</div>
-      <div class="lane-body">
+    <div class="lane" data-lane="${lane}">
+      <div class="lane-title-row">
+        <div class="lane-title">${laneLabel(lane)}</div>
+        <div class="lane-count">${laneSummary(tasks)}</div>
+      </div>
+      <div class="lane-body" data-dropzone="${lane}">
         ${tasks.map((task) => `
-          <div class="task-card">
+          <div class="task-card" draggable="true" data-task-card="${task.id}">
             <div class="task-title">${task.title}</div>
             <div class="task-detail">${task.detail || ''}</div>
             <div class="task-actions">
               ${lane !== 'todo' ? `<button data-task="${task.id}" data-move="todo">To Do</button>` : ''}
               ${lane !== 'doing' ? `<button data-task="${task.id}" data-move="doing">Doing</button>` : ''}
               ${lane !== 'done' ? `<button data-task="${task.id}" data-move="done">Done</button>` : ''}
+              <button class="danger" data-delete="${task.id}">Delete</button>
             </div>
           </div>
         `).join('') || '<div class="muted">Empty</div>'}
@@ -130,14 +165,37 @@ async function loadTasks() {
   `).join('')
 
   wrap.querySelectorAll<HTMLButtonElement>('button[data-task]').forEach((btn) => {
-    btn.onclick = async () => {
-      await fetchJson(`${apiBase}/tasks/move`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskId: btn.dataset.task, toLane: btn.dataset.move })
-      })
-      await Promise.all([loadTasks(), loadEvents()])
-    }
+    btn.onclick = async () => moveTask(btn.dataset.task!, btn.dataset.move!)
+  })
+
+  wrap.querySelectorAll<HTMLButtonElement>('button[data-delete]').forEach((btn) => {
+    btn.onclick = async () => deleteTask(btn.dataset.delete!)
+  })
+
+  wrap.querySelectorAll<HTMLElement>('[data-task-card]').forEach((card) => {
+    card.addEventListener('dragstart', () => {
+      draggedTaskId = card.dataset.taskCard || null
+      card.classList.add('dragging')
+    })
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging')
+    })
+  })
+
+  wrap.querySelectorAll<HTMLElement>('[data-dropzone]').forEach((zone) => {
+    zone.addEventListener('dragover', (event) => {
+      event.preventDefault()
+      zone.classList.add('dropzone-active')
+    })
+    zone.addEventListener('dragleave', () => zone.classList.remove('dropzone-active'))
+    zone.addEventListener('drop', async (event) => {
+      event.preventDefault()
+      zone.classList.remove('dropzone-active')
+      if (draggedTaskId) {
+        await moveTask(draggedTaskId, zone.dataset.dropzone!)
+        draggedTaskId = null
+      }
+    })
   })
 }
 
@@ -180,7 +238,7 @@ async function boot() {
     loadStatus()
     loadSessions()
     loadEvents()
-  }, 15000)
+  }, 10000)
 }
 
 boot()

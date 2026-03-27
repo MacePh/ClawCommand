@@ -11,16 +11,16 @@
 - OpenClaw integration: shell-outs to `openclaw status` and `openclaw sessions --json`
 
 ## Current status
-- Scaffolding created.
-- Hybrid v1 shell built with:
+- Hybrid v1 shell is running with:
   - top status bar
   - live activity feed
-  - task intake form
-  - kanban board (To Do / Doing / Done)
+  - quick task intake
+  - kanban board with drag/drop and delete
   - OpenClaw status panel
-  - sessions/workers panel
-- Local persistence files auto-created in `data/`.
-- Manual refresh endpoint added.
+  - sessions/workers panel with normalized cards
+- Backend now normalizes OpenClaw session JSON into simpler session cards.
+- Polling cadence tightened to 10s.
+- Activity feed records OpenClaw session fetches and task mutations.
 
 ## Relevant files
 - `package.json`
@@ -31,12 +31,12 @@
 - `data/events.json`
 
 ## Next steps
-1. Add npm scripts for running frontend + backend together.
-2. Improve OpenClaw session parsing/rendering (current API is tolerant but basic).
-3. Add task edit/delete and drag-drop.
-4. Add clearer agent cards / worker states.
-5. Optionally add live polling/log-tail adapter instead of refresh-only status commands.
+1. Add a single command to run frontend + backend together.
+2. Remove leftover Vite scaffold junk (`src/counter.ts`, unused assets) and tidy branding.
+3. Add richer worker state cards and model/tool telemetry summaries.
+4. Add task editing and persistent ordering.
+5. Optionally add live log tail / stream adapter instead of polling only.
 
 ## Notes
 - Web-first was chosen to stay dual-boot / cross-platform friendly.
-- This is Option C: real OpenClaw visibility where easy, local task orchestration where backend APIs are not fully wired yet.
+- This remains Option C: real OpenClaw visibility where easy, local task orchestration where backend APIs are not fully wired yet.

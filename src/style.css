@@ -14,6 +14,7 @@ button, input, textarea, select {
   color: #e9eef6;
 }
 button { cursor: pointer; padding: 0.7rem 1rem; }
+button.danger { border-color: #5d2b39; color: #ffb3c1; }
 input, textarea, select { width: 100%; padding: 0.8rem; }
 textarea { min-height: 90px; resize: vertical; }
 
@@ -24,7 +25,7 @@ textarea { min-height: 90px; resize: vertical; }
 .main-grid { grid-template-columns: 1.3fr 0.85fr 0.85fr; }
 .eyebrow { color: #8fb8ff; text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.75rem; }
 h1 { margin: 0.2rem 0 0; font-size: 2rem; }
-.status-strip { display: flex; gap: 10px; align-items: center; }
+.status-strip { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .pill { padding: 0.55rem 0.85rem; background: #131d28; border: 1px solid #2b3949; border-radius: 999px; }
 .panel {
   background: rgba(17, 24, 33, 0.92);
@@ -38,13 +39,16 @@ h1 { margin: 0.2rem 0 0; font-size: 2rem; }
 .event-item, .session-card, .task-card { background: #101720; border: 1px solid #243242; border-radius: 14px; padding: 12px; }
 .event-type { color: #7bb1ff; font-size: 0.8rem; }
 .event-message { margin: 0.25rem 0; }
-.event-ts, .session-meta, .muted { color: #8a9eb8; font-size: 0.85rem; }
+.event-ts, .session-meta, .muted, .lane-count { color: #8a9eb8; font-size: 0.85rem; }
 .session-key, .task-title { font-weight: 700; }
 .task-form { display: grid; gap: 10px; }
 .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.lane { background: #0f151d; border: 1px solid #223140; border-radius: 16px; padding: 12px; }
-.lane-title { font-weight: 700; margin-bottom: 10px; }
-.lane-body { display: grid; gap: 10px; }
+.lane { background: #0f151d; border: 1px solid #223140; border-radius: 16px; padding: 12px; min-height: 420px; }
+.lane-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.lane-title { font-weight: 700; }
+.lane-body { display: grid; gap: 10px; min-height: 340px; border-radius: 12px; padding: 4px; }
+.dropzone-active { outline: 2px dashed #7bb1ff; background: rgba(58, 91, 133, 0.18); }
+.task-card.dragging { opacity: 0.5; }
 .task-detail { color: #adc0d8; margin: 0.35rem 0 0.7rem; }
 .task-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .status-output { white-space: pre-wrap; max-height: 540px; overflow: auto; margin: 0; color: #d5e1ef; }
