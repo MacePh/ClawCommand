@@ -42,7 +42,7 @@ ensureJsonFile(TASKS_FILE, {
     done: []
   }
 })
-ensureJsonFile(TASK_QUEUE_FILE, { tasks: [] })
+ensureJsonFile(TASK_QUEUE_FILE, { tasks: [], activeTaskId: null })
 ensureJsonFile(EVENTS_FILE, [])
 
 function readJson(file) {
@@ -114,11 +114,54 @@ function getRecentMemoryText() {
 
 function getCommandCenterStatus() {
   const lines = getActivityLines(100)
+  const queue = readJson(TASK_QUEUE_FILE)
   const lastActivity = lines.length ? lines[lines.length - 1] : ''
   const taskLines = [...lines].reverse().filter((line) => line.includes('TASK START'))
   const lastTask = taskLines.length ? taskLines[0] : ''
-  const status = lines.length && lastTask && !lines.slice().reverse().find((line) => line.includes('TASK COMPLETE')) ? 'running' : 'idle'
+  const status = queue.activeTaskId ? 'running' : 'idle'
   return { lastActivity, lastTask, status }
+}
+
+function appendActivityLine(message) {
+  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19)
+  const line = `[${timestamp}] ${message}`
+  const existing = fs.existsSync(ACTIVITY_LOG_FILE) ? fs.readFileSync(ACTIVITY_LOG_FILE, 'utf-8') : ''
+  const next = existing + (existing && !existing.endsWith('\n') ? '\n' : '') + line + '\n'
+  fs.writeFileSync(ACTIVITY_LOG_FILE, next, 'utf-8')
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function processQueuedTask(task) {
+  appendActivityLine(`TASK START ${task.text}`)
+  await sleep(1500)
+  appendActivityLine('TASK COMPLETE success')
+}
+
+async function runTaskQueueWorker() {
+  const queue = readJson(TASK_QUEUE_FILE)
+  if (queue.activeTaskId) return
+  const nextTask = (queue.tasks || []).find((task) => task.status === 'queued')
+  if (!nextTask) return
+
+  nextTask.status = 'running'
+  queue.activeTaskId = nextTask.id
+  writeJson(TASK_QUEUE_FILE, queue)
+
+  try {
+    await processQueuedTask(nextTask)
+    nextTask.status = 'done'
+    nextTask.result = 'completed'
+    queue.activeTaskId = null
+    writeJson(TASK_QUEUE_FILE, queue)
+  } catch (error) {
+    nextTask.status = 'error'
+    nextTask.result = String(error)
+    queue.activeTaskId = null
+    writeJson(TASK_QUEUE_FILE, queue)
+  }
 }
 
 async function collectTelemetry() {
@@ -178,7 +221,7 @@ app.get('/api/tasks', (_req, res) => {
 app.get('/api/task-queue', (_req, res) => {
   const data = readJson(TASK_QUEUE_FILE)
   const tasks = Array.isArray(data.tasks) ? [...data.tasks].reverse() : []
-  res.json({ tasks })
+  res.json({ tasks, activeTaskId: data.activeTaskId ?? null })
 })
 
 app.post('/api/task-queue', (req, res) => {
@@ -187,6 +230,8 @@ app.post('/api/task-queue', (req, res) => {
     return res.status(400).json({ error: 'text required' })
   }
   const data = readJson(TASK_QUEUE_FILE)
+  if (!Array.isArray(data.tasks)) data.tasks = []
+  if (!Object.prototype.hasOwnProperty.call(data, 'activeTaskId')) data.activeTaskId = null
   const task = {
     id: `${Date.now()}`,
     createdAt: new Date().toISOString(),
@@ -348,4 +393,7 @@ app.listen(PORT, () => {
   setInterval(() => {
     collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'Periodic telemetry collection failed'))
   }, 10000)
+  setInterval(() => {
+    runTaskQueueWorker().catch((error) => addEvent('queue.worker.error', 'Task queue worker failed', { error: String(error) }))
+  }, 2000)
 })
