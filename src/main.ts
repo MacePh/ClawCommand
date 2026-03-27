@@ -5,7 +5,7 @@ type TasksPayload = { columns: Record<string, Task[]> }
 type SessionItem = { key: string; age: string; model: string; kind: string; tokens?: string }
 type StatusParsed = { gatewayState: string; telegramState: string; sessionsSummary: string }
 type CommandCenterStatus = { lastActivity: string; lastTask: string; status: 'idle' | 'running' }
-type QueueTask = { id: string; createdAt: string; text: string; status: 'queued' | 'running' | 'done' | 'error'; result: string }
+type QueueTask = { id: string; createdAt?: string; created_at?: string; text: string; status: 'queued' | 'running' | 'done' | 'error' | 'failed'; result?: string; attempt?: number }
 
 const apiBase = 'http://127.0.0.1:4310/api'
 let draggedTaskId: string | null = null
@@ -28,6 +28,7 @@ app.innerHTML = `
         <div class="pill" id="gateway-pill">Gateway: ...</div>
         <div class="pill" id="session-pill">Workers: ...</div>
         <div class="pill" id="telegram-pill">Telegram: ...</div>
+        <div class="pill" id="queue-pill">Queue: ...</div>
         <button id="refresh-btn" class="primary-btn">Refresh OpenClaw</button>
       </div>
     </header>
@@ -222,29 +223,24 @@ async function loadTasks() {
   wrap.querySelectorAll<HTMLButtonElement>('button[data-task]').forEach((btn) => {
     btn.onclick = async () => moveTask(btn.dataset.task!, btn.dataset.move!)
   })
-
   wrap.querySelectorAll<HTMLButtonElement>('button[data-delete]').forEach((btn) => {
     btn.onclick = async () => deleteTask(btn.dataset.delete!)
   })
-
   wrap.querySelectorAll<HTMLButtonElement>('button[data-edit]').forEach((btn) => {
     btn.onclick = async () => {
       editingTaskId = btn.dataset.edit!
       await loadTasks()
     }
   })
-
   wrap.querySelectorAll<HTMLButtonElement>('button[data-save]').forEach((btn) => {
     btn.onclick = async () => saveTask(btn.dataset.save!)
   })
-
   wrap.querySelectorAll<HTMLButtonElement>('button[data-cancel]').forEach((btn) => {
     btn.onclick = async () => {
       editingTaskId = null
       await loadTasks()
     }
   })
-
   wrap.querySelectorAll<HTMLElement>('[data-task-card]').forEach((card) => {
     if (editingTaskId) return
     card.addEventListener('dragstart', () => {
@@ -255,7 +251,6 @@ async function loadTasks() {
       card.classList.remove('dragging')
     })
   })
-
   wrap.querySelectorAll<HTMLElement>('[data-dropzone]').forEach((zone) => {
     zone.addEventListener('dragover', (event) => {
       event.preventDefault()
@@ -307,18 +302,34 @@ async function loadCommandStatus() {
   }
 }
 
+async function loadQueueDepth() {
+  const pill = document.getElementById('queue-pill')!
+  try {
+    const data = await fetchJson<{ counts: Record<string, number> }>(`${apiBase}/workspace-queue`)
+    const p = data.counts.pending || 0
+    const r = data.counts.running || 0
+    pill.textContent = r > 0 ? `Queue: ${r} running` : p > 0 ? `Queue: ${p} pending` : 'Queue: idle'
+  } catch {
+    pill.textContent = 'Queue: ?'
+  }
+}
+
 async function loadQueueTasks() {
   const wrap = document.getElementById('queue-task-list')!
   try {
     const data = await fetchJson<{ tasks: QueueTask[] }>(`${apiBase}/task-queue`)
     const tasks = Array.isArray(data.tasks) ? data.tasks : []
-    wrap.innerHTML = tasks.map((task) => `
-      <div class="queue-task-card neon-card">
-        <div class="task-title">${task.text}</div>
-        <div class="session-meta">${task.status} · ${new Date(task.createdAt).toLocaleString()}</div>
-        ${task.result ? `<div class="task-detail">${task.result}</div>` : ''}
-      </div>
-    `).join('') || '<div class="muted">No queued tasks.</div>'
+    wrap.innerHTML = tasks.map((task) => {
+      const created = task.created_at || task.createdAt || ''
+      const when = created ? new Date(created).toLocaleString() : 'unknown time'
+      const attempt = typeof task.attempt === 'number' && task.attempt > 0 ? ` · attempt ${task.attempt}` : ''
+      return `
+        <div class="queue-task-card neon-card">
+          <div class="task-title">${task.text}</div>
+          <div class="session-meta">${task.status} · ${when}${attempt}</div>
+        </div>
+      `
+    }).join('') || '<div class="muted">No queued tasks.</div>'
   } catch (err) {
     wrap.innerHTML = `<div class="muted">Queue load failed: ${String(err)}</div>`
   }
@@ -326,7 +337,7 @@ async function loadQueueTasks() {
 
 document.getElementById('refresh-btn')!.addEventListener('click', async () => {
   await fetchJson(`${apiBase}/openclaw/refresh`, { method: 'POST' })
-  await Promise.all([loadStatus(), loadSessions(), loadEvents()])
+  await Promise.all([loadStatus(), loadSessions(), loadEvents(), loadQueueDepth()])
 })
 
 document.getElementById('queue-task-submit')!.addEventListener('click', async () => {
@@ -340,6 +351,7 @@ document.getElementById('queue-task-submit')!.addEventListener('click', async ()
   })
   input.value = ''
   await loadQueueTasks()
+  await loadQueueDepth()
 })
 
 async function boot() {
@@ -352,6 +364,7 @@ async function boot() {
     loadMemoryPanel(),
     loadCommandStatus(),
     loadQueueTasks(),
+    loadQueueDepth(),
   ])
   setInterval(() => {
     loadHealth()
@@ -361,6 +374,7 @@ async function boot() {
     loadEvents()
     loadCommandStatus()
     loadQueueTasks()
+    loadQueueDepth()
   }, 2000)
   setInterval(() => {
     loadMemoryPanel()
@@ -368,4 +382,3 @@ async function boot() {
 }
 
 boot()
-

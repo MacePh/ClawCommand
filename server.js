@@ -11,11 +11,12 @@ const app = express()
 const PORT = process.env.CLAWCOMMAND_PORT || 4310
 const DATA_DIR = path.join(__dirname, 'data')
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json')
-const TASK_QUEUE_FILE = path.join(DATA_DIR, 'task_queue.json')
+const TASK_QUEUE_FILE = path.join(DATA_DIR, 'task_queue.json') // legacy — replaced by workspace queue tree.
 const EVENTS_FILE = path.join(DATA_DIR, 'events.json')
-const WORKSPACE_DIR = path.join(process.env.USERPROFILE || __dirname, '.openclaw', 'workspace')
-const MEMORY_DIR = path.join(WORKSPACE_DIR, 'memory')
-const ACTIVITY_LOG_FILE = path.join(MEMORY_DIR, 'activity.log')
+const BORIS_WORKSPACE = process.env.BORIS_WORKSPACE || path.join(__dirname, '..', '.openclaw', 'workspace')
+const WORKSPACE_QUEUE = path.join(BORIS_WORKSPACE, 'queue')
+const WORKSPACE_ACTIVITY_LOG = path.join(BORIS_WORKSPACE, 'memory', 'activity.log')
+const WORKSPACE_MEMORY_DIR = path.join(BORIS_WORKSPACE, 'memory')
 const OPENCLAW_PATH = path.join(process.env.USERPROFILE || '', 'AppData', 'Roaming', 'npm', 'openclaw.cmd')
 
 const telemetryState = {
@@ -27,7 +28,6 @@ const telemetryState = {
 
 app.use(cors())
 app.use(express.json())
-
 fs.mkdirSync(DATA_DIR, { recursive: true })
 
 function ensureJsonFile(file, fallback) {
@@ -97,10 +97,52 @@ function parseStatusDetails(output) {
   return { gatewayState, telegramState, sessionsSummary }
 }
 
+function readWorkspaceQueue() {
+  const dirs = ['pending', 'running', 'done', 'failed', 'dead']
+  const counts = {}
+  for (const dir of dirs) {
+    const p = path.join(WORKSPACE_QUEUE, dir)
+    try {
+      counts[dir] = fs.existsSync(p) ? fs.readdirSync(p).filter((f) => f.endsWith('.json')).length : 0
+    } catch {
+      counts[dir] = 0
+    }
+  }
+  const recentFiles = []
+  for (const dir of ['done', 'failed']) {
+    const p = path.join(WORKSPACE_QUEUE, dir)
+    if (fs.existsSync(p)) {
+      fs.readdirSync(p)
+        .filter((f) => f.endsWith('.json'))
+        .slice(-5)
+        .forEach((f) => {
+          try {
+            recentFiles.push(JSON.parse(fs.readFileSync(path.join(p, f), 'utf-8')))
+          } catch {}
+        })
+    }
+  }
+  return {
+    counts,
+    recent: recentFiles.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || '')).slice(0, 10),
+  }
+}
+
 function getActivityLines(limit = 100) {
-  if (!fs.existsSync(ACTIVITY_LOG_FILE)) return []
-  const lines = fs.readFileSync(ACTIVITY_LOG_FILE, 'utf-8').split(/\r?\n/).filter(Boolean)
-  return lines.slice(-limit)
+  const logFile = fs.existsSync(WORKSPACE_ACTIVITY_LOG) ? WORKSPACE_ACTIVITY_LOG : path.join(WORKSPACE_MEMORY_DIR, 'activity.log')
+  if (!fs.existsSync(logFile)) return []
+  return fs.readFileSync(logFile, 'utf-8')
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .slice(-limit)
+    .map((line) => {
+      try {
+        const e = JSON.parse(line)
+        return `[${(e.ts || '').slice(0, 19).replace('T', ' ')}] ${e.event} — ${e.summary}`
+      } catch {
+        return line
+      }
+    })
 }
 
 function getRecentMemoryText() {
@@ -109,72 +151,18 @@ function getRecentMemoryText() {
   const yesterdayDate = new Date(now)
   yesterdayDate.setDate(now.getDate() - 1)
   const yesterday = yesterdayDate.toISOString().slice(0, 10)
-  const files = [path.join(MEMORY_DIR, `${today}.md`), path.join(MEMORY_DIR, `${yesterday}.md`)]
+  const files = [path.join(WORKSPACE_MEMORY_DIR, `${today}.md`), path.join(WORKSPACE_MEMORY_DIR, `${yesterday}.md`)]
   return files.map((file) => fs.existsSync(file) ? fs.readFileSync(file, 'utf-8') : '').filter(Boolean).join('\n\n')
 }
 
 function getCommandCenterStatus() {
   const lines = getActivityLines(100)
-  const queue = readJson(TASK_QUEUE_FILE)
+  const wq = readWorkspaceQueue()
   const lastActivity = lines.length ? lines[lines.length - 1] : ''
-  const taskLines = [...lines].reverse().filter((line) => line.includes('TASK START'))
+  const taskLines = [...lines].reverse().filter((line) => line.includes('task.started') || line.includes('TASK START'))
   const lastTask = taskLines.length ? taskLines[0] : ''
-  const status = queue.activeTaskId ? 'running' : 'idle'
+  const status = (wq.counts.running || 0) > 0 ? 'running' : 'idle'
   return { lastActivity, lastTask, status }
-}
-
-function appendActivityLine(message) {
-  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19)
-  const line = `[${timestamp}] ${message}`
-  const existing = fs.existsSync(ACTIVITY_LOG_FILE) ? fs.readFileSync(ACTIVITY_LOG_FILE, 'utf-8') : ''
-  const next = existing + (existing && !existing.endsWith('\n') ? '\n' : '') + line + '\n'
-  fs.writeFileSync(ACTIVITY_LOG_FILE, next, 'utf-8')
-}
-
-function logActivity(type, message) {
-  appendActivityLine(`${type} ${message}`)
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-// NOTE: This is a simulated execution layer.
-// Replace with real transport when available.
-async function executeTask(task) {
-  logActivity('TASK START', task.text)
-  logActivity('TASK SENT', 'simulated transport')
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-  logActivity('TASK COMPLETE', 'success')
-  return {
-    status: 'done',
-    result: 'simulated execution'
-  }
-}
-
-async function runTaskQueueWorker() {
-  const queue = readJson(TASK_QUEUE_FILE)
-  if (queue.activeTaskId) return
-  const nextTask = (queue.tasks || []).find((task) => task.status === 'queued')
-  if (!nextTask) return
-
-  nextTask.status = 'running'
-  queue.activeTaskId = nextTask.id
-  writeJson(TASK_QUEUE_FILE, queue)
-
-  try {
-    const result = await executeTask(nextTask)
-    nextTask.status = result.status
-    nextTask.result = result.result
-    queue.activeTaskId = null
-    writeJson(TASK_QUEUE_FILE, queue)
-  } catch (error) {
-    nextTask.status = 'error'
-    nextTask.result = String(error)
-    queue.activeTaskId = null
-    writeJson(TASK_QUEUE_FILE, queue)
-    logActivity('ERROR', String(error))
-  }
 }
 
 async function collectTelemetry() {
@@ -232,72 +220,27 @@ app.get('/api/tasks', (_req, res) => {
 })
 
 app.get('/api/task-queue', (_req, res) => {
-  const data = readJson(TASK_QUEUE_FILE)
-  const taskList = Array.isArray(data.tasks)
-    ? data.tasks
-    : Array.isArray(data)
-      ? data
-      : []
-  const tasks = [...taskList].reverse()
-  res.json({ tasks, activeTaskId: data.activeTaskId ?? null })
+  const wq = readWorkspaceQueue()
+  res.json({ tasks: wq.recent, counts: wq.counts })
 })
 
 app.post('/api/task-queue', (req, res) => {
   const { text } = req.body || {}
-  if (!text || !String(text).trim()) {
-    return res.status(400).json({ error: 'text required' })
+  if (!text || !String(text).trim()) return res.status(400).json({ error: 'text required' })
+  const id = `t_${Date.now()}_${Math.random().toString(16).slice(2, 6)}`
+  const task = { id, text: String(text).trim(), source: 'clawcommand', created_at: new Date().toISOString(), status: 'queued', attempt: 0 }
+  const pendingDir = path.join(WORKSPACE_QUEUE, 'pending')
+  try {
+    fs.mkdirSync(pendingDir, { recursive: true })
+    fs.writeFileSync(path.join(pendingDir, `${id}.json`), JSON.stringify(task, null, 2))
+    addEvent('queue.created', `Queued task: ${task.text}`)
+    res.json(task)
+  } catch (err) {
+    res.status(500).json({ error: String(err) })
   }
-  const data = readJson(TASK_QUEUE_FILE)
-  if (!Array.isArray(data.tasks)) data.tasks = []
-  if (!Object.prototype.hasOwnProperty.call(data, 'activeTaskId')) data.activeTaskId = null
-  const task = {
-    id: `${Date.now()}`,
-    createdAt: new Date().toISOString(),
-    text: String(text).trim(),
-    status: 'queued',
-    result: ''
-  }
-  data.tasks.push(task)
-  writeJson(TASK_QUEUE_FILE, data)
-  addEvent('queue.created', `Queued task: ${task.text}`)
-  res.json(task)
 })
 
-app.post('/api/task-queue/:id/start', (req, res) => {
-  const data = readJson(TASK_QUEUE_FILE)
-  const task = data.tasks.find((item) => item.id === req.params.id)
-  if (!task) return res.status(404).json({ error: 'task not found' })
-  task.status = 'running'
-  writeJson(TASK_QUEUE_FILE, data)
-  addEvent('queue.started', `Started queued task: ${task.text}`)
-  res.json(task)
-})
-
-app.post('/api/task-queue/:id/complete', (req, res) => {
-  const { result = '', status = 'done' } = req.body || {}
-  const data = readJson(TASK_QUEUE_FILE)
-  const task = data.tasks.find((item) => item.id === req.params.id)
-  if (!task) return res.status(404).json({ error: 'task not found' })
-  task.status = status
-  task.result = String(result)
-  writeJson(TASK_QUEUE_FILE, data)
-  addEvent('queue.completed', `Completed queued task: ${task.text}`, { status })
-  res.json(task)
-})
-
-app.post('/api/tasks', (req, res) => {
-  const { title, detail = '', lane = 'todo' } = req.body || {}
-  if (!title || !String(title).trim()) {
-    return res.status(400).json({ error: 'title required' })
-  }
-  const data = readJson(TASKS_FILE)
-  const task = { id: `${Date.now()}`, title: String(title).trim(), detail: String(detail), lane }
-  if (!data.columns[lane]) data.columns[lane] = []
-  data.columns[lane].unshift(task)
-  writeJson(TASKS_FILE, data)
-  addEvent('task.created', `Task created: ${task.title}`, { lane })
-  res.json(task)
-})
+// removed — state transitions owned by tools/dispatcher.py.
 
 app.put('/api/tasks/:taskId', (req, res) => {
   const { taskId } = req.params
@@ -367,6 +310,10 @@ app.get('/api/status', (_req, res) => {
   res.json(getCommandCenterStatus())
 })
 
+app.get('/api/workspace-queue', (_req, res) => {
+  res.json(readWorkspaceQueue())
+})
+
 app.get('/api/openclaw/status', async (_req, res) => {
   const result = await runOpenClaw(['status'])
   if (result.error) {
@@ -411,7 +358,5 @@ app.listen(PORT, () => {
   setInterval(() => {
     collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'Periodic telemetry collection failed'))
   }, 10000)
-  setInterval(() => {
-    runTaskQueueWorker().catch((error) => addEvent('queue.worker.error', 'Task queue worker failed', { error: String(error) }))
-  }, 2000)
+  // legacy — queue execution owned by workspace dispatcher.
 })
