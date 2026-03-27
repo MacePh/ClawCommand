@@ -66,7 +66,7 @@ function addEvent(type, message, meta = {}) {
 
 function runOpenClaw(args) {
   return new Promise((resolve) => {
-    execFile(OPENCLAW_PATH, args, { timeout: 20000, windowsHide: true }, (error, stdout, stderr) => {
+    execFile('cmd.exe', ['/c', OPENCLAW_PATH, ...args], { timeout: 20000, windowsHide: true }, (error, stdout, stderr) => {
       resolve({ error, stdout: stdout || '', stderr: stderr || '' })
     })
   })
