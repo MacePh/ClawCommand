@@ -121,9 +121,29 @@ async function loadSessions() {
             <div class="session-meta">${s.kind} · ${s.model}</div>
             <div class="session-meta">age: ${s.age}</div>
             ${s.tokens ? `<div class="session-meta">tokens: ${s.tokens}</div>` : ''}
+            <button class="kill-session-btn danger-btn" data-key="${s.key}">Kill Session</button>
           </div>
         `).join('')
       : '<div class="muted">No sessions returned yet.</div>'
+
+    wrap.querySelectorAll<HTMLButtonElement>('.kill-session-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const key = btn.dataset.key
+        if (!key) return
+        if (!confirm(`Kill session "${key}"?\n\nBoris will reload from workspace files on next message. Memory is safe.`)) return
+        btn.disabled = true
+        btn.textContent = 'Killing...'
+        try {
+          await fetchJson(`${apiBase}/openclaw/sessions/${encodeURIComponent(key)}`, { method: 'DELETE' })
+          btn.textContent = 'Killed'
+          setTimeout(() => loadSessions(), 1500)
+        } catch (err) {
+          btn.disabled = false
+          btn.textContent = 'Kill Session'
+          alert(`Failed to kill session: ${String(err)}`)
+        }
+      })
+    })
   } catch (err) {
     pill.textContent = 'Workers: error'
     wrap.innerHTML = `<div class="muted">Session load failed: ${String(err)}</div>`

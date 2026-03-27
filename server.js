@@ -339,6 +339,18 @@ app.get('/api/openclaw/sessions', async (_req, res) => {
   }
 })
 
+app.delete('/api/openclaw/sessions/:key', async (req, res) => {
+  const { key } = req.params
+  if (!key) return res.status(400).json({ error: 'session key required' })
+  const result = await runOpenClaw(['sessions', 'kill', key])
+  if (result.error && result.stderr && !result.stdout) {
+    addEvent('openclaw.session.kill.error', `Failed to kill session: ${key}`, { error: result.stderr })
+    return res.status(500).json({ error: result.stderr, stdout: result.stdout })
+  }
+  addEvent('openclaw.session.killed', `Session killed: ${key}`, { key })
+  res.json({ ok: true, key, output: result.stdout })
+})
+
 app.post('/api/openclaw/refresh', async (_req, res) => {
   addEvent('openclaw.refresh', 'Manual OpenClaw refresh requested')
   await collectTelemetry()

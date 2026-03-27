@@ -57,6 +57,23 @@ button.danger {
   border-color: rgba(255, 114, 153, 0.28);
   color: #ffc0d0;
 }
+.danger-btn {
+  background: rgba(220, 50, 50, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(220, 50, 50, 0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.danger-btn:hover {
+  background: rgba(220, 50, 50, 0.3);
+}
+.danger-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 input, textarea, select {
   width: 100%;
   padding: 0.85rem;
