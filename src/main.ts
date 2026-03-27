@@ -6,6 +6,7 @@ type EventItem = { id: string; ts: string; type: string; message: string; meta?:
 type SessionItem = { key: string; age: string; model: string; kind: string; tokens?: string }
 type StatusParsed = { gatewayState: string; telegramState: string; sessionsSummary: string }
 type CommandCenterStatus = { lastActivity: string; lastTask: string; status: 'idle' | 'running' }
+type QueueTask = { id: string; createdAt: string; text: string; status: 'queued' | 'running' | 'done' | 'error'; result: string }
 
 const apiBase = 'http://127.0.0.1:4310/api'
 let draggedTaskId: string | null = null
@@ -45,6 +46,14 @@ app.innerHTML = `
         <div>
           <div class="panel-title">Memory</div>
           <pre id="memory-panel" class="status-output compact-output">Loading...</pre>
+        </div>
+        <div>
+          <div class="panel-title">Tasks</div>
+          <div class="queue-input-row">
+            <input id="queue-task-input" placeholder="Add queued task..." />
+            <button id="queue-task-submit">Queue</button>
+          </div>
+          <div id="queue-task-list" class="queue-task-list"></div>
         </div>
       </div>
     </section>
@@ -282,6 +291,18 @@ async function loadCommandStatus() {
   ].join('\n')
 }
 
+async function loadQueueTasks() {
+  const wrap = document.getElementById('queue-task-list')!
+  const data = await fetchJson<{ tasks: QueueTask[] }>(`${apiBase}/task-queue`)
+  wrap.innerHTML = (data.tasks || []).map((task) => `
+    <div class="queue-task-card neon-card">
+      <div class="task-title">${task.text}</div>
+      <div class="session-meta">${task.status} · ${new Date(task.createdAt).toLocaleString()}</div>
+      ${task.result ? `<div class="task-detail">${task.result}</div>` : ''}
+    </div>
+  `).join('') || '<div class="muted">No queued tasks.</div>'
+}
+
 document.getElementById('task-form')!.addEventListener('submit', async (event) => {
   event.preventDefault()
   const title = (document.getElementById('task-title') as HTMLInputElement).value
@@ -302,14 +323,28 @@ document.getElementById('refresh-btn')!.addEventListener('click', async () => {
   await Promise.all([loadStatus(), loadSessions(), loadEvents()])
 })
 
+document.getElementById('queue-task-submit')!.addEventListener('click', async () => {
+  const input = document.getElementById('queue-task-input') as HTMLInputElement
+  const text = input.value.trim()
+  if (!text) return
+  await fetchJson(`${apiBase}/task-queue`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text })
+  })
+  input.value = ''
+  await loadQueueTasks()
+})
+
 async function boot() {
-  await Promise.all([loadHealth(), loadStatus(), loadSessions(), loadTasks(), loadEvents(), loadMemoryPanel(), loadCommandStatus()])
+  await Promise.all([loadHealth(), loadStatus(), loadSessions(), loadTasks(), loadEvents(), loadMemoryPanel(), loadCommandStatus(), loadQueueTasks()])
   setInterval(() => {
     loadHealth()
     loadStatus()
     loadSessions()
     loadEvents()
     loadCommandStatus()
+    loadQueueTasks()
   }, 2000)
   setInterval(() => {
     loadMemoryPanel()

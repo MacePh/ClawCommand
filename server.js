@@ -11,6 +11,7 @@ const app = express()
 const PORT = process.env.CLAWCOMMAND_PORT || 4310
 const DATA_DIR = path.join(__dirname, 'data')
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json')
+const TASK_QUEUE_FILE = path.join(DATA_DIR, 'task_queue.json')
 const EVENTS_FILE = path.join(DATA_DIR, 'events.json')
 const WORKSPACE_DIR = path.join(process.env.USERPROFILE || __dirname, '.openclaw', 'workspace')
 const MEMORY_DIR = path.join(WORKSPACE_DIR, 'memory')
@@ -41,6 +42,7 @@ ensureJsonFile(TASKS_FILE, {
     done: []
   }
 })
+ensureJsonFile(TASK_QUEUE_FILE, { tasks: [] })
 ensureJsonFile(EVENTS_FILE, [])
 
 function readJson(file) {
@@ -171,6 +173,53 @@ app.get('/api/health', (_req, res) => {
 
 app.get('/api/tasks', (_req, res) => {
   res.json(readJson(TASKS_FILE))
+})
+
+app.get('/api/task-queue', (_req, res) => {
+  const data = readJson(TASK_QUEUE_FILE)
+  const tasks = Array.isArray(data.tasks) ? [...data.tasks].reverse() : []
+  res.json({ tasks })
+})
+
+app.post('/api/task-queue', (req, res) => {
+  const { text } = req.body || {}
+  if (!text || !String(text).trim()) {
+    return res.status(400).json({ error: 'text required' })
+  }
+  const data = readJson(TASK_QUEUE_FILE)
+  const task = {
+    id: `${Date.now()}`,
+    createdAt: new Date().toISOString(),
+    text: String(text).trim(),
+    status: 'queued',
+    result: ''
+  }
+  data.tasks.push(task)
+  writeJson(TASK_QUEUE_FILE, data)
+  addEvent('queue.created', `Queued task: ${task.text}`)
+  res.json(task)
+})
+
+app.post('/api/task-queue/:id/start', (req, res) => {
+  const data = readJson(TASK_QUEUE_FILE)
+  const task = data.tasks.find((item) => item.id === req.params.id)
+  if (!task) return res.status(404).json({ error: 'task not found' })
+  task.status = 'running'
+  writeJson(TASK_QUEUE_FILE, data)
+  addEvent('queue.started', `Started queued task: ${task.text}`)
+  res.json(task)
+})
+
+app.post('/api/task-queue/:id/complete', (req, res) => {
+  const { result = '', status = 'done' } = req.body || {}
+  const data = readJson(TASK_QUEUE_FILE)
+  const task = data.tasks.find((item) => item.id === req.params.id)
+  if (!task) return res.status(404).json({ error: 'task not found' })
+  task.status = status
+  task.result = String(result)
+  writeJson(TASK_QUEUE_FILE, data)
+  addEvent('queue.completed', `Completed queued task: ${task.text}`, { status })
+  res.json(task)
 })
 
 app.post('/api/tasks', (req, res) => {
