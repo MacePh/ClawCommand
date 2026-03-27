@@ -1,7 +1,7 @@
 [
   {
-    "id": "1774590186315-2685d9",
-    "ts": "2026-03-27T05:43:06.315Z",
+    "id": "1774595488262-e6d459",
+    "ts": "2026-03-27T07:11:28.262Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -9,8 +9,8 @@
     }
   },
   {
-    "id": "1774590185630-2918e9",
-    "ts": "2026-03-27T05:43:05.630Z",
+    "id": "1774595486037-7218b2",
+    "ts": "2026-03-27T07:11:26.037Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -18,8 +18,8 @@
     }
   },
   {
-    "id": "1774590184772-dbd199",
-    "ts": "2026-03-27T05:43:04.772Z",
+    "id": "1774595483537-3acc36",
+    "ts": "2026-03-27T07:11:23.537Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -27,8 +27,8 @@
     }
   },
   {
-    "id": "1774590176208-416168",
-    "ts": "2026-03-27T05:42:56.208Z",
+    "id": "1774595478077-7e9b91",
+    "ts": "2026-03-27T07:11:18.077Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -36,8 +36,8 @@
     }
   },
   {
-    "id": "1774590175618-421ac6",
-    "ts": "2026-03-27T05:42:55.618Z",
+    "id": "1774595475817-01a164",
+    "ts": "2026-03-27T07:11:15.817Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -45,8 +45,8 @@
     }
   },
   {
-    "id": "1774590174659-10dd69",
-    "ts": "2026-03-27T05:42:54.659Z",
+    "id": "1774595473375-a0c72c",
+    "ts": "2026-03-27T07:11:13.375Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -54,8 +54,8 @@
     }
   },
   {
-    "id": "1774590166034-0663d9",
-    "ts": "2026-03-27T05:42:46.034Z",
+    "id": "1774595467929-b055c0",
+    "ts": "2026-03-27T07:11:07.929Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -63,8 +63,8 @@
     }
   },
   {
-    "id": "1774590165616-e3e045",
-    "ts": "2026-03-27T05:42:45.616Z",
+    "id": "1774595465646-37183d",
+    "ts": "2026-03-27T07:11:05.646Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -72,8 +72,8 @@
     }
   },
   {
-    "id": "1774590164574-5874a4",
-    "ts": "2026-03-27T05:42:44.574Z",
+    "id": "1774595463200-8bfa59",
+    "ts": "2026-03-27T07:11:03.200Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -81,8 +81,8 @@
     }
   },
   {
-    "id": "1774590155944-55d3e7",
-    "ts": "2026-03-27T05:42:35.944Z",
+    "id": "1774595457734-6807cb",
+    "ts": "2026-03-27T07:10:57.734Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -90,8 +90,8 @@
     }
   },
   {
-    "id": "1774590155615-09a149",
-    "ts": "2026-03-27T05:42:35.615Z",
+    "id": "1774595455476-1601c1",
+    "ts": "2026-03-27T07:10:55.476Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -99,8 +99,8 @@
     }
   },
   {
-    "id": "1774590154482-ca8f47",
-    "ts": "2026-03-27T05:42:34.482Z",
+    "id": "1774595453029-d4344a",
+    "ts": "2026-03-27T07:10:53.029Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -108,8 +108,8 @@
     }
   },
   {
-    "id": "1774590145807-6e081a",
-    "ts": "2026-03-27T05:42:25.807Z",
+    "id": "1774595447553-600be7",
+    "ts": "2026-03-27T07:10:47.553Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -117,8 +117,8 @@
     }
   },
   {
-    "id": "1774590145607-2bc76c",
-    "ts": "2026-03-27T05:42:25.607Z",
+    "id": "1774595445267-cb10be",
+    "ts": "2026-03-27T07:10:45.267Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -126,8 +126,8 @@
     }
   },
   {
-    "id": "1774590144352-0a7e27",
-    "ts": "2026-03-27T05:42:24.352Z",
+    "id": "1774595442855-7fb865",
+    "ts": "2026-03-27T07:10:42.855Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -135,8 +135,8 @@
     }
   },
   {
-    "id": "1774590135720-13ebd7",
-    "ts": "2026-03-27T05:42:15.720Z",
+    "id": "1774595437355-8f09ed",
+    "ts": "2026-03-27T07:10:37.355Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -144,8 +144,8 @@
     }
   },
   {
-    "id": "1774590135594-bf9325",
-    "ts": "2026-03-27T05:42:15.594Z",
+    "id": "1774595435172-78ef8c",
+    "ts": "2026-03-27T07:10:35.172Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -153,8 +153,8 @@
     }
   },
   {
-    "id": "1774590134235-34620d",
-    "ts": "2026-03-27T05:42:14.235Z",
+    "id": "1774595432643-63e68e",
+    "ts": "2026-03-27T07:10:32.643Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -162,8 +162,8 @@
     }
   },
   {
-    "id": "1774590125633-69c676",
-    "ts": "2026-03-27T05:42:05.633Z",
+    "id": "1774595427148-777760",
+    "ts": "2026-03-27T07:10:27.148Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -171,8 +171,8 @@
     }
   },
   {
-    "id": "1774590125585-9bd54b",
-    "ts": "2026-03-27T05:42:05.585Z",
+    "id": "1774595424987-19eab4",
+    "ts": "2026-03-27T07:10:24.987Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -180,8 +180,8 @@
     }
   },
   {
-    "id": "1774590124144-c32525",
-    "ts": "2026-03-27T05:42:04.144Z",
+    "id": "1774595422447-534e69",
+    "ts": "2026-03-27T07:10:22.447Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -189,8 +189,8 @@
     }
   },
   {
-    "id": "1774590115583-acca0c",
-    "ts": "2026-03-27T05:41:55.583Z",
+    "id": "1774595416997-4455c2",
+    "ts": "2026-03-27T07:10:16.997Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -198,8 +198,8 @@
     }
   },
   {
-    "id": "1774590115522-9aa6ad",
-    "ts": "2026-03-27T05:41:55.522Z",
+    "id": "1774595414796-a7c3ca",
+    "ts": "2026-03-27T07:10:14.796Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -207,8 +207,8 @@
     }
   },
   {
-    "id": "1774590114046-1e4392",
-    "ts": "2026-03-27T05:41:54.046Z",
+    "id": "1774595412262-8599dd",
+    "ts": "2026-03-27T07:10:12.262Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -216,8 +216,8 @@
     }
   },
   {
-    "id": "1774590105533-3a1e0e",
-    "ts": "2026-03-27T05:41:45.533Z",
+    "id": "1774595406832-6f8fad",
+    "ts": "2026-03-27T07:10:06.832Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -225,8 +225,8 @@
     }
   },
   {
-    "id": "1774590105311-508b9e",
-    "ts": "2026-03-27T05:41:45.311Z",
+    "id": "1774595404576-229a67",
+    "ts": "2026-03-27T07:10:04.576Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -234,8 +234,8 @@
     }
   },
   {
-    "id": "1774590103915-4cd29b",
-    "ts": "2026-03-27T05:41:43.915Z",
+    "id": "1774595402070-d532d6",
+    "ts": "2026-03-27T07:10:02.070Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -243,8 +243,8 @@
     }
   },
   {
-    "id": "1774590099525-02599c",
-    "ts": "2026-03-27T05:41:39.525Z",
+    "id": "1774595396618-6751eb",
+    "ts": "2026-03-27T07:09:56.618Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -252,8 +252,8 @@
     }
   },
   {
-    "id": "1774590095215-dcc7a8",
-    "ts": "2026-03-27T05:41:35.215Z",
+    "id": "1774595394390-eb1ac0",
+    "ts": "2026-03-27T07:09:54.390Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -261,8 +261,8 @@
     }
   },
   {
-    "id": "1774590093806-dee6c4",
-    "ts": "2026-03-27T05:41:33.806Z",
+    "id": "1774595391882-3b1438",
+    "ts": "2026-03-27T07:09:51.882Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -270,8 +270,8 @@
     }
   },
   {
-    "id": "1774590089515-42c793",
-    "ts": "2026-03-27T05:41:29.515Z",
+    "id": "1774595386454-4cf804",
+    "ts": "2026-03-27T07:09:46.454Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -279,8 +279,8 @@
     }
   },
   {
-    "id": "1774590085124-f6c364",
-    "ts": "2026-03-27T05:41:25.124Z",
+    "id": "1774595384155-711f81",
+    "ts": "2026-03-27T07:09:44.156Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -288,8 +288,8 @@
     }
   },
   {
-    "id": "1774590083701-51c52a",
-    "ts": "2026-03-27T05:41:23.701Z",
+    "id": "1774595381728-16f000",
+    "ts": "2026-03-27T07:09:41.728Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -297,8 +297,8 @@
     }
   },
   {
-    "id": "1774590079515-bd7696",
-    "ts": "2026-03-27T05:41:19.515Z",
+    "id": "1774595376199-ab7fc1",
+    "ts": "2026-03-27T07:09:36.199Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -306,8 +306,8 @@
     }
   },
   {
-    "id": "1774590075022-ef22ba",
-    "ts": "2026-03-27T05:41:15.022Z",
+    "id": "1774595374033-9c9f8e",
+    "ts": "2026-03-27T07:09:34.033Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -315,8 +315,8 @@
     }
   },
   {
-    "id": "1774590073590-5e3244",
-    "ts": "2026-03-27T05:41:13.590Z",
+    "id": "1774595371527-a3f6b0",
+    "ts": "2026-03-27T07:09:31.527Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -324,8 +324,8 @@
     }
   },
   {
-    "id": "1774590069505-c09703",
-    "ts": "2026-03-27T05:41:09.505Z",
+    "id": "1774595365972-46bd40",
+    "ts": "2026-03-27T07:09:25.972Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -333,8 +333,8 @@
     }
   },
   {
-    "id": "1774590064912-9a2229",
-    "ts": "2026-03-27T05:41:04.912Z",
+    "id": "1774595363763-f3a064",
+    "ts": "2026-03-27T07:09:23.763Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -342,8 +342,8 @@
     }
   },
   {
-    "id": "1774590063475-e342a0",
-    "ts": "2026-03-27T05:41:03.475Z",
+    "id": "1774595361313-b361bb",
+    "ts": "2026-03-27T07:09:21.313Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -351,8 +351,8 @@
     }
   },
   {
-    "id": "1774590059491-a2e797",
-    "ts": "2026-03-27T05:40:59.491Z",
+    "id": "1774595355791-54d3db",
+    "ts": "2026-03-27T07:09:15.791Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -360,8 +360,8 @@
     }
   },
   {
-    "id": "1774590054810-68d743",
-    "ts": "2026-03-27T05:40:54.810Z",
+    "id": "1774595353589-3f9920",
+    "ts": "2026-03-27T07:09:13.589Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -369,8 +369,8 @@
     }
   },
   {
-    "id": "1774590053359-61f910",
-    "ts": "2026-03-27T05:40:53.359Z",
+    "id": "1774595351123-8ba435",
+    "ts": "2026-03-27T07:09:11.123Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -378,8 +378,8 @@
     }
   },
   {
-    "id": "1774590049485-c3e2dd",
-    "ts": "2026-03-27T05:40:49.485Z",
+    "id": "1774595345612-a89d8c",
+    "ts": "2026-03-27T07:09:05.612Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -387,8 +387,8 @@
     }
   },
   {
-    "id": "1774590044607-9936cc",
-    "ts": "2026-03-27T05:40:44.607Z",
+    "id": "1774595343498-cdec0e",
+    "ts": "2026-03-27T07:09:03.498Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -396,8 +396,8 @@
     }
   },
   {
-    "id": "1774590043229-c55039",
-    "ts": "2026-03-27T05:40:43.229Z",
+    "id": "1774595340938-0b8d05",
+    "ts": "2026-03-27T07:09:00.938Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -405,8 +405,8 @@
     }
   },
   {
-    "id": "1774590039475-4f4f91",
-    "ts": "2026-03-27T05:40:39.475Z",
+    "id": "1774595335425-e07aae",
+    "ts": "2026-03-27T07:08:55.425Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -414,8 +414,8 @@
     }
   },
   {
-    "id": "1774590034497-694e78",
-    "ts": "2026-03-27T05:40:34.497Z",
+    "id": "1774595333244-1e0588",
+    "ts": "2026-03-27T07:08:53.244Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -423,8 +423,8 @@
     }
   },
   {
-    "id": "1774590033102-92dc15",
-    "ts": "2026-03-27T05:40:33.102Z",
+    "id": "1774595330720-a951fe",
+    "ts": "2026-03-27T07:08:50.720Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -432,8 +432,8 @@
     }
   },
   {
-    "id": "1774590029475-e34537",
-    "ts": "2026-03-27T05:40:29.475Z",
+    "id": "1774595325219-b5a819",
+    "ts": "2026-03-27T07:08:45.219Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -441,8 +441,8 @@
     }
   },
   {
-    "id": "1774590024381-82243f",
-    "ts": "2026-03-27T05:40:24.381Z",
+    "id": "1774595323061-0c524a",
+    "ts": "2026-03-27T07:08:43.061Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -450,8 +450,8 @@
     }
   },
   {
-    "id": "1774590022989-ff3b77",
-    "ts": "2026-03-27T05:40:22.989Z",
+    "id": "1774595320509-58a43b",
+    "ts": "2026-03-27T07:08:40.509Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -459,8 +459,8 @@
     }
   },
   {
-    "id": "1774590019476-d1132e",
-    "ts": "2026-03-27T05:40:19.476Z",
+    "id": "1774595314992-219103",
+    "ts": "2026-03-27T07:08:34.992Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -468,8 +468,8 @@
     }
   },
   {
-    "id": "1774590014251-efe8ec",
-    "ts": "2026-03-27T05:40:14.251Z",
+    "id": "1774595312942-ae8075",
+    "ts": "2026-03-27T07:08:32.942Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -477,8 +477,8 @@
     }
   },
   {
-    "id": "1774590012880-08e1b5",
-    "ts": "2026-03-27T05:40:12.880Z",
+    "id": "1774595310279-6775ed",
+    "ts": "2026-03-27T07:08:30.279Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -486,8 +486,8 @@
     }
   },
   {
-    "id": "1774590009464-bedaec",
-    "ts": "2026-03-27T05:40:09.464Z",
+    "id": "1774595304838-5835ce",
+    "ts": "2026-03-27T07:08:24.838Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -495,8 +495,8 @@
     }
   },
   {
-    "id": "1774590004141-311f69",
-    "ts": "2026-03-27T05:40:04.141Z",
+    "id": "1774595302856-972214",
+    "ts": "2026-03-27T07:08:22.856Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -504,8 +504,8 @@
     }
   },
   {
-    "id": "1774590002787-c29171",
-    "ts": "2026-03-27T05:40:02.787Z",
+    "id": "1774595300117-b6ec68",
+    "ts": "2026-03-27T07:08:20.117Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -513,8 +513,8 @@
     }
   },
   {
-    "id": "1774589999450-6f4bb2",
-    "ts": "2026-03-27T05:39:59.450Z",
+    "id": "1774595294641-0a1827",
+    "ts": "2026-03-27T07:08:14.641Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -522,8 +522,8 @@
     }
   },
   {
-    "id": "1774589994022-0e6e42",
-    "ts": "2026-03-27T05:39:54.022Z",
+    "id": "1774595292743-aca6d4",
+    "ts": "2026-03-27T07:08:12.743Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -531,8 +531,8 @@
     }
   },
   {
-    "id": "1774589992681-102402",
-    "ts": "2026-03-27T05:39:52.681Z",
+    "id": "1774595289946-7f6eeb",
+    "ts": "2026-03-27T07:08:09.946Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -540,8 +540,8 @@
     }
   },
   {
-    "id": "1774589989435-92d399",
-    "ts": "2026-03-27T05:39:49.435Z",
+    "id": "1774595284413-a5beef",
+    "ts": "2026-03-27T07:08:04.413Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -549,8 +549,8 @@
     }
   },
   {
-    "id": "1774589983844-f75c46",
-    "ts": "2026-03-27T05:39:43.844Z",
+    "id": "1774595282641-5ebea5",
+    "ts": "2026-03-27T07:08:02.641Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -558,8 +558,8 @@
     }
   },
   {
-    "id": "1774589982601-94faea",
-    "ts": "2026-03-27T05:39:42.601Z",
+    "id": "1774595279756-47f1fb",
+    "ts": "2026-03-27T07:07:59.756Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -567,8 +567,8 @@
     }
   },
   {
-    "id": "1774589979423-08b1aa",
-    "ts": "2026-03-27T05:39:39.423Z",
+    "id": "1774595274246-e4bff9",
+    "ts": "2026-03-27T07:07:54.246Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -576,8 +576,8 @@
     }
   },
   {
-    "id": "1774589973736-c673c0",
-    "ts": "2026-03-27T05:39:33.736Z",
+    "id": "1774595272536-34352c",
+    "ts": "2026-03-27T07:07:52.536Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -585,8 +585,8 @@
     }
   },
   {
-    "id": "1774589972522-85a171",
-    "ts": "2026-03-27T05:39:32.522Z",
+    "id": "1774595269567-678e4e",
+    "ts": "2026-03-27T07:07:49.567Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -594,8 +594,8 @@
     }
   },
   {
-    "id": "1774589969412-5ba987",
-    "ts": "2026-03-27T05:39:29.412Z",
+    "id": "1774595264062-38e1f7",
+    "ts": "2026-03-27T07:07:44.062Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -603,8 +603,8 @@
     }
   },
   {
-    "id": "1774589963623-495a55",
-    "ts": "2026-03-27T05:39:23.623Z",
+    "id": "1774595262354-6f3f26",
+    "ts": "2026-03-27T07:07:42.354Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -612,8 +612,8 @@
     }
   },
   {
-    "id": "1774589962402-95f8e0",
-    "ts": "2026-03-27T05:39:22.402Z",
+    "id": "1774595259332-a5c6f9",
+    "ts": "2026-03-27T07:07:39.332Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -621,8 +621,8 @@
     }
   },
   {
-    "id": "1774589959400-1a094f",
-    "ts": "2026-03-27T05:39:19.401Z",
+    "id": "1774595253852-98b8ae",
+    "ts": "2026-03-27T07:07:33.852Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -630,8 +630,8 @@
     }
   },
   {
-    "id": "1774589953507-b401fd",
-    "ts": "2026-03-27T05:39:13.507Z",
+    "id": "1774595252251-8127b3",
+    "ts": "2026-03-27T07:07:32.251Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -639,8 +639,8 @@
     }
   },
   {
-    "id": "1774589952272-7f0171",
-    "ts": "2026-03-27T05:39:12.272Z",
+    "id": "1774595249126-3321f2",
+    "ts": "2026-03-27T07:07:29.126Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -648,8 +648,8 @@
     }
   },
   {
-    "id": "1774589949392-508974",
-    "ts": "2026-03-27T05:39:09.392Z",
+    "id": "1774595243675-7e0c25",
+    "ts": "2026-03-27T07:07:23.675Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -657,8 +657,8 @@
     }
   },
   {
-    "id": "1774589943402-897c2a",
-    "ts": "2026-03-27T05:39:03.402Z",
+    "id": "1774595242132-7f79e2",
+    "ts": "2026-03-27T07:07:22.132Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -666,8 +666,8 @@
     }
   },
   {
-    "id": "1774589942172-c78a51",
-    "ts": "2026-03-27T05:39:02.172Z",
+    "id": "1774595238913-a5f20e",
+    "ts": "2026-03-27T07:07:18.913Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -675,8 +675,8 @@
     }
   },
   {
-    "id": "1774589939389-57800e",
-    "ts": "2026-03-27T05:38:59.389Z",
+    "id": "1774595233451-8ac77d",
+    "ts": "2026-03-27T07:07:13.451Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -684,8 +684,8 @@
     }
   },
   {
-    "id": "1774589933314-6cd876",
-    "ts": "2026-03-27T05:38:53.314Z",
+    "id": "1774595232030-21a581",
+    "ts": "2026-03-27T07:07:12.030Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -693,8 +693,8 @@
     }
   },
   {
-    "id": "1774589932051-13a4a3",
-    "ts": "2026-03-27T05:38:52.051Z",
+    "id": "1774595228690-256fb2",
+    "ts": "2026-03-27T07:07:08.690Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -702,8 +702,8 @@
     }
   },
   {
-    "id": "1774589929389-13f048",
-    "ts": "2026-03-27T05:38:49.389Z",
+    "id": "1774595223258-cd1744",
+    "ts": "2026-03-27T07:07:03.258Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -711,8 +711,8 @@
     }
   },
   {
-    "id": "1774589923129-ace70a",
-    "ts": "2026-03-27T05:38:43.129Z",
+    "id": "1774595221944-afe7a4",
+    "ts": "2026-03-27T07:07:01.944Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -720,8 +720,8 @@
     }
   },
   {
-    "id": "1774589921935-f51de1",
-    "ts": "2026-03-27T05:38:41.935Z",
+    "id": "1774595218515-19027e",
+    "ts": "2026-03-27T07:06:58.515Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -729,8 +729,8 @@
     }
   },
   {
-    "id": "1774589919384-15dbc3",
-    "ts": "2026-03-27T05:38:39.384Z",
+    "id": "1774595213066-d14c2c",
+    "ts": "2026-03-27T07:06:53.066Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -738,8 +738,8 @@
     }
   },
   {
-    "id": "1774589913034-35db3d",
-    "ts": "2026-03-27T05:38:33.034Z",
+    "id": "1774595211812-f925d8",
+    "ts": "2026-03-27T07:06:51.812Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -747,8 +747,8 @@
     }
   },
   {
-    "id": "1774589911819-aedfe2",
-    "ts": "2026-03-27T05:38:31.819Z",
+    "id": "1774595208347-2dfe0f",
+    "ts": "2026-03-27T07:06:48.347Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -756,8 +756,8 @@
     }
   },
   {
-    "id": "1774589909374-6f5e25",
-    "ts": "2026-03-27T05:38:29.374Z",
+    "id": "1774595202853-f97663",
+    "ts": "2026-03-27T07:06:42.854Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -765,8 +765,8 @@
     }
   },
   {
-    "id": "1774589902922-cea225",
-    "ts": "2026-03-27T05:38:22.922Z",
+    "id": "1774595201582-7dd84c",
+    "ts": "2026-03-27T07:06:41.582Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -774,8 +774,8 @@
     }
   },
   {
-    "id": "1774589901704-008ede",
-    "ts": "2026-03-27T05:38:21.704Z",
+    "id": "1774595198117-4c0929",
+    "ts": "2026-03-27T07:06:38.117Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -783,8 +783,8 @@
     }
   },
   {
-    "id": "1774589899371-683d3a",
-    "ts": "2026-03-27T05:38:19.371Z",
+    "id": "1774595192644-6ff755",
+    "ts": "2026-03-27T07:06:32.644Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -792,8 +792,8 @@
     }
   },
   {
-    "id": "1774589892810-7107b6",
-    "ts": "2026-03-27T05:38:12.810Z",
+    "id": "1774595191478-c976fe",
+    "ts": "2026-03-27T07:06:31.478Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -801,8 +801,8 @@
     }
   },
   {
-    "id": "1774589891611-4fe352",
-    "ts": "2026-03-27T05:38:11.611Z",
+    "id": "1774595187922-5c8047",
+    "ts": "2026-03-27T07:06:27.922Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -810,8 +810,8 @@
     }
   },
   {
-    "id": "1774589889363-7aef6e",
-    "ts": "2026-03-27T05:38:09.363Z",
+    "id": "1774595182424-8ec4ab",
+    "ts": "2026-03-27T07:06:22.424Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -819,8 +819,8 @@
     }
   },
   {
-    "id": "1774589882679-1cb385",
-    "ts": "2026-03-27T05:38:02.679Z",
+    "id": "1774595181362-70f2ff",
+    "ts": "2026-03-27T07:06:21.362Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -828,8 +828,8 @@
     }
   },
   {
-    "id": "1774589881526-7203d7",
-    "ts": "2026-03-27T05:38:01.526Z",
+    "id": "1774595177790-2fab10",
+    "ts": "2026-03-27T07:06:17.790Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -837,8 +837,8 @@
     }
   },
   {
-    "id": "1774589879349-b65776",
-    "ts": "2026-03-27T05:37:59.349Z",
+    "id": "1774595172248-8a4d4a",
+    "ts": "2026-03-27T07:06:12.248Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -846,8 +846,8 @@
     }
   },
   {
-    "id": "1774589872566-09729e",
-    "ts": "2026-03-27T05:37:52.566Z",
+    "id": "1774595171276-2aca76",
+    "ts": "2026-03-27T07:06:11.276Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -855,8 +855,8 @@
     }
   },
   {
-    "id": "1774589871415-b48044",
-    "ts": "2026-03-27T05:37:51.415Z",
+    "id": "1774595167645-959c0b",
+    "ts": "2026-03-27T07:06:07.645Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -864,8 +864,8 @@
     }
   },
   {
-    "id": "1774589869343-c74d08",
-    "ts": "2026-03-27T05:37:49.343Z",
+    "id": "1774595162066-da7374",
+    "ts": "2026-03-27T07:06:02.066Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -873,8 +873,8 @@
     }
   },
   {
-    "id": "1774589862400-1cb21f",
-    "ts": "2026-03-27T05:37:42.400Z",
+    "id": "1774595161195-ec8da7",
+    "ts": "2026-03-27T07:06:01.195Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -882,8 +882,8 @@
     }
   },
   {
-    "id": "1774589861299-e5bf6c",
-    "ts": "2026-03-27T05:37:41.299Z",
+    "id": "1774595157479-6984f7",
+    "ts": "2026-03-27T07:05:57.479Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -891,8 +891,8 @@
     }
   },
   {
-    "id": "1774589859330-1e1989",
-    "ts": "2026-03-27T05:37:39.330Z",
+    "id": "1774595151899-471650",
+    "ts": "2026-03-27T07:05:51.899Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -900,8 +900,8 @@
     }
   },
   {
-    "id": "1774589852306-8c0387",
-    "ts": "2026-03-27T05:37:32.306Z",
+    "id": "1774595151073-eda698",
+    "ts": "2026-03-27T07:05:51.073Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -909,8 +909,8 @@
     }
   },
   {
-    "id": "1774589851186-57a501",
-    "ts": "2026-03-27T05:37:31.186Z",
+    "id": "1774595147203-b4d77d",
+    "ts": "2026-03-27T07:05:47.203Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -918,8 +918,8 @@
     }
   },
   {
-    "id": "1774589849331-473658",
-    "ts": "2026-03-27T05:37:29.331Z",
+    "id": "1774595141740-5069f7",
+    "ts": "2026-03-27T07:05:41.740Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -927,8 +927,8 @@
     }
   },
   {
-    "id": "1774589842197-b65404",
-    "ts": "2026-03-27T05:37:22.197Z",
+    "id": "1774595140885-3feade",
+    "ts": "2026-03-27T07:05:40.885Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -936,8 +936,8 @@
     }
   },
   {
-    "id": "1774589841089-cef228",
-    "ts": "2026-03-27T05:37:21.089Z",
+    "id": "1774595136940-94dedc",
+    "ts": "2026-03-27T07:05:36.940Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -945,8 +945,8 @@
     }
   },
   {
-    "id": "1774589839317-756126",
-    "ts": "2026-03-27T05:37:19.317Z",
+    "id": "1774595131571-9faa68",
+    "ts": "2026-03-27T07:05:31.571Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -954,8 +954,8 @@
     }
   },
   {
-    "id": "1774589832035-90af2f",
-    "ts": "2026-03-27T05:37:12.035Z",
+    "id": "1774595130774-701555",
+    "ts": "2026-03-27T07:05:30.774Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -963,8 +963,8 @@
     }
   },
   {
-    "id": "1774589830992-d52ed9",
-    "ts": "2026-03-27T05:37:10.992Z",
+    "id": "1774595126769-d2d38a",
+    "ts": "2026-03-27T07:05:26.769Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -972,8 +972,8 @@
     }
   },
   {
-    "id": "1774589829308-c281dd",
-    "ts": "2026-03-27T05:37:09.308Z",
+    "id": "1774595121330-78c9ba",
+    "ts": "2026-03-27T07:05:21.330Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -981,8 +981,8 @@
     }
   },
   {
-    "id": "1774589821922-e83263",
-    "ts": "2026-03-27T05:37:01.922Z",
+    "id": "1774595120659-8e0e57",
+    "ts": "2026-03-27T07:05:20.659Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -990,8 +990,8 @@
     }
   },
   {
-    "id": "1774589820893-aa2311",
-    "ts": "2026-03-27T05:37:00.893Z",
+    "id": "1774595116573-de4490",
+    "ts": "2026-03-27T07:05:16.573Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -999,8 +999,8 @@
     }
   },
   {
-    "id": "1774589819311-f55c5b",
-    "ts": "2026-03-27T05:36:59.311Z",
+    "id": "1774595111110-e164f5",
+    "ts": "2026-03-27T07:05:11.110Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1008,8 +1008,8 @@
     }
   },
   {
-    "id": "1774589811810-816a0c",
-    "ts": "2026-03-27T05:36:51.810Z",
+    "id": "1774595110536-5d7761",
+    "ts": "2026-03-27T07:05:10.536Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1017,8 +1017,8 @@
     }
   },
   {
-    "id": "1774589810771-d25dff",
-    "ts": "2026-03-27T05:36:50.771Z",
+    "id": "1774595106367-361e59",
+    "ts": "2026-03-27T07:05:06.367Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1026,8 +1026,8 @@
     }
   },
   {
-    "id": "1774589809293-79171f",
-    "ts": "2026-03-27T05:36:49.293Z",
+    "id": "1774595100948-9f3fe3",
+    "ts": "2026-03-27T07:05:00.948Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1035,8 +1035,8 @@
     }
   },
   {
-    "id": "1774589801673-1d294b",
-    "ts": "2026-03-27T05:36:41.673Z",
+    "id": "1774595100424-678628",
+    "ts": "2026-03-27T07:05:00.424Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1044,8 +1044,8 @@
     }
   },
   {
-    "id": "1774589800665-fc3448",
-    "ts": "2026-03-27T05:36:40.665Z",
+    "id": "1774595096174-1924ee",
+    "ts": "2026-03-27T07:04:56.174Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1053,8 +1053,8 @@
     }
   },
   {
-    "id": "1774589799299-47e757",
-    "ts": "2026-03-27T05:36:39.299Z",
+    "id": "1774595090720-4163d3",
+    "ts": "2026-03-27T07:04:50.720Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1062,8 +1062,8 @@
     }
   },
   {
-    "id": "1774589791516-d05fdc",
-    "ts": "2026-03-27T05:36:31.516Z",
+    "id": "1774595090348-63875a",
+    "ts": "2026-03-27T07:04:50.348Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1071,8 +1071,8 @@
     }
   },
   {
-    "id": "1774589790564-49f2e0",
-    "ts": "2026-03-27T05:36:30.564Z",
+    "id": "1774595085967-911e6f",
+    "ts": "2026-03-27T07:04:45.967Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1080,8 +1080,8 @@
     }
   },
   {
-    "id": "1774589789278-f44ccd",
-    "ts": "2026-03-27T05:36:29.278Z",
+    "id": "1774595080564-bb6ed6",
+    "ts": "2026-03-27T07:04:40.564Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1089,8 +1089,8 @@
     }
   },
   {
-    "id": "1774589781399-9090f4",
-    "ts": "2026-03-27T05:36:21.399Z",
+    "id": "1774595080144-fe7402",
+    "ts": "2026-03-27T07:04:40.144Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1098,8 +1098,8 @@
     }
   },
   {
-    "id": "1774589780452-b193fe",
-    "ts": "2026-03-27T05:36:20.452Z",
+    "id": "1774595075709-55be86",
+    "ts": "2026-03-27T07:04:35.709Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1107,8 +1107,8 @@
     }
   },
   {
-    "id": "1774589779269-478c59",
-    "ts": "2026-03-27T05:36:19.269Z",
+    "id": "1774595070355-e4d69f",
+    "ts": "2026-03-27T07:04:30.355Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1116,8 +1116,8 @@
     }
   },
   {
-    "id": "1774589771271-d93384",
-    "ts": "2026-03-27T05:36:11.271Z",
+    "id": "1774595070043-8a04a6",
+    "ts": "2026-03-27T07:04:30.044Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1125,8 +1125,8 @@
     }
   },
   {
-    "id": "1774589770321-67500d",
-    "ts": "2026-03-27T05:36:10.321Z",
+    "id": "1774595065503-e1d525",
+    "ts": "2026-03-27T07:04:25.503Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1134,8 +1134,8 @@
     }
   },
   {
-    "id": "1774589769266-f86712",
-    "ts": "2026-03-27T05:36:09.266Z",
+    "id": "1774595060171-3ebf27",
+    "ts": "2026-03-27T07:04:20.171Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1143,8 +1143,8 @@
     }
   },
   {
-    "id": "1774589761168-58abaf",
-    "ts": "2026-03-27T05:36:01.168Z",
+    "id": "1774595059954-568fdc",
+    "ts": "2026-03-27T07:04:19.954Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1152,8 +1152,8 @@
     }
   },
   {
-    "id": "1774589760230-8801f7",
-    "ts": "2026-03-27T05:36:00.230Z",
+    "id": "1774595055322-e06586",
+    "ts": "2026-03-27T07:04:15.322Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1161,8 +1161,8 @@
     }
   },
   {
-    "id": "1774589759260-67ba16",
-    "ts": "2026-03-27T05:35:59.260Z",
+    "id": "1774595049976-9b47d8",
+    "ts": "2026-03-27T07:04:09.976Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1170,8 +1170,8 @@
     }
   },
   {
-    "id": "1774589751087-0ee440",
-    "ts": "2026-03-27T05:35:51.087Z",
+    "id": "1774595049838-4e73c2",
+    "ts": "2026-03-27T07:04:09.838Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1179,8 +1179,8 @@
     }
   },
   {
-    "id": "1774589750122-342878",
-    "ts": "2026-03-27T05:35:50.122Z",
+    "id": "1774595045119-e87dde",
+    "ts": "2026-03-27T07:04:05.119Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1188,8 +1188,8 @@
     }
   },
   {
-    "id": "1774589749246-751718",
-    "ts": "2026-03-27T05:35:49.246Z",
+    "id": "1774595039739-cf77d0",
+    "ts": "2026-03-27T07:03:59.739Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1197,8 +1197,8 @@
     }
   },
   {
-    "id": "1774589740969-32237f",
-    "ts": "2026-03-27T05:35:40.969Z",
+    "id": "1774595039724-72f6bb",
+    "ts": "2026-03-27T07:03:59.724Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1206,8 +1206,8 @@
     }
   },
   {
-    "id": "1774589740019-524473",
-    "ts": "2026-03-27T05:35:40.019Z",
+    "id": "1774595034905-fc8c06",
+    "ts": "2026-03-27T07:03:54.905Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1215,8 +1215,8 @@
     }
   },
   {
-    "id": "1774589739241-fb79c5",
-    "ts": "2026-03-27T05:35:39.241Z",
+    "id": "1774595029626-51b3a3",
+    "ts": "2026-03-27T07:03:49.626Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1224,8 +1224,8 @@
     }
   },
   {
-    "id": "1774589730851-26d8cb",
-    "ts": "2026-03-27T05:35:30.851Z",
+    "id": "1774595029563-877849",
+    "ts": "2026-03-27T07:03:49.563Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1233,8 +1233,8 @@
     }
   },
   {
-    "id": "1774589729903-595a16",
-    "ts": "2026-03-27T05:35:29.903Z",
+    "id": "1774595024689-340bf0",
+    "ts": "2026-03-27T07:03:44.689Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1242,8 +1242,8 @@
     }
   },
   {
-    "id": "1774589729244-e7c13b",
-    "ts": "2026-03-27T05:35:29.244Z",
+    "id": "1774595019468-4031a7",
+    "ts": "2026-03-27T07:03:39.468Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1251,8 +1251,8 @@
     }
   },
   {
-    "id": "1774589720738-cd61f8",
-    "ts": "2026-03-27T05:35:20.738Z",
+    "id": "1774595019407-3275fc",
+    "ts": "2026-03-27T07:03:39.407Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1260,8 +1260,8 @@
     }
   },
   {
-    "id": "1774589719729-b0dea4",
-    "ts": "2026-03-27T05:35:19.729Z",
+    "id": "1774595014423-bed354",
+    "ts": "2026-03-27T07:03:34.423Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1269,8 +1269,8 @@
     }
   },
   {
-    "id": "1774589719236-325693",
-    "ts": "2026-03-27T05:35:19.236Z",
+    "id": "1774595009359-adf274",
+    "ts": "2026-03-27T07:03:29.359Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1278,8 +1278,8 @@
     }
   },
   {
-    "id": "1774589710564-9d5a5b",
-    "ts": "2026-03-27T05:35:10.564Z",
+    "id": "1774595009187-2a755b",
+    "ts": "2026-03-27T07:03:29.187Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1287,8 +1287,8 @@
     }
   },
   {
-    "id": "1774589709402-007f65",
-    "ts": "2026-03-27T05:35:09.402Z",
+    "id": "1774595004226-c731cd",
+    "ts": "2026-03-27T07:03:24.226Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1296,8 +1296,8 @@
     }
   },
   {
-    "id": "1774589709216-05adcf",
-    "ts": "2026-03-27T05:35:09.216Z",
+    "id": "1774594999255-25df3b",
+    "ts": "2026-03-27T07:03:19.255Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1305,8 +1305,8 @@
     }
   },
   {
-    "id": "1774589699503-a4cd50",
-    "ts": "2026-03-27T05:34:59.503Z",
+    "id": "1774594998975-2700b8",
+    "ts": "2026-03-27T07:03:18.975Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1314,8 +1314,8 @@
     }
   },
   {
-    "id": "1774589699300-5d6502",
-    "ts": "2026-03-27T05:34:59.300Z",
+    "id": "1774594994024-aa5cc8",
+    "ts": "2026-03-27T07:03:14.024Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1323,8 +1323,8 @@
     }
   },
   {
-    "id": "1774589699167-ea0960",
-    "ts": "2026-03-27T05:34:59.167Z",
+    "id": "1774594989144-b5b8cb",
+    "ts": "2026-03-27T07:03:09.144Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1332,8 +1332,8 @@
     }
   },
   {
-    "id": "1774589696354-ba9fd8",
-    "ts": "2026-03-27T05:34:56.354Z",
+    "id": "1774594988826-6e174d",
+    "ts": "2026-03-27T07:03:08.826Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1341,8 +1341,8 @@
     }
   },
   {
-    "id": "1774589696119-23a4b8",
-    "ts": "2026-03-27T05:34:56.119Z",
+    "id": "1774594983794-50789c",
+    "ts": "2026-03-27T07:03:03.794Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1350,8 +1350,8 @@
     }
   },
   {
-    "id": "1774589694238-cc54ea",
-    "ts": "2026-03-27T05:34:54.238Z",
+    "id": "1774594979036-9c68a2",
+    "ts": "2026-03-27T07:02:59.036Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1359,8 +1359,8 @@
     }
   },
   {
-    "id": "1774589686154-87c84f",
-    "ts": "2026-03-27T05:34:46.154Z",
+    "id": "1774594978613-ed04f5",
+    "ts": "2026-03-27T07:02:58.613Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1368,8 +1368,8 @@
     }
   },
   {
-    "id": "1774589685920-2a4259",
-    "ts": "2026-03-27T05:34:45.920Z",
+    "id": "1774594973609-51ffbb",
+    "ts": "2026-03-27T07:02:53.609Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1377,8 +1377,8 @@
     }
   },
   {
-    "id": "1774589684229-50a115",
-    "ts": "2026-03-27T05:34:44.229Z",
+    "id": "1774594968942-5a6799",
+    "ts": "2026-03-27T07:02:48.942Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1386,8 +1386,8 @@
     }
   },
   {
-    "id": "1774589676047-d13443",
-    "ts": "2026-03-27T05:34:36.047Z",
+    "id": "1774594968415-cf5056",
+    "ts": "2026-03-27T07:02:48.415Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1395,8 +1395,8 @@
     }
   },
   {
-    "id": "1774589675811-1e244f",
-    "ts": "2026-03-27T05:34:35.811Z",
+    "id": "1774594963416-57056d",
+    "ts": "2026-03-27T07:02:43.416Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1404,8 +1404,8 @@
     }
   },
   {
-    "id": "1774589674224-7f4a8f",
-    "ts": "2026-03-27T05:34:34.224Z",
+    "id": "1774594958784-e53efd",
+    "ts": "2026-03-27T07:02:38.784Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1413,8 +1413,8 @@
     }
   },
   {
-    "id": "1774589665772-e6f87d",
-    "ts": "2026-03-27T05:34:25.772Z",
+    "id": "1774594958259-311e30",
+    "ts": "2026-03-27T07:02:38.259Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1422,8 +1422,8 @@
     }
   },
   {
-    "id": "1774589665554-164fe9",
-    "ts": "2026-03-27T05:34:25.554Z",
+    "id": "1774594953219-0146c5",
+    "ts": "2026-03-27T07:02:33.219Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1431,8 +1431,8 @@
     }
   },
   {
-    "id": "1774589664219-4796d2",
-    "ts": "2026-03-27T05:34:24.219Z",
+    "id": "1774594948679-7cd288",
+    "ts": "2026-03-27T07:02:28.679Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1440,8 +1440,8 @@
     }
   },
   {
-    "id": "1774589655590-905af1",
-    "ts": "2026-03-27T05:34:15.590Z",
+    "id": "1774594948036-f268d0",
+    "ts": "2026-03-27T07:02:28.036Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1449,8 +1449,8 @@
     }
   },
   {
-    "id": "1774589655403-d6d7a8",
-    "ts": "2026-03-27T05:34:15.403Z",
+    "id": "1774594943003-d953d2",
+    "ts": "2026-03-27T07:02:23.003Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1458,8 +1458,8 @@
     }
   },
   {
-    "id": "1774589654224-81e6bf",
-    "ts": "2026-03-27T05:34:14.224Z",
+    "id": "1774594938553-6edad4",
+    "ts": "2026-03-27T07:02:18.553Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1467,8 +1467,8 @@
     }
   },
   {
-    "id": "1774589645380-42487c",
-    "ts": "2026-03-27T05:34:05.380Z",
+    "id": "1774594937827-a1e4a8",
+    "ts": "2026-03-27T07:02:17.827Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1476,8 +1476,8 @@
     }
   },
   {
-    "id": "1774589645210-1d6d50",
-    "ts": "2026-03-27T05:34:05.210Z",
+    "id": "1774594932779-c250c2",
+    "ts": "2026-03-27T07:02:12.779Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1485,8 +1485,8 @@
     }
   },
   {
-    "id": "1774589644215-1e34be",
-    "ts": "2026-03-27T05:34:04.215Z",
+    "id": "1774594928441-0003c1",
+    "ts": "2026-03-27T07:02:08.441Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1494,8 +1494,8 @@
     }
   },
   {
-    "id": "1774589635104-3f8580",
-    "ts": "2026-03-27T05:33:55.104Z",
+    "id": "1774594927645-f5887f",
+    "ts": "2026-03-27T07:02:07.645Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1503,8 +1503,8 @@
     }
   },
   {
-    "id": "1774589634900-70d882",
-    "ts": "2026-03-27T05:33:54.900Z",
+    "id": "1774594922552-572b37",
+    "ts": "2026-03-27T07:02:02.552Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1512,8 +1512,8 @@
     }
   },
   {
-    "id": "1774589634200-2f3d70",
-    "ts": "2026-03-27T05:33:54.200Z",
+    "id": "1774594918320-528a74",
+    "ts": "2026-03-27T07:01:58.320Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1521,8 +1521,8 @@
     }
   },
   {
-    "id": "1774589624740-3a0024",
-    "ts": "2026-03-27T05:33:44.740Z",
+    "id": "1774594917422-c00b62",
+    "ts": "2026-03-27T07:01:57.422Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1530,8 +1530,8 @@
     }
   },
   {
-    "id": "1774589624723-4acb5b",
-    "ts": "2026-03-27T05:33:44.723Z",
+    "id": "1774594912395-e9359c",
+    "ts": "2026-03-27T07:01:52.395Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1539,8 +1539,8 @@
     }
   },
   {
-    "id": "1774589624195-6a386d",
-    "ts": "2026-03-27T05:33:44.195Z",
+    "id": "1774594908224-33f3ce",
+    "ts": "2026-03-27T07:01:48.224Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1548,8 +1548,8 @@
     }
   },
   {
-    "id": "1774589614532-e47375",
-    "ts": "2026-03-27T05:33:34.532Z",
+    "id": "1774594907230-9c192f",
+    "ts": "2026-03-27T07:01:47.230Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1557,8 +1557,8 @@
     }
   },
   {
-    "id": "1774589614516-5d5578",
-    "ts": "2026-03-27T05:33:34.516Z",
+    "id": "1774594902174-b13549",
+    "ts": "2026-03-27T07:01:42.174Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1566,8 +1566,8 @@
     }
   },
   {
-    "id": "1774589614190-06226c",
-    "ts": "2026-03-27T05:33:34.190Z",
+    "id": "1774594898035-deb8b4",
+    "ts": "2026-03-27T07:01:38.035Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1575,8 +1575,8 @@
     }
   },
   {
-    "id": "1774589604413-56a091",
-    "ts": "2026-03-27T05:33:24.413Z",
+    "id": "1774594897033-81d60e",
+    "ts": "2026-03-27T07:01:37.033Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1584,8 +1584,8 @@
     }
   },
   {
-    "id": "1774589604385-0f2a5d",
-    "ts": "2026-03-27T05:33:24.385Z",
+    "id": "1774594891946-3ecc88",
+    "ts": "2026-03-27T07:01:31.946Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1593,8 +1593,8 @@
     }
   },
   {
-    "id": "1774589604132-81d374",
-    "ts": "2026-03-27T05:33:24.132Z",
+    "id": "1774594887930-885af1",
+    "ts": "2026-03-27T07:01:27.930Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1602,8 +1602,8 @@
     }
   },
   {
-    "id": "1774589603700-776597",
-    "ts": "2026-03-27T05:33:23.700Z",
+    "id": "1774594886864-f1a816",
+    "ts": "2026-03-27T07:01:26.864Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1611,8 +1611,8 @@
     }
   },
   {
-    "id": "1774589603358-ff7571",
-    "ts": "2026-03-27T05:33:23.358Z",
+    "id": "1774594881770-fc75bf",
+    "ts": "2026-03-27T07:01:21.770Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1620,8 +1620,8 @@
     }
   },
   {
-    "id": "1774589602927-35227a",
-    "ts": "2026-03-27T05:33:22.927Z",
+    "id": "1774594877815-6872b6",
+    "ts": "2026-03-27T07:01:17.815Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1629,8 +1629,8 @@
     }
   },
   {
-    "id": "1774589593642-3467f2",
-    "ts": "2026-03-27T05:33:13.642Z",
+    "id": "1774594876716-329ef8",
+    "ts": "2026-03-27T07:01:16.716Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1638,8 +1638,8 @@
     }
   },
   {
-    "id": "1774589593190-62efc6",
-    "ts": "2026-03-27T05:33:13.190Z",
+    "id": "1774594871610-171458",
+    "ts": "2026-03-27T07:01:11.610Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1647,8 +1647,8 @@
     }
   },
   {
-    "id": "1774589592766-706fa7",
-    "ts": "2026-03-27T05:33:12.766Z",
+    "id": "1774594867722-31204a",
+    "ts": "2026-03-27T07:01:07.722Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1656,8 +1656,8 @@
     }
   },
   {
-    "id": "1774589592234-4148d0",
-    "ts": "2026-03-27T05:33:12.234Z",
+    "id": "1774594866562-79e283",
+    "ts": "2026-03-27T07:01:06.562Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1665,8 +1665,8 @@
     }
   },
   {
-    "id": "1774589583106-b861fb",
-    "ts": "2026-03-27T05:33:03.106Z",
+    "id": "1774594861407-1f52fe",
+    "ts": "2026-03-27T07:01:01.407Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1674,8 +1674,8 @@
     }
   },
   {
-    "id": "1774589582671-cb8481",
-    "ts": "2026-03-27T05:33:02.671Z",
+    "id": "1774594857600-cb4809",
+    "ts": "2026-03-27T07:00:57.600Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1683,8 +1683,8 @@
     }
   },
   {
-    "id": "1774589582178-adb6a7",
-    "ts": "2026-03-27T05:33:02.178Z",
+    "id": "1774594856394-ef96f5",
+    "ts": "2026-03-27T07:00:56.394Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1692,8 +1692,8 @@
     }
   },
   {
-    "id": "1774589577637-18e53d",
-    "ts": "2026-03-27T05:32:57.637Z",
+    "id": "1774594851264-d12297",
+    "ts": "2026-03-27T07:00:51.264Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1701,8 +1701,8 @@
     }
   },
   {
-    "id": "1774589572994-65d9db",
-    "ts": "2026-03-27T05:32:52.994Z",
+    "id": "1774594847512-b9561d",
+    "ts": "2026-03-27T07:00:47.512Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1710,8 +1710,8 @@
     }
   },
   {
-    "id": "1774589572368-880f17",
-    "ts": "2026-03-27T05:32:52.368Z",
+    "id": "1774594846199-8324d8",
+    "ts": "2026-03-27T07:00:46.199Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1719,8 +1719,8 @@
     }
   },
   {
-    "id": "1774589567635-44304f",
-    "ts": "2026-03-27T05:32:47.635Z",
+    "id": "1774594841050-b2b3f9",
+    "ts": "2026-03-27T07:00:41.050Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1728,8 +1728,8 @@
     }
   },
   {
-    "id": "1774589562721-38b3ed",
-    "ts": "2026-03-27T05:32:42.721Z",
+    "id": "1774594837376-545089",
+    "ts": "2026-03-27T07:00:37.376Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1737,8 +1737,8 @@
     }
   },
   {
-    "id": "1774589562125-ddc079",
-    "ts": "2026-03-27T05:32:42.125Z",
+    "id": "1774594835954-4b3505",
+    "ts": "2026-03-27T07:00:35.954Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1746,8 +1746,8 @@
     }
   },
   {
-    "id": "1774589557637-01bb27",
-    "ts": "2026-03-27T05:32:37.637Z",
+    "id": "1774594830831-b6c939",
+    "ts": "2026-03-27T07:00:30.831Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1755,8 +1755,8 @@
     }
   },
   {
-    "id": "1774589552506-075666",
-    "ts": "2026-03-27T05:32:32.506Z",
+    "id": "1774594827263-325c44",
+    "ts": "2026-03-27T07:00:27.263Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1764,8 +1764,8 @@
     }
   },
   {
-    "id": "1774589552005-eee907",
-    "ts": "2026-03-27T05:32:32.005Z",
+    "id": "1774594825787-6d482b",
+    "ts": "2026-03-27T07:00:25.787Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1773,8 +1773,8 @@
     }
   },
   {
-    "id": "1774589547629-a83ea6",
-    "ts": "2026-03-27T05:32:27.629Z",
+    "id": "1774594820634-47d33f",
+    "ts": "2026-03-27T07:00:20.634Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1782,8 +1782,8 @@
     }
   },
   {
-    "id": "1774589542388-9705db",
-    "ts": "2026-03-27T05:32:22.388Z",
+    "id": "1774594817161-b7777b",
+    "ts": "2026-03-27T07:00:17.161Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
@@ -1791,8 +1791,8 @@
     }
   },
   {
-    "id": "1774589541779-1c6c74",
-    "ts": "2026-03-27T05:32:21.779Z",
+    "id": "1774594815640-42626b",
+    "ts": "2026-03-27T07:00:15.640Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {
