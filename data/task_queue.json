@@ -1,1 +1,12 @@
-{"tasks":[],"activeTaskId":null}
+{
+  "tasks": [
+    {
+      "id": "1774598300388",
+      "createdAt": "2026-03-27T07:58:20.388Z",
+      "text": "test",
+      "status": "done",
+      "result": "completed"
+    }
+  ],
+  "activeTaskId": null
+}
