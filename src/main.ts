@@ -11,25 +11,29 @@ let draggedTaskId: string | null = null
 const app = document.querySelector<HTMLDivElement>('#app')!
 app.innerHTML = `
   <div class="shell">
-    <header class="topbar">
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+
+    <header class="topbar glass">
       <div>
         <div class="eyebrow">ClawCommand</div>
         <h1>Hybrid Agent Command Center</h1>
+        <p class="subtitle">Observe state. Route work. Watch Boris stop being a black box.</p>
       </div>
       <div class="status-strip">
         <div class="pill" id="health-pill">API: ...</div>
         <div class="pill" id="gateway-pill">Gateway: ...</div>
         <div class="pill" id="session-pill">Workers: ...</div>
-        <button id="refresh-btn">Refresh OpenClaw</button>
+        <button id="refresh-btn" class="primary-btn">Refresh OpenClaw</button>
       </div>
     </header>
 
     <section class="hero-grid">
-      <div class="panel">
+      <div class="panel glass">
         <div class="panel-title">Live Activity Feed</div>
         <div id="events" class="feed"></div>
       </div>
-      <div class="panel">
+      <div class="panel glass">
         <div class="panel-title">Quick Task Intake</div>
         <form id="task-form" class="task-form">
           <input id="task-title" placeholder="Create a task..." />
@@ -39,21 +43,21 @@ app.innerHTML = `
             <option value="doing">Doing</option>
             <option value="done">Done</option>
           </select>
-          <button type="submit">Add Task</button>
+          <button type="submit" class="primary-btn">Add Task</button>
         </form>
       </div>
     </section>
 
     <section class="main-grid">
-      <div class="panel wide">
+      <div class="panel glass wide">
         <div class="panel-title">Task Pipeline</div>
         <div class="kanban" id="kanban"></div>
       </div>
-      <div class="panel">
+      <div class="panel glass">
         <div class="panel-title">OpenClaw Status</div>
         <pre id="status-output" class="status-output">Loading...</pre>
       </div>
-      <div class="panel">
+      <div class="panel glass">
         <div class="panel-title">Sessions / Workers</div>
         <div id="sessions" class="sessions"></div>
       </div>
@@ -99,7 +103,7 @@ async function loadSessions() {
     pill.textContent = `Workers: ${items.length}`
     wrap.innerHTML = items.length
       ? items.map((s) => `
-          <div class="session-card">
+          <div class="session-card neon-card">
             <div class="session-key">${s.key}</div>
             <div class="session-meta">${s.kind} · ${s.model}</div>
             <div class="session-meta">age: ${s.age}</div>
@@ -138,18 +142,22 @@ async function deleteTask(taskId: string) {
   await Promise.all([loadTasks(), loadEvents()])
 }
 
+function laneClass(lane: string) {
+  return `lane lane-${lane}`
+}
+
 async function loadTasks() {
   const wrap = document.getElementById('kanban')!
   const data = await fetchJson<TasksPayload>(`${apiBase}/tasks`)
   wrap.innerHTML = Object.entries(data.columns).map(([lane, tasks]) => `
-    <div class="lane" data-lane="${lane}">
+    <div class="${laneClass(lane)}" data-lane="${lane}">
       <div class="lane-title-row">
         <div class="lane-title">${laneLabel(lane)}</div>
         <div class="lane-count">${laneSummary(tasks)}</div>
       </div>
       <div class="lane-body" data-dropzone="${lane}">
         ${tasks.map((task) => `
-          <div class="task-card" draggable="true" data-task-card="${task.id}">
+          <div class="task-card neon-card" draggable="true" data-task-card="${task.id}">
             <div class="task-title">${task.title}</div>
             <div class="task-detail">${task.detail || ''}</div>
             <div class="task-actions">
@@ -203,7 +211,7 @@ async function loadEvents() {
   const wrap = document.getElementById('events')!
   const events = await fetchJson<EventItem[]>(`${apiBase}/events`)
   wrap.innerHTML = events.map((event) => `
-    <div class="event-item">
+    <div class="event-item neon-card">
       <div class="event-type">${event.type}</div>
       <div class="event-message">${event.message}</div>
       ${event.meta ? `<div class="event-meta">${JSON.stringify(event.meta)}</div>` : ''}
