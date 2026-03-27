@@ -39,7 +39,8 @@ h1 { margin: 0.2rem 0 0; font-size: 2rem; }
 .event-item, .session-card, .task-card { background: #101720; border: 1px solid #243242; border-radius: 14px; padding: 12px; }
 .event-type { color: #7bb1ff; font-size: 0.8rem; }
 .event-message { margin: 0.25rem 0; }
-.event-ts, .session-meta, .muted, .lane-count { color: #8a9eb8; font-size: 0.85rem; }
+.event-ts, .event-meta, .session-meta, .muted, .lane-count { color: #8a9eb8; font-size: 0.85rem; }
+.event-meta { margin-top: 0.35rem; opacity: 0.9; word-break: break-word; }
 .session-key, .task-title { font-weight: 700; }
 .task-form { display: grid; gap: 10px; }
 .kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }

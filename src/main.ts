@@ -2,7 +2,7 @@ import './style.css'
 
 type Task = { id: string; title: string; detail: string; lane: string }
 type TasksPayload = { columns: Record<string, Task[]> }
-type EventItem = { id: string; ts: string; type: string; message: string }
+type EventItem = { id: string; ts: string; type: string; message: string; meta?: Record<string, unknown> }
 type SessionItem = { key: string; age: string; model: string; kind: string; tokens?: string }
 
 const apiBase = 'http://127.0.0.1:4310/api'
@@ -206,6 +206,7 @@ async function loadEvents() {
     <div class="event-item">
       <div class="event-type">${event.type}</div>
       <div class="event-message">${event.message}</div>
+      ${event.meta ? `<div class="event-meta">${JSON.stringify(event.meta)}</div>` : ''}
       <div class="event-ts">${new Date(event.ts).toLocaleString()}</div>
     </div>
   `).join('') || '<div class="muted">No events yet.</div>'

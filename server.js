@@ -13,6 +13,12 @@ const DATA_DIR = path.join(__dirname, 'data')
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json')
 const EVENTS_FILE = path.join(DATA_DIR, 'events.json')
 
+const telemetryState = {
+  lastGatewaySummary: null,
+  sessionsByKey: new Map(),
+  lastSessionCount: null,
+}
+
 app.use(cors())
 app.use(express.json())
 
@@ -43,6 +49,10 @@ function writeJson(file, value) {
 
 function addEvent(type, message, meta = {}) {
   const events = readJson(EVENTS_FILE)
+  const last = events[0]
+  if (last && last.type === type && last.message === message) {
+    return
+  }
   events.unshift({ id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`, ts: new Date().toISOString(), type, message, meta })
   writeJson(EVENTS_FILE, events.slice(0, 300))
 }
@@ -69,6 +79,57 @@ function parseSessionRow(session) {
   const kind = session.kind || session.type || 'unknown'
   const tokens = session.tokens || session.tokenUsage || session.context || ''
   return { key, age, model, kind, tokens }
+}
+
+function summarizeStatus(output) {
+  const lines = String(output || '').split(/\r?\n/)
+  const gatewayLine = lines.find((line) => line.includes('Gateway')) || ''
+  const sessionsLine = lines.find((line) => line.includes('Sessions')) || ''
+  return `${gatewayLine} | ${sessionsLine}`.trim()
+}
+
+async function collectTelemetry() {
+  const [statusResult, sessionsResult] = await Promise.all([
+    runOpenClaw(['status']),
+    runOpenClaw(['sessions', '--json'])
+  ])
+
+  if (!statusResult.error) {
+    const summary = summarizeStatus(statusResult.stdout)
+    if (summary && summary !== telemetryState.lastGatewaySummary) {
+      telemetryState.lastGatewaySummary = summary
+      addEvent('openclaw.status.change', `Gateway snapshot changed`, { summary })
+    }
+  }
+
+  if (!sessionsResult.error) {
+    try {
+      const parsed = JSON.parse(sessionsResult.stdout || '[]')
+      const sessions = normalizeSessions(parsed).map(parseSessionRow)
+      const nextMap = new Map(sessions.map((session) => [session.key, session]))
+
+      if (telemetryState.lastSessionCount !== null && telemetryState.lastSessionCount !== sessions.length) {
+        addEvent('openclaw.session.count', `Session count changed: ${telemetryState.lastSessionCount} -> ${sessions.length}`, { count: sessions.length })
+      }
+      telemetryState.lastSessionCount = sessions.length
+
+      for (const session of sessions) {
+        if (!telemetryState.sessionsByKey.has(session.key)) {
+          addEvent('openclaw.session.started', `Session appeared: ${session.key}`, session)
+        }
+      }
+
+      for (const [key, session] of telemetryState.sessionsByKey.entries()) {
+        if (!nextMap.has(key)) {
+          addEvent('openclaw.session.ended', `Session disappeared: ${key}`, session)
+        }
+      }
+
+      telemetryState.sessionsByKey = nextMap
+    } catch {
+      addEvent('openclaw.parse.error', 'Failed to parse session telemetry output')
+    }
+  }
 }
 
 app.get('/api/health', (_req, res) => {
@@ -149,7 +210,6 @@ app.get('/api/openclaw/sessions', async (_req, res) => {
   try {
     const parsed = JSON.parse(result.stdout || '[]')
     const sessions = normalizeSessions(parsed).map(parseSessionRow)
-    addEvent('openclaw.sessions', `Fetched ${sessions.length} session(s)`, { count: sessions.length })
     res.json({ sessions })
   } catch {
     res.json({ sessions: [], raw: result.stdout })
@@ -158,6 +218,7 @@ app.get('/api/openclaw/sessions', async (_req, res) => {
 
 app.post('/api/openclaw/refresh', async (_req, res) => {
   addEvent('openclaw.refresh', 'Manual OpenClaw refresh requested')
+  await collectTelemetry()
   const [status, sessions] = await Promise.all([
     runOpenClaw(['status']),
     runOpenClaw(['sessions', '--json'])
@@ -172,4 +233,8 @@ app.post('/api/openclaw/refresh', async (_req, res) => {
 app.listen(PORT, () => {
   console.log(`[clawcommand] api listening on http://127.0.0.1:${PORT}`)
   addEvent('server.started', `ClawCommand API started on ${PORT}`)
+  collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'Initial telemetry collection failed'))
+  setInterval(() => {
+    collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'Periodic telemetry collection failed'))
+  }, 10000)
 })

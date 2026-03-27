@@ -11,16 +11,14 @@
 - OpenClaw integration: shell-outs to `openclaw status` and `openclaw sessions --json`
 
 ## Current status
-- Hybrid v1 shell is running with:
-  - top status bar
-  - live activity feed
-  - quick task intake
-  - kanban board with drag/drop and delete
-  - OpenClaw status panel
-  - sessions/workers panel with normalized cards
-- Backend now normalizes OpenClaw session JSON into simpler session cards.
-- Polling cadence tightened to 10s.
-- Activity feed records OpenClaw session fetches and task mutations.
+- Hybrid dashboard now has a **real telemetry collector** on the backend.
+- Every 10s, the backend polls OpenClaw status + sessions, detects diffs, and emits feed events for:
+  - gateway/status snapshot changes
+  - session count changes
+  - session appeared
+  - session disappeared
+- Frontend feed now shows event metadata too.
+- Existing kanban/task actions remain intact.
 
 ## Relevant files
 - `package.json`
@@ -32,10 +30,10 @@
 
 ## Next steps
 1. Add a single command to run frontend + backend together.
-2. Remove leftover Vite scaffold junk (`src/counter.ts`, unused assets) and tidy branding.
-3. Add richer worker state cards and model/tool telemetry summaries.
+2. Improve telemetry quality (parse more useful structured status details instead of crude snapshot summaries).
+3. Add richer worker cards and state badges.
 4. Add task editing and persistent ordering.
-5. Optionally add live log tail / stream adapter instead of polling only.
+5. Optionally add log-tail or SSE/WebSocket streaming instead of polling.
 
 ## Notes
 - Web-first was chosen to stay dual-boot / cross-platform friendly.
