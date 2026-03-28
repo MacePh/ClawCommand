@@ -29,6 +29,7 @@ const WORKSPACE_QUEUE_REVIEW_FILE = path.join(WORKSPACE_QUEUE, 'reviews', 'lates
 const WORKSPACE_QUEUE_RESULTS_DIR = path.join(WORKSPACE_QUEUE, 'results')
 const WORKSPACE_TRIAGE_SCRIPT = path.join(BORIS_WORKSPACE, 'tools', 'queue_triage.py')
 const WORKSPACE_DISPATCHER_SCRIPT = path.join(BORIS_WORKSPACE, 'tools', 'dispatcher.py')
+const WORKSPACE_QUEUE_PROCESSOR_SCRIPT = path.join(BORIS_WORKSPACE, 'tools', 'queue_processor.py')
 const WORKSPACE_ACTIVITY_LOG = path.join(BORIS_WORKSPACE, 'memory', 'activity.log')
 const WORKSPACE_MEMORY_DIR = path.join(BORIS_WORKSPACE, 'memory')
 const OPENCLAW_PATH = path.join(process.env.USERPROFILE || '', 'AppData', 'Roaming', 'npm', 'openclaw.cmd')
@@ -240,6 +241,17 @@ async function runGeminiImageEdit({ prompt, inputImageDataUrl, inputFilename, ma
   edits.unshift(record)
   writeGeminiImageEdits(edits.slice(0, 100))
   addEvent('gemini.image_edit.completed', `Gemini image edit saved: ${path.basename(outputPath)}`, { id, model: requestModel, outputPath })
+  const promptSummary = truncateSummary(record.prompt, 180) || 'Gemini image edit'
+  await logWorkspaceActivity('image.edit.complete', `Gemini image edit completed: ${promptSummary}`, {
+    task_id: id,
+    source: 'clawcommand.image_lab',
+    ok: true,
+    input_path: record.input_path,
+    output_path: record.output_path,
+    mask_path: record.mask_path,
+    prompt_summary: promptSummary,
+    model: requestModel,
+  })
   return record
 }
 
@@ -430,6 +442,34 @@ function normalizeQueueText(value) {
   return String(value || '').trim().replace(/\s+/g, ' ')
 }
 
+function truncateSummary(value, limit = 160) {
+  const text = normalizeQueueText(value)
+  if (!text) return ''
+  return text.length <= limit ? text : `${text.slice(0, Math.max(0, limit - 3)).trimEnd()}...`
+}
+
+async function logWorkspaceActivity(event, summary, extra = {}) {
+  if (!fs.existsSync(WORKSPACE_QUEUE_PROCESSOR_SCRIPT)) return false
+  const python = process.env.PYTHON || 'C:\\Python310\\python.exe'
+  const script = [
+    'import json, sys',
+    'from pathlib import Path',
+    'workspace = Path(sys.argv[1])',
+    'sys.path.insert(0, str(workspace))',
+    'from tools.queue_processor import log_activity',
+    'event = sys.argv[2]',
+    'summary = sys.argv[3]',
+    'extra = json.loads(sys.argv[4])',
+    "log_activity(event=event, task_id=extra.pop('task_id', 'image-edit'), source=extra.pop('source', 'clawcommand.image_lab'), ok=extra.pop('ok', True), summary=summary, **extra)",
+  ].join('; ')
+  const payload = JSON.stringify(extra || {})
+  const { error } = await execCommand(python, ['-c', script, BORIS_WORKSPACE, event, summary, payload], {
+    cwd: BORIS_WORKSPACE,
+    timeout: 20000,
+  })
+  return !error
+}
+
 function conciseTitle(value, fallback = 'Untitled item') {
   const text = normalizeQueueText(value)
   if (!text) return fallback
@@ -598,6 +638,10 @@ function spawnDetachedPowerShell({ command, cwd, logFile }) {
       reject(error)
     }
   })
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function isSessionRecordLike(value) {
@@ -920,6 +964,16 @@ async function findProcessMatch(matchers = []) {
   }
 }
 
+async function spawnAndConfirmRuntimeService({ command, cwd, logFile, matchers, label }) {
+  const started = await spawnDetachedPowerShell({ command, cwd, logFile })
+  await delay(1200)
+  const proc = await findProcessMatch(matchers)
+  if (!proc) {
+    throw new Error(`${label} did not appear in process scan after spawn.`)
+  }
+  return { spawnedPid: started.pid, process: proc }
+}
+
 const runtimeServices = [
   {
     id: 'clawcommand-api',
@@ -1013,8 +1067,14 @@ const runtimeServices = [
       if (action === 'start' || action === 'restart') {
         if (action === 'restart') await this.control('stop')
         const cmd = `Set-Location ${shellQuote(MPD_ROOT)}; & .\\run-boris-voice.ps1`
-        const started = await spawnDetachedPowerShell({ command: cmd, cwd: MPD_ROOT, logFile: this.logFile })
-        return { output: `Started voice sidecar${started.pid ? ` (PID ${started.pid})` : ''}.` }
+        const started = await spawnAndConfirmRuntimeService({
+          command: cmd,
+          cwd: MPD_ROOT,
+          logFile: this.logFile,
+          matchers: this.matchers,
+          label: 'Voice sidecar',
+        })
+        return { output: `Started voice sidecar${started.process?.pid ? ` (PID ${started.process.pid})` : started.spawnedPid ? ` (spawned PID ${started.spawnedPid})` : ''}.` }
       }
       if (action === 'stop') {
         const proc = await findProcessMatch(this.matchers)
@@ -1055,8 +1115,14 @@ const runtimeServices = [
       if (action === 'start' || action === 'restart') {
         if (action === 'restart') await this.control('stop')
         const cmd = `Set-Location ${shellQuote(MPD_ROOT)}; & .\\run.ps1`
-        const started = await spawnDetachedPowerShell({ command: cmd, cwd: MPD_ROOT, logFile: this.logFile })
-        return { output: `Started MPD controller${started.pid ? ` (PID ${started.pid})` : ''}.` }
+        const started = await spawnAndConfirmRuntimeService({
+          command: cmd,
+          cwd: MPD_ROOT,
+          logFile: this.logFile,
+          matchers: this.matchers,
+          label: 'MPD controller',
+        })
+        return { output: `Started MPD controller${started.process?.pid ? ` (PID ${started.process.pid})` : started.spawnedPid ? ` (spawned PID ${started.spawnedPid})` : ''}.` }
       }
       if (action === 'stop') {
         const proc = await findProcessMatch(this.matchers)
@@ -1098,8 +1164,14 @@ const runtimeServices = [
       if (action === 'start' || action === 'restart') {
         if (action === 'restart') await this.control('stop')
         const cmd = `Set-Location ${shellQuote(CLAWCOMMAND_ROOT)}; npm run dev -- --host 127.0.0.1`
-        const started = await spawnDetachedPowerShell({ command: cmd, cwd: CLAWCOMMAND_ROOT, logFile: this.logFile })
-        return { output: `Started ClawCommand web dev server${started.pid ? ` (PID ${started.pid})` : ''}.` }
+        const started = await spawnAndConfirmRuntimeService({
+          command: cmd,
+          cwd: CLAWCOMMAND_ROOT,
+          logFile: this.logFile,
+          matchers: this.matchers,
+          label: 'ClawCommand web dev server',
+        })
+        return { output: `Started ClawCommand web dev server${started.process?.pid ? ` (PID ${started.process.pid})` : started.spawnedPid ? ` (spawned PID ${started.spawnedPid})` : ''}.` }
       }
       if (action === 'stop') {
         const proc = await findProcessMatch(this.matchers)

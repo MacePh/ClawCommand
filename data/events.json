@@ -1,5 +1,42 @@
 [
   {
+    "id": "1774669473651-d262e2",
+    "ts": "2026-03-28T03:44:33.651Z",
+    "type": "openclaw.session.ended",
+    "message": "Session disappeared: agent:main:subagent:2ae20f5d-9669-4bef-8974-4e6786e4b528",
+    "meta": {
+      "key": "agent:main:subagent:2ae20f5d-9669-4bef-8974-4e6786e4b528",
+      "age": 1774669453166,
+      "updatedAt": 1774669453166,
+      "model": "gpt-5.4",
+      "kind": "direct",
+      "tokens": 49301,
+      "status": "active",
+      "channel": "openai-codex",
+      "sessionId": "10cd55d1-65e6-483e-840d-357be735c42f"
+    }
+  },
+  {
+    "id": "1774669473650-ff41b2",
+    "ts": "2026-03-28T03:44:33.650Z",
+    "type": "openclaw.session.count",
+    "message": "Session count changed: 10 -> 9",
+    "meta": {
+      "count": 9
+    }
+  },
+  {
+    "id": "1774669473648-4440a0",
+    "ts": "2026-03-28T03:44:33.648Z",
+    "type": "openclaw.status.change",
+    "message": "Gateway snapshot changed",
+    "meta": {
+      "gatewayState": "online",
+      "telegramState": "configured",
+      "sessionsSummary": "9 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
+    }
+  },
+  {
     "id": "1774669232913-984119",
     "ts": "2026-03-28T03:40:32.913Z",
     "type": "openclaw.session.started",
@@ -3381,39 +3418,6 @@
       "gatewayState": "online",
       "telegramState": "configured",
       "sessionsSummary": "3 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
-    }
-  },
-  {
-    "id": "1774638146537-f22d3c",
-    "ts": "2026-03-27T19:02:26.537Z",
-    "type": "openclaw.session.started",
-    "message": "Session appeared: agent:main:subagent:6e5e8597-1775-431b-9ba8-796ca969aee1",
-    "meta": {
-      "key": "agent:main:subagent:6e5e8597-1775-431b-9ba8-796ca969aee1",
-      "age": 1774638132706,
-      "model": "gpt-5.4",
-      "kind": "direct",
-      "tokens": ""
-    }
-  },
-  {
-    "id": "1774638146536-2bfca9",
-    "ts": "2026-03-27T19:02:26.536Z",
-    "type": "openclaw.session.count",
-    "message": "Session count changed: 3 -> 4",
-    "meta": {
-      "count": 4
-    }
-  },
-  {
-    "id": "1774638146535-e837e9",
-    "ts": "2026-03-27T19:02:26.535Z",
-    "type": "openclaw.status.change",
-    "message": "Gateway snapshot changed",
-    "meta": {
-      "gatewayState": "online",
-      "telegramState": "configured",
-      "sessionsSummary": "4 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
     }
   }
 ]

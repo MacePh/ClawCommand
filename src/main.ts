@@ -313,7 +313,7 @@ app.innerHTML = `
                 </label>
                 <div class="image-lab-actions">
                   <button id="gemini-submit-btn" class="control-btn">Run Gemini edit</button>
-                  <button id="gemini-queue-btn" class="view-btn" type="button">Draft queue task from latest result</button>
+                  <button id="gemini-queue-btn" class="view-btn" type="button">Enqueue follow-up task from latest result</button>
                 </div>
                 <div id="gemini-image-edit-status" class="muted">Waiting for input.</div>
               </div>
@@ -1733,12 +1733,12 @@ async function draftQueueTaskFromLatestImageEdit() {
     await fetchJson<QueueTask>(`${apiBase}/task-queue`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, mode: 'proposed' }),
+      body: JSON.stringify({ text, mode: 'queue' }),
     })
-    setGeminiImageEditStatus('Drafted a proposed queue task from the latest image edit.', 'online')
-    await Promise.allSettled([loadQueueTasks(), loadQueueDepth()])
+    setGeminiImageEditStatus('Queued a real follow-up task from the latest image edit.', 'online')
+    await Promise.allSettled([loadQueueTasks(), loadQueueDepth(), loadEvents()])
   } catch (error) {
-    setGeminiImageEditStatus(`Failed to draft queue task: ${String(error)}`, 'error')
+    setGeminiImageEditStatus(`Failed to enqueue follow-up task: ${String(error)}`, 'error')
   }
 }
 
