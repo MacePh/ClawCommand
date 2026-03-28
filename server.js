@@ -5,6 +5,7 @@ import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { execFile, spawn } from 'child_process'
+import { createHash, randomUUID } from 'crypto'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -40,6 +41,8 @@ const OPENCLAW_HOME =
 const OPENCLAW_SESSIONS_INDEX =
   process.env.OPENCLAW_SESSIONS_INDEX || path.join(OPENCLAW_HOME, 'agents', 'main', 'sessions', 'sessions.json')
 const OPENCLAW_GATEWAY_URL = String(process.env.OPENCLAW_GATEWAY_URL || 'http://127.0.0.1:18789').replace(/\/$/, '')
+const OPENCLAW_GATEWAY_WS_URL = OPENCLAW_GATEWAY_URL.replace(/^http/i, 'ws')
+const OPENCLAW_GATEWAY_INSTANCE_FILE = path.join(DATA_DIR, 'gateway-instance-id.txt')
 const OPENCLAW_CLI_STATUS_TIMEOUT_MS = Number(process.env.OPENCLAW_CLI_STATUS_TIMEOUT_MS) || 20000
 const OPENCLAW_CLI_SESSIONS_TIMEOUT_MS = Number(process.env.OPENCLAW_CLI_SESSIONS_TIMEOUT_MS) || 120000
 const OPENCLAW_SESSIONS_INDEX_SCHEMA_VERSION = Number(process.env.OPENCLAW_SESSIONS_INDEX_SCHEMA_VERSION || 0)
@@ -49,6 +52,16 @@ const MPD_ROOT = 'F:\\mpd-streamdeck'
 const CLAWCOMMAND_ROOT = __dirname
 
 const telemetryState = {
+  gatewayInstanceId: null,
+  gatewayWsConnected: false,
+  gatewayWsConnecting: false,
+  gatewayWsLastError: null,
+  gatewayWsLastEventAt: null,
+  gatewayWsLastHello: null,
+  gatewayWsClient: null,
+  gatewayWsBackoffMs: 1000,
+  gatewayWsReconnectTimer: null,
+  gatewayWsRefreshTimer: null,
   lastGatewaySummary: null,
   sessionsByKey: new Map(),
   lastSessionCount: null,
@@ -114,6 +127,27 @@ ensureJsonFile(TASKS_FILE, {
 ensureJsonFile(TASK_QUEUE_FILE, { tasks: [], activeTaskId: null })
 ensureJsonFile(EVENTS_FILE, [])
 ensureJsonFile(GEMINI_IMAGE_EDITS_INDEX_FILE, { edits: [] })
+
+function stableGatewayInstanceId() {
+  const explicit = String(process.env.CLAWCOMMAND_GATEWAY_INSTANCE_ID || '').trim()
+  if (explicit) return explicit
+  try {
+    if (fs.existsSync(OPENCLAW_GATEWAY_INSTANCE_FILE)) {
+      const existing = fs.readFileSync(OPENCLAW_GATEWAY_INSTANCE_FILE, 'utf-8').trim()
+      if (existing) return existing
+    }
+  } catch {
+    /* ignore */
+  }
+  const seed = `${os.hostname()}:${CLAWCOMMAND_ROOT}:${process.pid}:${randomUUID()}`
+  const generated = `clawcommand-${createHash('sha1').update(seed).digest('hex').slice(0, 16)}`
+  try {
+    fs.writeFileSync(OPENCLAW_GATEWAY_INSTANCE_FILE, `${generated}\n`, 'utf-8')
+  } catch {
+    /* ignore */
+  }
+  return generated
+}
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf-8'))
@@ -681,6 +715,135 @@ function parseSessionRow(session) {
     session.channel || session.modelProvider || session.agentId || session.deliveryContext?.channel || session.deliveryContext?.surface || ''
   const sessionId = session.sessionId || session.id || ''
   return { key, age, updatedAt, model, kind, tokens, status, channel, sessionId }
+}
+
+function gatewayWsRequest(ws, method, params = {}) {
+  return new Promise((resolve, reject) => {
+    const id = randomUUID()
+    const timeout = setTimeout(() => {
+      ws.removeEventListener('message', onMessage)
+      reject(new Error(`Gateway WS ${method} timed out`))
+    }, 5000)
+
+    const onMessage = (event) => {
+      try {
+        const msg = JSON.parse(String(event.data || '{}'))
+        if (msg.type !== 'res' || msg.id !== id) return
+        clearTimeout(timeout)
+        ws.removeEventListener('message', onMessage)
+        if (msg.ok) resolve(msg.payload || {})
+        else reject(new Error(msg.error?.message || `Gateway WS ${method} failed`))
+      } catch {
+        /* ignore non-response payloads */
+      }
+    }
+
+    ws.addEventListener('message', onMessage)
+    ws.send(JSON.stringify({ type: 'req', id, method, params }))
+  })
+}
+
+function scheduleGatewayRefresh(delayMs = 250) {
+  if (telemetryState.gatewayWsRefreshTimer) clearTimeout(telemetryState.gatewayWsRefreshTimer)
+  telemetryState.gatewayWsRefreshTimer = setTimeout(() => {
+    telemetryState.gatewayWsRefreshTimer = null
+    collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'WS-triggered telemetry refresh failed'))
+  }, Math.max(0, delayMs))
+}
+
+function scheduleGatewayWsReconnect() {
+  if (telemetryState.gatewayWsReconnectTimer) return
+  const delayMs = telemetryState.gatewayWsBackoffMs
+  telemetryState.gatewayWsReconnectTimer = setTimeout(() => {
+    telemetryState.gatewayWsReconnectTimer = null
+    connectOpenClawGatewayWs()
+  }, delayMs)
+  telemetryState.gatewayWsBackoffMs = Math.min(Math.round(delayMs * 1.7), 15000)
+}
+
+async function handleGatewayWsEvent(message) {
+  telemetryState.gatewayWsLastEventAt = new Date().toISOString()
+  if (message.event === 'sessions.changed') {
+    scheduleGatewayRefresh(100)
+    return
+  }
+  if (message.event === 'presence' || message.event === 'agent' || message.event === 'chat') {
+    scheduleGatewayRefresh(150)
+    return
+  }
+  if (message.event === 'shutdown') {
+    telemetryState.gatewayWsLastError = message.payload?.reason || 'Gateway shutdown'
+  }
+}
+
+function connectOpenClawGatewayWs() {
+  if (telemetryState.gatewayWsConnecting || telemetryState.gatewayWsConnected) return
+  const WebSocketCtor = globalThis.WebSocket
+  if (!WebSocketCtor) {
+    telemetryState.gatewayWsLastError = 'Global WebSocket API unavailable in this Node runtime.'
+    return
+  }
+
+  const instanceId = telemetryState.gatewayInstanceId || stableGatewayInstanceId()
+  telemetryState.gatewayInstanceId = instanceId
+  telemetryState.gatewayWsConnecting = true
+  const ws = new WebSocketCtor(OPENCLAW_GATEWAY_WS_URL)
+  telemetryState.gatewayWsClient = ws
+
+  ws.addEventListener('open', async () => {
+    try {
+      const hello = await gatewayWsRequest(ws, 'connect', {
+        minProtocol: 3,
+        maxProtocol: 3,
+        client: {
+          id: 'gateway-client',
+          version: 'clawcommand',
+          platform: process.platform,
+          mode: 'cli',
+          instanceId,
+        },
+        role: 'operator',
+        scopes: ['operator.read'],
+        caps: ['tool-events'],
+        userAgent: `ClawCommand/${process.version}`,
+        locale: 'en-US',
+      })
+      telemetryState.gatewayWsConnected = true
+      telemetryState.gatewayWsConnecting = false
+      telemetryState.gatewayWsLastError = null
+      telemetryState.gatewayWsBackoffMs = 1000
+      telemetryState.gatewayWsLastHello = hello
+      addEvent('openclaw.gateway.ws.connected', `Gateway WS connected (${instanceId})`, { instanceId })
+      scheduleGatewayRefresh(50)
+    } catch (error) {
+      telemetryState.gatewayWsLastError = String(error.message || error)
+      telemetryState.gatewayWsConnecting = false
+      telemetryState.gatewayWsConnected = false
+      try { ws.close() } catch {}
+    }
+  })
+
+  ws.addEventListener('message', (event) => {
+    try {
+      const message = JSON.parse(String(event.data || '{}'))
+      if (message.type === 'event') handleGatewayWsEvent(message)
+    } catch {
+      /* ignore */
+    }
+  })
+
+  ws.addEventListener('close', () => {
+    const wasConnected = telemetryState.gatewayWsConnected
+    telemetryState.gatewayWsConnected = false
+    telemetryState.gatewayWsConnecting = false
+    telemetryState.gatewayWsClient = null
+    if (wasConnected) addEvent('openclaw.gateway.ws.closed', 'Gateway WS disconnected')
+    scheduleGatewayWsReconnect()
+  })
+
+  ws.addEventListener('error', (error) => {
+    telemetryState.gatewayWsLastError = String(error.message || 'Gateway WS error')
+  })
 }
 
 function parseStatusDetails(output) {
@@ -1924,8 +2087,12 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
   console.log(`[clawcommand] api listening on http://127.0.0.1:${PORT}`)
   addEvent('server.started', `ClawCommand API started on ${PORT}`)
+  telemetryState.gatewayInstanceId = stableGatewayInstanceId()
   collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'Initial telemetry collection failed'))
+  connectOpenClawGatewayWs()
   setInterval(() => {
-    collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'Periodic telemetry collection failed'))
-  }, 10000)
+    if (!telemetryState.gatewayWsConnected) {
+      collectTelemetry().catch(() => addEvent('openclaw.telemetry.error', 'Fallback telemetry collection failed'))
+    }
+  }, 60000)
 })

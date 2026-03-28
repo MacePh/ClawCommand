@@ -1,5 +1,111 @@
 [
   {
+    "id": "1774670164106-d43aaa",
+    "ts": "2026-03-28T03:56:04.106Z",
+    "type": "openclaw.session.ended",
+    "message": "Session disappeared: agent:main:subagent:8cb5f9df-404d-4d13-8815-46c9f8844578",
+    "meta": {
+      "key": "agent:main:subagent:8cb5f9df-404d-4d13-8815-46c9f8844578",
+      "age": 1774670143759,
+      "updatedAt": 1774670143759,
+      "model": "gpt-5.4",
+      "kind": "direct",
+      "tokens": 23027,
+      "status": "active",
+      "channel": "openai-codex",
+      "sessionId": "b19627a1-640c-4613-a935-a24b857b3962"
+    }
+  },
+  {
+    "id": "1774670164105-d5578d",
+    "ts": "2026-03-28T03:56:04.105Z",
+    "type": "openclaw.session.count",
+    "message": "Session count changed: 10 -> 9",
+    "meta": {
+      "count": 9
+    }
+  },
+  {
+    "id": "1774670164103-3e6d93",
+    "ts": "2026-03-28T03:56:04.103Z",
+    "type": "openclaw.status.change",
+    "message": "Gateway snapshot changed",
+    "meta": {
+      "gatewayState": "online",
+      "telegramState": "configured",
+      "sessionsSummary": "9 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
+    }
+  },
+  {
+    "id": "1774670043972-2acaa8",
+    "ts": "2026-03-28T03:54:03.972Z",
+    "type": "openclaw.session.started",
+    "message": "Session appeared: agent:main:subagent:8cb5f9df-404d-4d13-8815-46c9f8844578",
+    "meta": {
+      "key": "agent:main:subagent:8cb5f9df-404d-4d13-8815-46c9f8844578",
+      "age": 1774670034006,
+      "updatedAt": 1774670034006,
+      "model": "gpt-5.4",
+      "kind": "direct",
+      "tokens": "",
+      "status": "active",
+      "channel": "openai-codex",
+      "sessionId": "b19627a1-640c-4613-a935-a24b857b3962"
+    }
+  },
+  {
+    "id": "1774670043970-eb8562",
+    "ts": "2026-03-28T03:54:03.970Z",
+    "type": "openclaw.session.count",
+    "message": "Session count changed: 9 -> 10",
+    "meta": {
+      "count": 10
+    }
+  },
+  {
+    "id": "1774670043968-dcf880",
+    "ts": "2026-03-28T03:54:03.968Z",
+    "type": "openclaw.status.change",
+    "message": "Gateway snapshot changed",
+    "meta": {
+      "gatewayState": "online",
+      "telegramState": "configured",
+      "sessionsSummary": "10 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json       │"
+    }
+  },
+  {
+    "id": "1774669978507-3b430f",
+    "ts": "2026-03-28T03:52:58.507Z",
+    "type": "queue.priority.set",
+    "message": "Set queue task t_1774669956653_2686 priority to 10",
+    "meta": {
+      "taskId": "t_1774669956653_2686",
+      "priority": 10
+    }
+  },
+  {
+    "id": "1774669974470-9b8ba5",
+    "ts": "2026-03-28T03:52:54.470Z",
+    "type": "queue.approved",
+    "message": "Approved queued task: Here's the prompt: --- Add a mandatory git commit step to the end of every queued task execution in the Boris workspace. **The problem:** Boris completes queue tasks and records a completion summary, but never commits the work. Changes accumulate across multiple tasks with no git history segmentation. We want each completed queue task to produce exactly one git commit so work is always recoverable and auditable by task. **What to change:** In `tools/dispatcher.py`, update `_with_completion_chain_prompt()` to add a git commit instruction between the completion-summary command and the chain command. The commit should happen after `--complete-task` is called and before `--chain-on-complete`. The injected instructions Boris receives should include this sequence after finishing the task: 1. Run `--complete-task` with a real summary as already instructed 2. Run a git add and commit in the workspace root: stage all modified and new files (`git add -A`) then commit with a message in the format: `queue: <one line summary of what was done> [task-id: <task_id>]` where the summary is the same text passed to `--complete-task`. Use the workspace root directory (`WORKSPACE_DIR`) as the working directory for the git commands. 3. Then run `--chain-on-complete` as already instructed **Important constraints:** - If the git commit fails (nothing to commit, git not available, repo not initialized), Boris should log the failure but continue — do not let a failed commit block the chain or stall the queue - The commit message must be a single line, no newlines - Truncate the summary to 72 characters in the commit message if longer - Include the task ID in the commit message so every commit is traceable back to a specific queue task - Boris should run these as separate shell commands, not chained with `&&` since PowerShell does not support `&&` chaining **Also update `AGENTS.md`** to add a line under the MEMORY section noting that every completed queue task produces a git commit in the workspace repo, and that commit messages follow the format `queue: <summary> [task-id: <id>]`. Run `python -m py_compile tools/dispatcher.py` to verify syntax before finishing.",
+    "meta": {
+      "taskId": "t_1774669956653_2686",
+      "priority": 10,
+      "approvedBy": "text"
+    }
+  },
+  {
+    "id": "1774669956655-7f31c7",
+    "ts": "2026-03-28T03:52:36.655Z",
+    "type": "queue.proposed",
+    "message": "Proposed task awaiting approval: Here's the prompt: --- Add a mandatory git commit step to the end of every queued task execution in the Boris workspace. **The problem:** Boris completes queue tasks and records a completion summary, but never commits the work. Changes accumulate across multiple tasks with no git history segmentation. We want each completed queue task to produce exactly one git commit so work is always recoverable and auditable by task. **What to change:** In `tools/dispatcher.py`, update `_with_completion_chain_prompt()` to add a git commit instruction between the completion-summary command and the chain command. The commit should happen after `--complete-task` is called and before `--chain-on-complete`. The injected instructions Boris receives should include this sequence after finishing the task: 1. Run `--complete-task` with a real summary as already instructed 2. Run a git add and commit in the workspace root: stage all modified and new files (`git add -A`) then commit with a message in the format: `queue: <one line summary of what was done> [task-id: <task_id>]` where the summary is the same text passed to `--complete-task`. Use the workspace root directory (`WORKSPACE_DIR`) as the working directory for the git commands. 3. Then run `--chain-on-complete` as already instructed **Important constraints:** - If the git commit fails (nothing to commit, git not available, repo not initialized), Boris should log the failure but continue — do not let a failed commit block the chain or stall the queue - The commit message must be a single line, no newlines - Truncate the summary to 72 characters in the commit message if longer - Include the task ID in the commit message so every commit is traceable back to a specific queue task - Boris should run these as separate shell commands, not chained with `&&` since PowerShell does not support `&&` chaining **Also update `AGENTS.md`** to add a line under the MEMORY section noting that every completed queue task produces a git commit in the workspace repo, and that commit messages follow the format `queue: <summary> [task-id: <id>]`. Run `python -m py_compile tools/dispatcher.py` to verify syntax before finishing.",
+    "meta": {
+      "taskId": "t_1774669956653_2686",
+      "priority": 0,
+      "approvalState": "awaiting_approval"
+    }
+  },
+  {
     "id": "1774669473651-d262e2",
     "ts": "2026-03-28T03:44:33.651Z",
     "type": "openclaw.session.ended",
@@ -3319,105 +3425,6 @@
       "gatewayState": "online",
       "telegramState": "configured",
       "sessionsSummary": "4 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
-    }
-  },
-  {
-    "id": "1774638545861-835d77",
-    "ts": "2026-03-27T19:09:05.861Z",
-    "type": "openclaw.session.started",
-    "message": "Session appeared: agent:main:subagent:57ad1210-23a4-4114-a8a3-b4615ef69e95",
-    "meta": {
-      "key": "agent:main:subagent:57ad1210-23a4-4114-a8a3-b4615ef69e95",
-      "age": 1774638537714,
-      "model": "gpt-5.4",
-      "kind": "direct",
-      "tokens": ""
-    }
-  },
-  {
-    "id": "1774638545860-3e94c4",
-    "ts": "2026-03-27T19:09:05.860Z",
-    "type": "openclaw.session.count",
-    "message": "Session count changed: 4 -> 5",
-    "meta": {
-      "count": 5
-    }
-  },
-  {
-    "id": "1774638545858-3cb902",
-    "ts": "2026-03-27T19:09:05.858Z",
-    "type": "openclaw.status.change",
-    "message": "Gateway snapshot changed",
-    "meta": {
-      "gatewayState": "online",
-      "telegramState": "configured",
-      "sessionsSummary": "5 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
-    }
-  },
-  {
-    "id": "1774638296295-119993",
-    "ts": "2026-03-27T19:04:56.295Z",
-    "type": "openclaw.session.started",
-    "message": "Session appeared: agent:main:subagent:78465727-5f30-49e4-b1d3-c434cff9ea16",
-    "meta": {
-      "key": "agent:main:subagent:78465727-5f30-49e4-b1d3-c434cff9ea16",
-      "age": 1774638287010,
-      "model": "gpt-5.4",
-      "kind": "direct",
-      "tokens": ""
-    }
-  },
-  {
-    "id": "1774638296294-160e6b",
-    "ts": "2026-03-27T19:04:56.294Z",
-    "type": "openclaw.session.count",
-    "message": "Session count changed: 3 -> 4",
-    "meta": {
-      "count": 4
-    }
-  },
-  {
-    "id": "1774638296292-dfefd0",
-    "ts": "2026-03-27T19:04:56.292Z",
-    "type": "openclaw.status.change",
-    "message": "Gateway snapshot changed",
-    "meta": {
-      "gatewayState": "online",
-      "telegramState": "configured",
-      "sessionsSummary": "4 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
-    }
-  },
-  {
-    "id": "1774638257532-1b6d68",
-    "ts": "2026-03-27T19:04:17.532Z",
-    "type": "openclaw.session.ended",
-    "message": "Session disappeared: agent:main:subagent:6e5e8597-1775-431b-9ba8-796ca969aee1",
-    "meta": {
-      "key": "agent:main:subagent:6e5e8597-1775-431b-9ba8-796ca969aee1",
-      "age": 1774638221533,
-      "model": "gpt-5.4",
-      "kind": "direct",
-      "tokens": ""
-    }
-  },
-  {
-    "id": "1774638257532-c2f6f3",
-    "ts": "2026-03-27T19:04:17.532Z",
-    "type": "openclaw.session.count",
-    "message": "Session count changed: 4 -> 3",
-    "meta": {
-      "count": 3
-    }
-  },
-  {
-    "id": "1774638257530-e34824",
-    "ts": "2026-03-27T19:04:17.530Z",
-    "type": "openclaw.status.change",
-    "message": "Gateway snapshot changed",
-    "meta": {
-      "gatewayState": "online",
-      "telegramState": "configured",
-      "sessionsSummary": "3 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
     }
   }
 ]
