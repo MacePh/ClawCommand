@@ -17,6 +17,8 @@
 - Improved status parsing so pills now expose:
   - gateway state
   - telegram state
+- Added Gemini image-edit integration in `server.js` with saved edit records under `data/gemini-image-edits/` and index metadata in `data/gemini-image-edits.json`.
+- Added an `Image Lab` dashboard view in `src/main.ts` / `src/style.css` where Mace can upload an image, optionally include a mask/reference image, submit a Gemini edit prompt, review saved output paths, and draft a follow-up proposed queue task from the latest result.
 - Telemetry collector still emits feed events for session/gateway changes.
 
 ## Relevant files
@@ -38,3 +40,4 @@
 ## Notes
 - Web-first was chosen to stay dual-boot / cross-platform friendly.
 - This remains Option C: real OpenClaw visibility where easy, local task orchestration where backend APIs are not fully wired yet.
+- Important honesty note: the kanban board in `data/tasks.json` is a local planning surface only. Real execution currently happens through the workspace queue (`/api/task-queue` -> `~/.openclaw/workspace/queue/*`) and dispatcher, not via dragging cards between kanban lanes.
