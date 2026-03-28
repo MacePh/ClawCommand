@@ -20,15 +20,28 @@ const GEMINI_IMAGE_EDITS_INDEX_FILE = path.join(DATA_DIR, 'gemini-image-edits.js
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || ''
 const GEMINI_IMAGE_EDIT_MODEL = process.env.GEMINI_IMAGE_EDIT_MODEL || 'gemini-2.0-flash-preview-image-generation'
 const BORIS_WORKSPACE =
-  process.env.BORIS_WORKSPACE || path.join(os.homedir(), '.openclaw', 'workspace')
+  process.env.BORIS_WORKSPACE ||
+  (process.env.USERPROFILE
+    ? path.join(process.env.USERPROFILE, '.openclaw', 'workspace')
+    : path.join(os.homedir(), '.openclaw', 'workspace'))
 const WORKSPACE_QUEUE = path.join(BORIS_WORKSPACE, 'queue')
 const WORKSPACE_QUEUE_REVIEW_FILE = path.join(WORKSPACE_QUEUE, 'reviews', 'latest.json')
 const WORKSPACE_QUEUE_RESULTS_DIR = path.join(WORKSPACE_QUEUE, 'results')
 const WORKSPACE_TRIAGE_SCRIPT = path.join(BORIS_WORKSPACE, 'tools', 'queue_triage.py')
+const WORKSPACE_DISPATCHER_SCRIPT = path.join(BORIS_WORKSPACE, 'tools', 'dispatcher.py')
 const WORKSPACE_ACTIVITY_LOG = path.join(BORIS_WORKSPACE, 'memory', 'activity.log')
 const WORKSPACE_MEMORY_DIR = path.join(BORIS_WORKSPACE, 'memory')
 const OPENCLAW_PATH = path.join(process.env.USERPROFILE || '', 'AppData', 'Roaming', 'npm', 'openclaw.cmd')
+/** Prefer USERPROFILE so paths match npm's openclaw.cmd and ~/.openclaw (os.homedir() can differ for services). */
+const OPENCLAW_HOME =
+  process.env.OPENCLAW_HOME ||
+  (process.env.USERPROFILE ? path.join(process.env.USERPROFILE, '.openclaw') : path.join(os.homedir(), '.openclaw'))
+const OPENCLAW_SESSIONS_INDEX =
+  process.env.OPENCLAW_SESSIONS_INDEX || path.join(OPENCLAW_HOME, 'agents', 'main', 'sessions', 'sessions.json')
 const OPENCLAW_GATEWAY_URL = String(process.env.OPENCLAW_GATEWAY_URL || 'http://127.0.0.1:18789').replace(/\/$/, '')
+const OPENCLAW_CLI_STATUS_TIMEOUT_MS = Number(process.env.OPENCLAW_CLI_STATUS_TIMEOUT_MS) || 20000
+const OPENCLAW_CLI_SESSIONS_TIMEOUT_MS = Number(process.env.OPENCLAW_CLI_SESSIONS_TIMEOUT_MS) || 120000
+const OPENCLAW_SESSIONS_INDEX_SCHEMA_VERSION = Number(process.env.OPENCLAW_SESSIONS_INDEX_SCHEMA_VERSION || 0)
 const QUEUE_PROPOSED_DIR = path.join(WORKSPACE_QUEUE, 'proposed')
 const QUEUE_STATE_DIRS = ['proposed', 'pending', 'claimed', 'running', 'done', 'failed', 'dead']
 const MPD_ROOT = 'F:\\mpd-streamdeck'
@@ -242,14 +255,123 @@ function addEvent(type, message, meta = {}) {
 
 function execCommand(command, args, options = {}) {
   return new Promise((resolve) => {
-    execFile(command, args, { timeout: 20000, windowsHide: true, ...options }, (error, stdout, stderr) => {
+    execFile(command, args, { timeout: 20000, windowsHide: true, maxBuffer: 32 * 1024 * 1024, ...options }, (error, stdout, stderr) => {
       resolve({ error, stdout: stdout || '', stderr: stderr || '' })
     })
   })
 }
 
 function runOpenClaw(args, opts = {}) {
-  return execCommand('cmd.exe', ['/c', OPENCLAW_PATH, ...args], opts)
+  const cwd =
+    fs.existsSync(OPENCLAW_HOME) ? OPENCLAW_HOME : process.env.USERPROFILE || process.env.HOME || os.homedir()
+  return execCommand('cmd.exe', ['/c', OPENCLAW_PATH, ...args], { cwd, ...opts })
+}
+
+function parseJsonFromCliStdout(stdout) {
+  const text = String(stdout || '').trim()
+  if (!text) return null
+  try {
+    return JSON.parse(text)
+  } catch {
+    const startObj = text.indexOf('{')
+    const startArr = text.indexOf('[')
+    let start = -1
+    if (startObj >= 0 && startArr >= 0) start = Math.min(startObj, startArr)
+    else start = Math.max(startObj, startArr)
+    if (start < 0) return null
+    try {
+      return JSON.parse(text.slice(start))
+    } catch {
+      return null
+    }
+  }
+}
+
+function summarizeCliFailure(kind, { error, stdout, stderr } = {}) {
+  const combined = String(stderr || stdout || error?.message || error || '').trim()
+  const normalized = combined.replace(/\s+/g, ' ')
+  if (!normalized) return `${kind} probe failed.`
+  if (/timed? out|timeout/i.test(normalized)) return `${kind} probe timed out.`
+  if (/not recognized|cannot find|enoent/i.test(normalized)) return `OpenClaw CLI unavailable while fetching ${kind}.`
+  if (/econnrefused|connect|reachable|refused/i.test(normalized)) return `${kind} probe could not reach OpenClaw.`
+  return `${kind} probe failed.`
+}
+
+function summarizeParseFailure(kind) {
+  return `OpenClaw returned an unexpected ${kind} payload.`
+}
+
+function readSessionsIndexPayload(file) {
+  if (!fs.existsSync(file)) return null
+  const raw = fs.readFileSync(file, 'utf-8')
+  const parsed = JSON.parse(raw)
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null
+  const sessions = normalizeSessions(parsed)
+  if (!sessions.length) return null
+  const schemaOk = sessions.every((session) => {
+    const version = session?.skillsSnapshot?.version
+    return version === undefined || version === OPENCLAW_SESSIONS_INDEX_SCHEMA_VERSION
+  })
+  if (!schemaOk) return null
+  return sessions.map(parseSessionRow)
+}
+
+function listCandidateOpenClawSessionIndexPaths() {
+  const out = []
+  const push = (p) => {
+    if (p && !out.includes(p)) out.push(p)
+  }
+  if (process.env.OPENCLAW_SESSIONS_INDEX) push(process.env.OPENCLAW_SESSIONS_INDEX)
+  push(OPENCLAW_SESSIONS_INDEX)
+  const wsParent = path.dirname(BORIS_WORKSPACE)
+  push(path.join(wsParent, 'agents', 'main', 'sessions', 'sessions.json'))
+  try {
+    const agentsRoot = path.join(OPENCLAW_HOME, 'agents')
+    if (fs.existsSync(agentsRoot)) {
+      for (const agentId of fs.readdirSync(agentsRoot)) {
+        push(path.join(agentsRoot, agentId, 'sessions', 'sessions.json'))
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return out
+}
+
+function tryReadSessionsFromIndexFile() {
+  for (const file of listCandidateOpenClawSessionIndexPaths()) {
+    try {
+      const sessions = readSessionsIndexPayload(file)
+      if (sessions?.length) return sessions
+    } catch {
+      /* try next path */
+    }
+  }
+  return null
+}
+
+function replaceTelemetrySessions(sessions) {
+  const nextMap = new Map(sessions.map((session) => [session.key, session]))
+  telemetryState.lastSessions = sessions
+  telemetryState.lastSessionsFetchedAt = new Date().toISOString()
+  telemetryState.lastSessionsError = null
+  telemetryState.lastSessionsListingDegraded = false
+  if (sessions.length) telemetryState.lastSessionsListingDetail = null
+  if (telemetryState.lastSessionCount !== null && telemetryState.lastSessionCount !== sessions.length) {
+    addEvent('openclaw.session.count', `Session count changed: ${telemetryState.lastSessionCount} -> ${sessions.length}`, { count: sessions.length })
+  }
+  telemetryState.lastSessionCount = sessions.length
+  for (const session of sessions) {
+    if (!telemetryState.sessionsByKey.has(session.key)) {
+      addEvent('openclaw.session.started', `Session appeared: ${session.key}`, session)
+    }
+  }
+  for (const [key, session] of telemetryState.sessionsByKey.entries()) {
+    if (!nextMap.has(key)) {
+      addEvent('openclaw.session.ended', `Session disappeared: ${key}`, session)
+    }
+  }
+  telemetryState.sessionsByKey = nextMap
 }
 
 async function probeOpenClawGatewayHttp() {
@@ -344,6 +466,43 @@ function getLatestProposedTask() {
   return files[0] || null
 }
 
+async function runQueueDispatcher() {
+  if (!fs.existsSync(WORKSPACE_DISPATCHER_SCRIPT)) {
+    const error = new Error(`dispatcher script missing: ${WORKSPACE_DISPATCHER_SCRIPT}`)
+    error.statusCode = 500
+    throw error
+  }
+  const python = process.env.PYTHON || 'C:\\Python310\\python.exe'
+  const { error, stdout, stderr } = await execCommand(python, [WORKSPACE_DISPATCHER_SCRIPT], {
+    cwd: BORIS_WORKSPACE,
+    timeout: 30000,
+  })
+  const parsed = parseJsonFromCliStdout(stdout)
+  if (error && !parsed) {
+    const runtimeError = new Error(String(stderr || stdout || error.message || error))
+    runtimeError.statusCode = 500
+    throw runtimeError
+  }
+  return {
+    ok: Boolean(parsed?.ok),
+    taskId: parsed?.task_id || null,
+    raw: parsed || null,
+    stdout,
+    stderr,
+  }
+}
+
+async function dispatchQueueTaskNow(taskId, reason = 'do_now') {
+  const dispatch = await runQueueDispatcher()
+  return {
+    requestedTaskId: taskId,
+    dispatched: dispatch.taskId === taskId,
+    dispatchedTaskId: dispatch.taskId,
+    dispatchReason: reason,
+    dispatcher: dispatch.raw,
+  }
+}
+
 async function approveProposedTask(taskId, options = {}) {
   ensureWorkspaceQueueDirs()
   const requestedId = taskId || getLatestProposedTask()?.task?.id
@@ -362,6 +521,7 @@ async function approveProposedTask(taskId, options = {}) {
 
   const task = JSON.parse(fs.readFileSync(proposedPath, 'utf-8'))
   const approvedAt = new Date().toISOString()
+  const wantsImmediateDispatch = Boolean(options.dispatchNow) || /urgent|do now/i.test(String(options.approvedByText || ''))
   const approvedTask = {
     ...task,
     status: 'queued',
@@ -373,17 +533,39 @@ async function approveProposedTask(taskId, options = {}) {
   if (options.approvedByText) {
     approvedTask.approved_by = 'text'
     approvedTask.approval_text = normalizeQueueText(options.approvedByText)
-    if (/urgent|do now/i.test(options.approvedByText)) {
-      approvedTask.priority = Math.max(approvedTask.priority, Number(options.priority ?? 10) || 10)
-      approvedTask.priority_note = 'Approved as urgent from operator action'
-    }
+  }
+  if (wantsImmediateDispatch) {
+    approvedTask.priority = Math.max(approvedTask.priority, Number(options.priority ?? 12) || 12)
+    approvedTask.bumped_at = approvedAt
+    approvedTask.dispatch_requested_at = approvedAt
+    approvedTask.dispatch_requested_by = 'clawcommand'
+    approvedTask.priority_note = 'Marked urgent / DO NOW from ClawCommand for immediate dispatch'
   }
   const pendingPath = path.join(WORKSPACE_QUEUE, 'pending', `${requestedId}.json`)
   fs.renameSync(proposedPath, pendingPath)
   fs.writeFileSync(pendingPath, JSON.stringify(approvedTask, null, 2), 'utf-8')
   await runQueueTriage()
   const reviewedTask = fs.existsSync(pendingPath) ? JSON.parse(fs.readFileSync(pendingPath, 'utf-8')) : approvedTask
-  addEvent('queue.approved', `Approved queued task: ${reviewedTask.text}`, { taskId: requestedId, priority: reviewedTask.priority, approvedBy: reviewedTask.approved_by || 'api' })
+  let dispatchMeta = null
+  if (wantsImmediateDispatch) {
+    dispatchMeta = await dispatchQueueTaskNow(requestedId, 'approve_urgent')
+  }
+  addEvent(
+    wantsImmediateDispatch ? 'queue.approved_urgent' : 'queue.approved',
+    wantsImmediateDispatch
+      ? `Approved urgent queued task for immediate dispatch: ${reviewedTask.text}`
+      : `Approved queued task: ${reviewedTask.text}`,
+    {
+      taskId: requestedId,
+      priority: reviewedTask.priority,
+      approvedBy: reviewedTask.approved_by || 'api',
+      dispatchedTaskId: dispatchMeta?.dispatchedTaskId || null,
+      dispatched: dispatchMeta?.dispatched || false,
+    },
+  )
+  if (dispatchMeta) {
+    return { ...reviewedTask, immediate_dispatch: dispatchMeta }
+  }
   return reviewedTask
 }
 
@@ -418,10 +600,28 @@ function spawnDetachedPowerShell({ command, cwd, logFile }) {
   })
 }
 
+function isSessionRecordLike(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  return (
+    Object.prototype.hasOwnProperty.call(value, 'sessionId') ||
+    Object.prototype.hasOwnProperty.call(value, 'updatedAt') ||
+    Object.prototype.hasOwnProperty.call(value, 'sessionFile') ||
+    Object.prototype.hasOwnProperty.call(value, 'chatType')
+  )
+}
+
 function normalizeSessions(data) {
+  if (data == null) return []
   if (Array.isArray(data)) return data
   if (Array.isArray(data.sessions)) return data.sessions
   if (Array.isArray(data.items)) return data.items
+  if (typeof data === 'object') {
+    const entries = Object.entries(data).filter(([, v]) => v && typeof v === 'object' && !Array.isArray(v))
+    const sessionLike = entries.filter(([, v]) => isSessionRecordLike(v))
+    if (sessionLike.length > 0) {
+      return sessionLike.map(([k, v]) => ({ ...v, key: v.key || k }))
+    }
+  }
   return []
 }
 
@@ -433,7 +633,8 @@ function parseSessionRow(session) {
   const kind = session.kind || session.type || 'unknown'
   const tokens = session.tokens || session.tokenUsage || session.totalTokens || session.context || ''
   const status = session.status || (session.abortedLastRun ? 'aborted' : 'active')
-  const channel = session.channel || session.modelProvider || session.agentId || ''
+  const channel =
+    session.channel || session.modelProvider || session.agentId || session.deliveryContext?.channel || session.deliveryContext?.surface || ''
   const sessionId = session.sessionId || session.id || ''
   return { key, age, updatedAt, model, kind, tokens, status, channel, sessionId }
 }
@@ -938,10 +1139,9 @@ async function collectTelemetry() {
 }
 
 async function runCollectTelemetryBody() {
-  const cliTimeout = 12000
   const [statusResult, sessionsResult, httpProbe] = await Promise.all([
-    runOpenClaw(['status'], { timeout: cliTimeout }),
-    runOpenClaw(['sessions', '--json'], { timeout: cliTimeout }),
+    runOpenClaw(['status'], { timeout: OPENCLAW_CLI_STATUS_TIMEOUT_MS }),
+    runOpenClaw(['sessions', '--json'], { timeout: OPENCLAW_CLI_SESSIONS_TIMEOUT_MS }),
     probeOpenClawGatewayHttp(),
   ])
 
@@ -963,11 +1163,11 @@ async function runCollectTelemetryBody() {
       addEvent('openclaw.status.change', 'Gateway snapshot changed', parsedFromCli)
     }
   } else {
-    telemetryState.lastStatusError = String(
-      statusResult.stderr || statusResult.stdout || statusResult.error?.message || statusResult.error || 'status probe failed',
-    )
+    telemetryState.lastStatusError = summarizeCliFailure('status', statusResult)
     if (gatewayHttpOk) {
-      telemetryState.lastStatusOutput = `[HTTP ${httpProbe.url} reachable, ${httpProbe.latencyMs}ms]\nOpenClaw CLI status unavailable: ${telemetryState.lastStatusError}`
+      telemetryState.lastStatusOutput = `[HTTP ${httpProbe.url} reachable, ${httpProbe.latencyMs}ms]\nOpenClaw CLI status unavailable. Showing HTTP gateway reachability only.`
+    } else {
+      telemetryState.lastStatusOutput = 'OpenClaw status unavailable. Gateway reachability probe also failed.'
     }
   }
 
@@ -1005,79 +1205,70 @@ async function runCollectTelemetryBody() {
 
   if (!sessionsResult.error) {
     try {
-      const parsed = JSON.parse(sessionsResult.stdout || '[]')
+      const parsed = parseJsonFromCliStdout(sessionsResult.stdout) ?? JSON.parse(sessionsResult.stdout || '[]')
       const sessions = normalizeSessions(parsed).map(parseSessionRow)
-      const nextMap = new Map(sessions.map((session) => [session.key, session]))
-      telemetryState.lastSessions = sessions
-      telemetryState.lastSessionsFetchedAt = new Date().toISOString()
-      telemetryState.lastSessionsError = null
-
-      if (telemetryState.lastSessionCount !== null && telemetryState.lastSessionCount !== sessions.length) {
-        addEvent('openclaw.session.count', `Session count changed: ${telemetryState.lastSessionCount} -> ${sessions.length}`, { count: sessions.length })
-      }
-      telemetryState.lastSessionCount = sessions.length
-
-      for (const session of sessions) {
-        if (!telemetryState.sessionsByKey.has(session.key)) {
-          addEvent('openclaw.session.started', `Session appeared: ${session.key}`, session)
+      if (!sessions.length && gatewayHttpOk) {
+        const fsFallback = tryReadSessionsFromIndexFile()
+        if (fsFallback?.length) {
+          replaceTelemetrySessions(fsFallback)
+          telemetryState.lastCliSessionsOk = false
+          telemetryState.lastSessionsListingDetail = 'session list read from local index (CLI output unusable)'
+        } else {
+          replaceTelemetrySessions([])
         }
-      }
-
-      for (const [key, session] of telemetryState.sessionsByKey.entries()) {
-        if (!nextMap.has(key)) {
-          addEvent('openclaw.session.ended', `Session disappeared: ${key}`, session)
-        }
-      }
-
-      telemetryState.sessionsByKey = nextMap
-    } catch {
-      const parseDetail = 'OpenClaw returned session output that ClawCommand could not parse.'
-      telemetryState.lastSessionsFetchedAt = new Date().toISOString()
-      if (gatewayHttpOk) {
-        telemetryState.lastSessionsListingDegraded = true
-        telemetryState.lastSessionsListingDetail = parseDetail
-        telemetryState.lastSessionsError = null
-        telemetryState.lastSessions = []
       } else {
-        telemetryState.lastSessionsError = parseDetail
+        replaceTelemetrySessions(sessions)
       }
-      addEvent('openclaw.parse.error', 'Failed to parse session telemetry output')
+    } catch {
+      const fsFallback = gatewayHttpOk ? tryReadSessionsFromIndexFile() : null
+      if (fsFallback?.length) {
+        replaceTelemetrySessions(fsFallback)
+        telemetryState.lastCliSessionsOk = false
+        telemetryState.lastSessionsListingDetail = 'session list read from local index (CLI JSON parse failed)'
+      } else {
+        const parseDetail = summarizeParseFailure('session list')
+        telemetryState.lastSessionsFetchedAt = new Date().toISOString()
+        if (gatewayHttpOk) {
+          telemetryState.lastSessionsListingDegraded = true
+          telemetryState.lastSessionsListingDetail = parseDetail
+          telemetryState.lastSessionsError = null
+          telemetryState.lastSessions = []
+        } else {
+          telemetryState.lastSessionsError = parseDetail
+        }
+        addEvent('openclaw.parse.error', 'Failed to parse session telemetry output')
+      }
     }
   } else {
     let salvaged = false
     try {
-      const parsed = JSON.parse(sessionsResult.stdout || 'null')
+      const parsed = parseJsonFromCliStdout(sessionsResult.stdout) ?? JSON.parse(sessionsResult.stdout || 'null')
       const sessions = normalizeSessions(parsed).map(parseSessionRow)
       if (sessions.length) {
-        const nextMap = new Map(sessions.map((session) => [session.key, session]))
-        telemetryState.lastSessions = sessions
-        telemetryState.lastSessionsFetchedAt = new Date().toISOString()
-        telemetryState.lastSessionsError = null
-        telemetryState.lastSessionsListingDegraded = false
+        replaceTelemetrySessions(sessions)
         telemetryState.lastCliSessionsOk = true
         salvaged = true
-        if (telemetryState.lastSessionCount !== null && telemetryState.lastSessionCount !== sessions.length) {
-          addEvent('openclaw.session.count', `Session count changed: ${telemetryState.lastSessionCount} -> ${sessions.length}`, { count: sessions.length })
-        }
-        telemetryState.lastSessionCount = sessions.length
-        telemetryState.sessionsByKey = nextMap
       }
     } catch {
       salvaged = false
     }
 
     if (!salvaged) {
-      const sessionFailDetail = String(
-        sessionsResult.stderr || sessionsResult.stdout || sessionsResult.error?.message || sessionsResult.error || 'session probe failed',
-      )
-      telemetryState.lastSessionsFetchedAt = new Date().toISOString()
-      if (gatewayHttpOk) {
-        telemetryState.lastSessionsListingDegraded = true
-        telemetryState.lastSessionsListingDetail = sessionFailDetail
-        telemetryState.lastSessionsError = null
-        telemetryState.lastSessions = []
+      const fsFallback = gatewayHttpOk ? tryReadSessionsFromIndexFile() : null
+      if (fsFallback?.length) {
+        replaceTelemetrySessions(fsFallback)
+        telemetryState.lastCliSessionsOk = false
       } else {
-        telemetryState.lastSessionsError = sessionFailDetail
+        const sessionFailDetail = summarizeCliFailure('session list', sessionsResult)
+        telemetryState.lastSessionsFetchedAt = new Date().toISOString()
+        if (gatewayHttpOk) {
+          telemetryState.lastSessionsListingDegraded = true
+          telemetryState.lastSessionsListingDetail = sessionFailDetail
+          telemetryState.lastSessionsError = null
+          telemetryState.lastSessions = []
+        } else {
+          telemetryState.lastSessionsError = sessionFailDetail
+        }
       }
     }
   }
@@ -1291,7 +1482,7 @@ app.post('/api/task-queue/:taskId/priority', (req, res) => {
   }
 })
 
-app.post('/api/task-queue/:taskId/do-now', (req, res) => {
+app.post('/api/task-queue/:taskId/do-now', async (req, res) => {
   const { taskId } = req.params
 
   try {
@@ -1306,16 +1497,25 @@ app.post('/api/task-queue/:taskId/do-now', (req, res) => {
         error.statusCode = 409
         throw error
       }
-      task.priority = Math.max(queuePriorityValue(task), maxPendingPriority + 1)
-      task.bumped_at = new Date().toISOString()
+      const requestedAt = new Date().toISOString()
+      task.priority = Math.max(queuePriorityValue(task), maxPendingPriority + 1, Number(req.body?.priority ?? 12) || 12)
+      task.bumped_at = requestedAt
       task.updated_at = task.bumped_at
-      task.priority_note = 'Marked DO NOW from ClawCommand'
+      task.dispatch_requested_at = requestedAt
+      task.dispatch_requested_by = 'clawcommand'
+      task.priority_note = 'Marked urgent / DO NOW from ClawCommand for immediate dispatch'
       return task
     })
 
     if (!updated) return res.status(404).json({ error: 'task not found' })
-    addEvent('queue.do_now', `Moved queue task ${taskId} to the front at priority ${updated.task.priority}`, { taskId, priority: updated.task.priority })
-    res.json(updated.task)
+    const dispatchMeta = await dispatchQueueTaskNow(taskId, 'do_now')
+    addEvent('queue.do_now', `Marked queue task ${taskId} DO NOW for immediate dispatch`, {
+      taskId,
+      priority: updated.task.priority,
+      dispatchedTaskId: dispatchMeta?.dispatchedTaskId || null,
+      dispatched: dispatchMeta?.dispatched || false,
+    })
+    res.json({ ...updated.task, immediate_dispatch: dispatchMeta })
   } catch (err) {
     const statusCode = err?.statusCode || 500
     res.status(statusCode).json({ error: String(err.message || err) })
@@ -1611,8 +1811,9 @@ app.delete('/api/openclaw/sessions/:key', async (req, res) => {
   if (!key) return res.status(400).json({ error: 'session key required' })
   const result = await runOpenClaw(['sessions', 'kill', key])
   if (result.error && result.stderr && !result.stdout) {
-    addEvent('openclaw.session.kill.error', `Failed to kill session: ${key}`, { error: result.stderr })
-    return res.status(500).json({ error: result.stderr, stdout: result.stdout })
+    const errorMessage = summarizeCliFailure('session kill', result)
+    addEvent('openclaw.session.kill.error', `Failed to kill session: ${key}`, { error: errorMessage })
+    return res.status(500).json({ error: errorMessage, errorCode: 'session_kill_failed' })
   }
   addEvent('openclaw.session.killed', `Session killed: ${key}`, { key })
   res.json({ ok: true, key, output: result.stdout })
@@ -1621,14 +1822,21 @@ app.delete('/api/openclaw/sessions/:key', async (req, res) => {
 app.post('/api/openclaw/refresh', async (_req, res) => {
   addEvent('openclaw.refresh', 'Manual OpenClaw refresh requested')
   await collectTelemetry()
-  const [status, sessions] = await Promise.all([
-    runOpenClaw(['status']),
-    runOpenClaw(['sessions', '--json'])
-  ])
+  const tel = apiTelemetry()
   res.json({
-    status: status.stdout,
-    sessions: sessions.stdout,
-    ok: !status.error && !sessions.error
+    ok: Boolean(tel.lastCliStatusOk || tel.lastGatewayHttpProbe?.reachable),
+    status: {
+      output: tel.lastStatusOutput || 'Waiting for OpenClaw status telemetry...',
+      parsed: tel.lastStatusParsed || { gatewayState: 'unknown', telegramState: 'unknown', sessionsSummary: 'warming up' },
+      cliOk: tel.lastCliStatusOk,
+      error: tel.lastCliStatusOk ? null : tel.lastStatusError,
+    },
+    sessions: {
+      count: tel.lastSessions.length,
+      cliOk: tel.lastCliSessionsOk,
+      degraded: tel.lastSessionsListingDegraded,
+      detail: tel.lastSessionsListingDetail || tel.lastSessionsError || null,
+    },
   })
 })
 

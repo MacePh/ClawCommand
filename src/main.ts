@@ -45,6 +45,14 @@ type MemoryItem = {
   tags?: string[]
 }
 type MemorySection = { key: string; items: MemoryItem[] }
+type QueueTaskImmediateDispatch = {
+  requestedTaskId?: string
+  dispatched?: boolean
+  dispatchedTaskId?: string | null
+  dispatchReason?: string
+  dispatcher?: { ok?: boolean; task_id?: string | null } | null
+}
+
 type QueueTask = {
   id: string
   title?: string
@@ -57,6 +65,8 @@ type QueueTask = {
   proposed_at?: string | null
   approved_at?: string | null
   rejected_at?: string | null
+  dispatch_requested_at?: string | null
+  dispatch_requested_by?: string | null
   text: string
   status: 'proposed' | 'queued' | 'running' | 'done' | 'error' | 'failed' | 'claimed' | 'dead' | 'rejected'
   queue_dir?: string
@@ -74,6 +84,7 @@ type QueueTask = {
   completion_summary?: string | null
   dispatch_summary?: string | null
   completion_recorded_at?: string | null
+  immediate_dispatch?: QueueTaskImmediateDispatch | null
 }
 type RuntimeService = {
   id: string
@@ -560,6 +571,11 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
     const source = escapeHtml(task.source || 'unknown')
     const priority = Number(task.priority ?? 0)
     const priorityNote = task.priority_note ? `<div class="task-detail"><strong>Priority note:</strong> ${escapeHtml(task.priority_note)}</div>` : ''
+    const immediateDispatch = task.immediate_dispatch
+      ? `<div class="task-detail"><strong>Immediate dispatch:</strong> ${task.immediate_dispatch.dispatched ? `sent now${task.immediate_dispatch.dispatchedTaskId ? ` as ${escapeHtml(String(task.immediate_dispatch.dispatchedTaskId))}` : ''}` : `requested, but dispatcher picked ${escapeHtml(String(task.immediate_dispatch.dispatchedTaskId || 'nothing'))}`}</div>`
+      : task.dispatch_requested_at
+        ? `<div class="task-detail"><strong>Dispatch requested:</strong> ${escapeHtml(task.dispatch_requested_by || 'operator')} at ${escapeHtml(new Date(task.dispatch_requested_at).toLocaleString())}</div>`
+        : ''
     const reason = task.reason ? `<div class="task-detail"><strong>Reason:</strong> ${escapeHtml(task.reason)}</div>` : ''
     const completionSummary = task.completion_summary
       ? `<div class="task-detail"><strong>Completion summary:</strong> ${escapeHtml(task.completion_summary)}</div>`
@@ -580,7 +596,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
       ? `
         <div class="queue-priority-controls">
           <button class="queue-inline-btn primary-btn" data-approve-task="${escapeHtml(task.id)}">Approve</button>
-          <button class="queue-inline-btn primary-btn" data-approve-urgent-task="${escapeHtml(task.id)}">Approve urgent</button>
+          <button class="queue-inline-btn primary-btn" data-approve-urgent-task="${escapeHtml(task.id)}">Approve urgent + dispatch now</button>
           <button class="queue-inline-btn" data-edit-task="${escapeHtml(task.id)}">Edit</button>
           <button class="queue-inline-btn danger-btn" data-reject-task="${escapeHtml(task.id)}">Reject</button>
         </div>
@@ -591,7 +607,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
         <div class="queue-priority-controls">
           <button class="queue-inline-btn" data-bump-task="${escapeHtml(task.id)}" data-amount="1">Bump +1</button>
           <button class="queue-inline-btn" data-bump-task="${escapeHtml(task.id)}" data-amount="5">Bump +5</button>
-          <button class="queue-inline-btn primary-btn" data-do-now-task="${escapeHtml(task.id)}">Do now</button>
+          <button class="queue-inline-btn primary-btn" data-do-now-task="${escapeHtml(task.id)}">Do now → dispatch now</button>
           <button class="queue-inline-btn danger-btn" data-cancel-task="${escapeHtml(task.id)}">Cancel</button>
           <label class="queue-priority-select-wrap">
             <span>Priority</span>
@@ -627,6 +643,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
           ${approvalControls}
           ${priorityControls}
           ${priorityNote}
+          ${immediateDispatch}
           ${reason}
           ${completionSummary}
           ${dispatchSummary}
@@ -883,15 +900,8 @@ async function approveQueueTask(taskId: string, urgent: boolean, button?: HTMLBu
     await fetchJson<QueueTask>(`${apiBase}/task-queue/${encodeURIComponent(taskId)}/approve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ approvalText: urgent ? 'urgent' : 'approve' }),
+      body: JSON.stringify({ approvalText: urgent ? 'urgent' : 'approve', dispatchNow: urgent }),
     })
-    if (urgent) {
-      await fetchJson<QueueTask>(`${apiBase}/task-queue/${encodeURIComponent(taskId)}/do-now`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
-      })
-    }
     await Promise.all([loadQueueTasks(), loadEvents()])
   } catch (err) {
     alert(`Queue approval failed: ${String(err)}`)
