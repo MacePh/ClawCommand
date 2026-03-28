@@ -581,9 +581,9 @@ function updateQueuePanelToggleLabel() {
 
 function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null) {
   const wrap = document.getElementById('queue-task-list')!
-  const proposedTasks = tasks.filter((task) => task.queue_dir === 'proposed')
-  const runningTasks = tasks.filter((task) => task.queue_dir === 'running')
-  const queuedTasks = tasks.filter((task) => task.queue_dir === 'pending' || task.queue_dir === 'claimed')
+  const proposedTasks = tasks.filter((task) => task.queue_dir === 'proposed' || task.approval_state === 'awaiting_approval')
+  const runningTasks = tasks.filter((task) => ['running', 'claimed'].includes(task.queue_dir || '') || ['running', 'claimed'].includes(task.status))
+  const queuedTasks = tasks.filter((task) => (task.queue_dir === 'pending' || task.status === 'queued') && !runningTasks.includes(task))
   const doneTasks = tasks.filter((task) => task.queue_dir === 'done')
   const attentionTasks = tasks.filter((task) => ['failed', 'dead'].includes(task.queue_dir || '') || ['failed', 'error', 'dead'].includes(task.status))
   const activeTasks = [...proposedTasks, ...runningTasks, ...queuedTasks]
@@ -593,7 +593,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
   if (activeQueueTab === 'done' && !doneTasks.length && activeTasks.length) activeQueueTab = 'active'
   if (activeQueueTab === 'attention' && !attentionTasks.length && activeTasks.length) activeQueueTab = 'active'
 
-  const renderTaskCard = (task: QueueTask) => {
+  const renderTaskCard = (task: QueueTask, lane: 'proposed' | 'queued' | 'running' | 'done' | 'attention') => {
     const created = task.created_at || task.createdAt || ''
     const when = created ? new Date(created).toLocaleString() : 'unknown time'
     const attempt = typeof task.attempt === 'number' && task.attempt > 0 ? ` · attempt ${task.attempt}` : ''
@@ -634,7 +634,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
       formatQueueTimestamp('bumped', task.bumped_at),
       formatQueueTimestamp('updated', task.updated_at),
     ].filter(Boolean).join(' · ')
-    const approvalControls = task.queue_dir === 'proposed'
+    const approvalControls = lane === 'proposed'
       ? `
         <div class="queue-priority-controls">
           <button class="queue-inline-btn primary-btn" data-approve-task="${escapeHtml(task.id)}">Approve</button>
@@ -644,7 +644,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
         </div>
       `
       : ''
-    const priorityControls = task.queue_dir === 'pending'
+    const priorityControls = lane === 'queued'
       ? `
         <div class="queue-priority-controls">
           <button class="queue-inline-btn" data-bump-task="${escapeHtml(task.id)}" data-amount="1">Bump +1</button>
@@ -658,16 +658,10 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
           <button class="queue-inline-btn" data-priority-save="${escapeHtml(task.id)}">Set</button>
         </div>
       `
-      : task.queue_dir === 'claimed'
-        ? `
-          <div class="queue-priority-controls">
-            <button class="queue-inline-btn danger-btn" data-cancel-task="${escapeHtml(task.id)}">Cancel before run</button>
-          </div>
-        `
-        : ''
+      : ''
 
     return `
-      <details class="queue-task-card neon-card queue-task-card-${task.queue_dir || task.status}${triageStamp?.stale ? ' queue-task-card-triage-stale' : ''}" data-state="${state}" ${['proposed', 'running', 'claimed', 'pending'].includes(task.queue_dir || '') ? 'open' : ''}>
+      <details class="queue-task-card neon-card queue-task-card-${task.queue_dir || task.status} queue-task-card-lane-${lane}${triageStamp?.stale ? ' queue-task-card-triage-stale' : ''}" data-state="${state}" ${['proposed', 'queued', 'running'].includes(lane) ? 'open' : ''}>
         <summary class="detail-summary" style="padding:0; border-bottom:none;">
           <div class="queue-card-topline">
             <div>
@@ -699,7 +693,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
     `
   }
 
-  const renderSection = (title: string, subtitle: string, laneClass: string, items: QueueTask[], emptyText: string) => `
+  const renderSection = (title: string, subtitle: string, laneClass: string, laneKey: 'proposed' | 'queued' | 'running' | 'done' | 'attention', items: QueueTask[], emptyText: string) => `
     <section class="queue-lane ${laneClass}">
       <div class="queue-lane-header">
         <div>
@@ -709,7 +703,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
         <div class="queue-lane-count">${items.length}</div>
       </div>
       <div class="queue-lane-body">
-        ${items.length ? items.map(renderTaskCard).join('') : `<div class="muted">${emptyText}</div>`}
+        ${items.length ? items.map((item) => renderTaskCard(item, laneKey)).join('') : `<div class="muted">${emptyText}</div>`}
       </div>
     </section>
   `
@@ -738,8 +732,9 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
 
   const activeView = `
     <div class="queue-lane-grid">
-      ${renderSection('Proposed', 'Review here first. Nothing executes until approved.', 'queue-lane-proposed', proposedTasks, 'No proposed work waiting for approval.')}
-      ${renderSection('Execution Queue', 'Approved work only. Reprioritize here.', 'queue-lane-queued', [...runningTasks, ...queuedTasks], 'No approved tasks are waiting or running.')}
+      ${renderSection('Proposed', 'Review here first. Nothing executes until approved.', 'queue-lane-proposed', 'proposed', proposedTasks, 'No proposed work waiting for approval.')}
+      ${renderSection('Queued', 'Approved and waiting to run.', 'queue-lane-queued', 'queued', queuedTasks, 'No approved tasks are waiting to run.')}
+      ${renderSection('Running Now', 'Boris is working on this now.', 'queue-lane-running', 'running', runningTasks, 'Nothing running right now.')}
     </div>
   `
 
@@ -753,7 +748,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
         <div class="queue-lane-count">${doneTasks.length}</div>
       </div>
       <div class="queue-lane-body queue-lane-body-compact">
-        ${doneTasks.length ? doneTasks.map(renderTaskCard).join('') : '<div class="muted">No successfully completed tasks yet.</div>'}
+        ${doneTasks.length ? doneTasks.map((item) => renderTaskCard(item, 'done')).join('') : '<div class="muted">No successfully completed tasks yet.</div>'}
       </div>
     </section>
   `
@@ -768,7 +763,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
         <div class="queue-lane-count">${attentionTasks.length}</div>
       </div>
       <div class="queue-lane-body queue-lane-body-compact">
-        ${attentionTasks.length ? attentionTasks.map(renderTaskCard).join('') : '<div class="muted">Nothing is currently asking for attention.</div>'}
+        ${attentionTasks.length ? attentionTasks.map((item) => renderTaskCard(item, 'attention')).join('') : '<div class="muted">Nothing is currently asking for attention.</div>'}
       </div>
     </section>
   `

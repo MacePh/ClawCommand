@@ -1,5 +1,25 @@
 [
   {
+    "id": "1774670872340-47ba25",
+    "ts": "2026-03-28T04:07:52.340Z",
+    "type": "runtime.service.control",
+    "message": "MPD Controller: restart",
+    "meta": {
+      "serviceId": "mpd-controller",
+      "action": "restart"
+    }
+  },
+  {
+    "id": "1774670871082-0e8850",
+    "ts": "2026-03-28T04:07:51.082Z",
+    "type": "runtime.service.control",
+    "message": "MPD Controller: start",
+    "meta": {
+      "serviceId": "mpd-controller",
+      "action": "start"
+    }
+  },
+  {
     "id": "1774670164106-d43aaa",
     "ts": "2026-03-28T03:56:04.106Z",
     "type": "openclaw.session.ended",
@@ -3405,26 +3425,6 @@
       "model": "gpt-5.4",
       "kind": "direct",
       "tokens": ""
-    }
-  },
-  {
-    "id": "1774638578481-1164ea",
-    "ts": "2026-03-27T19:09:38.481Z",
-    "type": "openclaw.session.count",
-    "message": "Session count changed: 5 -> 4",
-    "meta": {
-      "count": 4
-    }
-  },
-  {
-    "id": "1774638578480-9227c8",
-    "ts": "2026-03-27T19:09:38.480Z",
-    "type": "openclaw.status.change",
-    "message": "Gateway snapshot changed",
-    "meta": {
-      "gatewayState": "online",
-      "telegramState": "configured",
-      "sessionsSummary": "4 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
     }
   }
 ]
