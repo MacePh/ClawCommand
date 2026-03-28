@@ -28,6 +28,7 @@ const WORKSPACE_TRIAGE_SCRIPT = path.join(BORIS_WORKSPACE, 'tools', 'queue_triag
 const WORKSPACE_ACTIVITY_LOG = path.join(BORIS_WORKSPACE, 'memory', 'activity.log')
 const WORKSPACE_MEMORY_DIR = path.join(BORIS_WORKSPACE, 'memory')
 const OPENCLAW_PATH = path.join(process.env.USERPROFILE || '', 'AppData', 'Roaming', 'npm', 'openclaw.cmd')
+const OPENCLAW_GATEWAY_URL = String(process.env.OPENCLAW_GATEWAY_URL || 'http://127.0.0.1:18789').replace(/\/$/, '')
 const QUEUE_PROPOSED_DIR = path.join(WORKSPACE_QUEUE, 'proposed')
 const QUEUE_STATE_DIRS = ['proposed', 'pending', 'claimed', 'running', 'done', 'failed', 'dead']
 const MPD_ROOT = 'F:\\mpd-streamdeck'
@@ -44,6 +45,36 @@ const telemetryState = {
   lastSessionsFetchedAt: null,
   lastStatusError: null,
   lastSessionsError: null,
+  lastGatewayHttpProbe: null,
+  lastCliStatusOk: null,
+  lastCliSessionsOk: null,
+  lastSessionsListingDegraded: false,
+  lastSessionsListingDetail: null,
+}
+
+/** Point-in-time copy for HTTP GETs — avoids torn reads while collectTelemetry() mutates telemetryState */
+let telemetryReadSnapshot = null
+
+function publishTelemetrySnapshot() {
+  const probe = telemetryState.lastGatewayHttpProbe
+  telemetryReadSnapshot = {
+    lastStatusParsed: telemetryState.lastStatusParsed ? { ...telemetryState.lastStatusParsed } : null,
+    lastStatusOutput: telemetryState.lastStatusOutput,
+    lastStatusError: telemetryState.lastStatusError,
+    lastStatusFetchedAt: telemetryState.lastStatusFetchedAt,
+    lastGatewayHttpProbe: probe ? { ...probe } : null,
+    lastCliStatusOk: telemetryState.lastCliStatusOk,
+    lastCliSessionsOk: telemetryState.lastCliSessionsOk,
+    lastSessions: telemetryState.lastSessions.map((s) => ({ ...s })),
+    lastSessionsFetchedAt: telemetryState.lastSessionsFetchedAt,
+    lastSessionsError: telemetryState.lastSessionsError,
+    lastSessionsListingDegraded: telemetryState.lastSessionsListingDegraded,
+    lastSessionsListingDetail: telemetryState.lastSessionsListingDetail,
+  }
+}
+
+function apiTelemetry() {
+  return telemetryReadSnapshot || telemetryState
 }
 
 app.use(cors())
@@ -219,6 +250,42 @@ function execCommand(command, args, options = {}) {
 
 function runOpenClaw(args, opts = {}) {
   return execCommand('cmd.exe', ['/c', OPENCLAW_PATH, ...args], opts)
+}
+
+async function probeOpenClawGatewayHttp() {
+  const healthUrl = `${OPENCLAW_GATEWAY_URL}/health`
+  const started = Date.now()
+  try {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 3000)
+    const res = await fetch(healthUrl, { signal: controller.signal })
+    clearTimeout(timer)
+    const latencyMs = Date.now() - started
+    const text = await res.text()
+    let body = {}
+    try {
+      body = JSON.parse(text)
+    } catch {
+      body = {}
+    }
+    const live = body.ok === true || body.status === 'live' || (res.ok && /"ok"\s*:\s*true/.test(text))
+    return {
+      reachable: res.ok && live,
+      statusCode: res.status,
+      latencyMs,
+      url: healthUrl,
+      baseUrl: OPENCLAW_GATEWAY_URL,
+    }
+  } catch (err) {
+    return {
+      reachable: false,
+      statusCode: null,
+      latencyMs: Date.now() - started,
+      url: healthUrl,
+      baseUrl: OPENCLAW_GATEWAY_URL,
+      error: String(err?.message || err),
+    }
+  }
 }
 
 function runPowerShell(script, opts = {}) {
@@ -689,10 +756,11 @@ const runtimeServices = [
     controllable: true,
     actions: ['start', 'stop', 'restart'],
     async getStatus() {
-      const parsed = telemetryState.lastStatusParsed
-      const text = telemetryState.lastStatusOutput || telemetryState.lastStatusError || ''
+      const tel = apiTelemetry()
+      const parsed = tel.lastStatusParsed
+      const text = tel.lastStatusOutput || tel.lastStatusError || ''
       const gatewayState = String(parsed?.gatewayState || '').toLowerCase()
-      const state = gatewayState.includes('running') || gatewayState.includes('online') ? 'running' : (telemetryState.lastStatusError ? 'unknown' : 'stopped')
+      const state = gatewayState.includes('running') || gatewayState.includes('online') ? 'running' : (tel.lastStatusError ? 'unknown' : 'stopped')
       return {
         status: state,
         pid: null,
@@ -703,7 +771,7 @@ const runtimeServices = [
           transport: 'openclaw status cache',
           command: 'openclaw status',
           scope: 'daemon',
-          freshness: telemetryState.lastStatusFetchedAt ? new Date(telemetryState.lastStatusFetchedAt).toLocaleTimeString() : 'warming up',
+          freshness: tel.lastStatusFetchedAt ? new Date(tel.lastStatusFetchedAt).toLocaleTimeString() : 'warming up',
         },
       }
     },
@@ -862,25 +930,78 @@ async function hydrateRuntimeService(service) {
 }
 
 async function collectTelemetry() {
-  const [statusResult, sessionsResult] = await Promise.all([
-    runOpenClaw(['status'], { timeout: 5000 }),
-    runOpenClaw(['sessions', '--json'], { timeout: 5000 })
+  try {
+    await runCollectTelemetryBody()
+  } finally {
+    publishTelemetrySnapshot()
+  }
+}
+
+async function runCollectTelemetryBody() {
+  const cliTimeout = 12000
+  const [statusResult, sessionsResult, httpProbe] = await Promise.all([
+    runOpenClaw(['status'], { timeout: cliTimeout }),
+    runOpenClaw(['sessions', '--json'], { timeout: cliTimeout }),
+    probeOpenClawGatewayHttp(),
   ])
 
+  telemetryState.lastGatewayHttpProbe = httpProbe
+  const gatewayHttpOk = Boolean(httpProbe?.reachable)
+
+  telemetryState.lastCliStatusOk = !statusResult.error
+  telemetryState.lastCliSessionsOk = !sessionsResult.error
+
+  let parsedFromCli = null
   if (!statusResult.error) {
-    const parsedStatus = parseStatusDetails(statusResult.stdout)
-    const summary = JSON.stringify(parsedStatus)
-    telemetryState.lastStatusParsed = parsedStatus
+    parsedFromCli = parseStatusDetails(statusResult.stdout)
     telemetryState.lastStatusOutput = statusResult.stdout || ''
     telemetryState.lastStatusFetchedAt = new Date().toISOString()
     telemetryState.lastStatusError = null
+    const summary = JSON.stringify(parsedFromCli)
     if (summary !== telemetryState.lastGatewaySummary) {
       telemetryState.lastGatewaySummary = summary
-      addEvent('openclaw.status.change', 'Gateway snapshot changed', parsedStatus)
+      addEvent('openclaw.status.change', 'Gateway snapshot changed', parsedFromCli)
     }
   } else {
-    telemetryState.lastStatusError = String(statusResult.stderr || statusResult.stdout || statusResult.error?.message || statusResult.error || 'status probe failed')
+    telemetryState.lastStatusError = String(
+      statusResult.stderr || statusResult.stdout || statusResult.error?.message || statusResult.error || 'status probe failed',
+    )
+    if (gatewayHttpOk) {
+      telemetryState.lastStatusOutput = `[HTTP ${httpProbe.url} reachable, ${httpProbe.latencyMs}ms]\nOpenClaw CLI status unavailable: ${telemetryState.lastStatusError}`
+    }
   }
+
+  const fallbackParsed = { gatewayState: 'unknown', telegramState: 'unknown', sessionsSummary: 'unknown' }
+  const prevParsed = telemetryState.lastStatusParsed
+  let mergedParsed = parsedFromCli || prevParsed || fallbackParsed
+  if (gatewayHttpOk) {
+    mergedParsed = {
+      ...mergedParsed,
+      gatewayState: 'online',
+      gatewayProbe: 'http',
+      gatewayHttpLatencyMs: httpProbe.latencyMs,
+    }
+    if (statusResult.error) {
+      mergedParsed.cliStatus = 'unavailable'
+      mergedParsed.telegramState = mergedParsed.telegramState === 'missing' && !parsedFromCli ? 'unknown' : mergedParsed.telegramState
+    } else {
+      mergedParsed.cliStatus = 'ok'
+    }
+  } else {
+    const gwFromCli = parsedFromCli?.gatewayState
+    const gatewayState = gwFromCli || (prevParsed?.gatewayProbe === 'http' ? 'unknown' : prevParsed?.gatewayState) || 'unknown'
+    mergedParsed = {
+      ...mergedParsed,
+      gatewayState,
+      cliStatus: statusResult.error ? 'unavailable' : 'ok',
+    }
+    delete mergedParsed.gatewayProbe
+    delete mergedParsed.gatewayHttpLatencyMs
+  }
+  telemetryState.lastStatusParsed = mergedParsed
+
+  telemetryState.lastSessionsListingDegraded = false
+  telemetryState.lastSessionsListingDetail = null
 
   if (!sessionsResult.error) {
     try {
@@ -910,11 +1031,75 @@ async function collectTelemetry() {
 
       telemetryState.sessionsByKey = nextMap
     } catch {
-      telemetryState.lastSessionsError = 'OpenClaw returned session output that ClawCommand could not parse.'
+      const parseDetail = 'OpenClaw returned session output that ClawCommand could not parse.'
+      telemetryState.lastSessionsFetchedAt = new Date().toISOString()
+      if (gatewayHttpOk) {
+        telemetryState.lastSessionsListingDegraded = true
+        telemetryState.lastSessionsListingDetail = parseDetail
+        telemetryState.lastSessionsError = null
+        telemetryState.lastSessions = []
+      } else {
+        telemetryState.lastSessionsError = parseDetail
+      }
       addEvent('openclaw.parse.error', 'Failed to parse session telemetry output')
     }
   } else {
-    telemetryState.lastSessionsError = String(sessionsResult.stderr || sessionsResult.stdout || sessionsResult.error?.message || sessionsResult.error || 'session probe failed')
+    let salvaged = false
+    try {
+      const parsed = JSON.parse(sessionsResult.stdout || 'null')
+      const sessions = normalizeSessions(parsed).map(parseSessionRow)
+      if (sessions.length) {
+        const nextMap = new Map(sessions.map((session) => [session.key, session]))
+        telemetryState.lastSessions = sessions
+        telemetryState.lastSessionsFetchedAt = new Date().toISOString()
+        telemetryState.lastSessionsError = null
+        telemetryState.lastSessionsListingDegraded = false
+        telemetryState.lastCliSessionsOk = true
+        salvaged = true
+        if (telemetryState.lastSessionCount !== null && telemetryState.lastSessionCount !== sessions.length) {
+          addEvent('openclaw.session.count', `Session count changed: ${telemetryState.lastSessionCount} -> ${sessions.length}`, { count: sessions.length })
+        }
+        telemetryState.lastSessionCount = sessions.length
+        telemetryState.sessionsByKey = nextMap
+      }
+    } catch {
+      salvaged = false
+    }
+
+    if (!salvaged) {
+      const sessionFailDetail = String(
+        sessionsResult.stderr || sessionsResult.stdout || sessionsResult.error?.message || sessionsResult.error || 'session probe failed',
+      )
+      telemetryState.lastSessionsFetchedAt = new Date().toISOString()
+      if (gatewayHttpOk) {
+        telemetryState.lastSessionsListingDegraded = true
+        telemetryState.lastSessionsListingDetail = sessionFailDetail
+        telemetryState.lastSessionsError = null
+        telemetryState.lastSessions = []
+      } else {
+        telemetryState.lastSessionsError = sessionFailDetail
+      }
+    }
+  }
+
+  const sessionsList = telemetryState.lastSessions || []
+  if (sessionsList.length && telemetryState.lastStatusParsed) {
+    const telegramSignal = sessionsList.some((s) => {
+      const key = String(s.key || '')
+      const ch = String(s.channel || '').toLowerCase()
+      return key.includes('telegram') || ch.includes('telegram')
+    })
+    if (telegramSignal) {
+      telemetryState.lastStatusParsed = {
+        ...telemetryState.lastStatusParsed,
+        telegramState: 'configured',
+        telegramHint: 'sessions_json',
+      }
+    }
+  }
+
+  if (telemetryState.lastSessions.length > 0) {
+    telemetryState.lastSessionsListingDegraded = false
   }
 }
 
@@ -1327,28 +1512,59 @@ app.post('/api/runtime/services/:id/:action', handleRuntimeServiceAction)
 app.post('/api/runtime-services/:id/:action', handleRuntimeServiceAction)
 
 app.get('/api/openclaw/status', async (_req, res) => {
-  if (telemetryState.lastStatusParsed || telemetryState.lastStatusError) {
-    return res.json({
-      output: telemetryState.lastStatusOutput || telemetryState.lastStatusError || 'Waiting for OpenClaw status telemetry...',
-      parsed: telemetryState.lastStatusParsed || { gatewayState: 'unknown', telegramState: 'unknown', sessionsSummary: 'warming up' },
-      cached: true,
-      fetchedAt: telemetryState.lastStatusFetchedAt,
-      error: telemetryState.lastStatusError,
-    })
+  const tel = apiTelemetry()
+  const http = tel.lastGatewayHttpProbe
+  const httpReachable = Boolean(http?.reachable)
+  const payload = {
+    output: tel.lastStatusOutput || tel.lastStatusError || 'Waiting for OpenClaw status telemetry...',
+    parsed: tel.lastStatusParsed || { gatewayState: 'unknown', telegramState: 'unknown', sessionsSummary: 'warming up' },
+    gatewayHttp: http
+      ? {
+          reachable: http.reachable,
+          latencyMs: http.latencyMs,
+          baseUrl: http.baseUrl,
+          url: http.url,
+          error: http.error || null,
+        }
+      : { reachable: false, latencyMs: null, baseUrl: OPENCLAW_GATEWAY_URL, url: null, error: 'not probed yet' },
+    cliStatus: {
+      ok: tel.lastCliStatusOk,
+      error: tel.lastCliStatusOk ? null : tel.lastStatusError,
+    },
+    cached: true,
+    fetchedAt: tel.lastStatusFetchedAt,
+    error: httpReachable ? null : tel.lastStatusError,
+  }
+
+  if (tel.lastStatusParsed || tel.lastStatusError || http) {
+    return res.json(payload)
   }
 
   return res.json({
+    ...payload,
     output: 'Waiting for OpenClaw status telemetry...',
     parsed: { gatewayState: 'unknown', telegramState: 'unknown', sessionsSummary: 'warming up' },
-    cached: true,
     fetchedAt: null,
     warmingUp: true,
   })
 })
 
 app.get('/api/openclaw/sessions', async (_req, res) => {
-  if (telemetryState.lastSessions.length || telemetryState.lastSessionsError) {
-    if (telemetryState.lastSessionsError) {
+  const tel = apiTelemetry()
+  if (tel.lastSessionsListingDegraded && tel.lastSessions.length === 0) {
+    return res.json({
+      sessions: [],
+      gatewayReachable: true,
+      listingUnavailable: true,
+      listingDetail: tel.lastSessionsListingDetail || 'OpenClaw CLI did not return session JSON.',
+      cached: true,
+      fetchedAt: tel.lastSessionsFetchedAt,
+      cliSessionsOk: false,
+    })
+  }
+
+  if (tel.lastSessions.length || tel.lastSessionsError) {
+    if (tel.lastSessionsError) {
       return res.json({
         sessions: [{
           key: 'session listing degraded',
@@ -1356,16 +1572,22 @@ app.get('/api/openclaw/sessions', async (_req, res) => {
           model: 'OpenClaw',
           status: 'error',
           errorCode: 'session_list_failed',
-          errorMessage: telemetryState.lastSessionsError || 'OpenClaw did not return session data.',
+          errorMessage: tel.lastSessionsError || 'OpenClaw did not return session data.',
         }],
         error: 'Failed to load sessions',
         errorCode: 'session_list_failed',
+        gatewayReachable: Boolean(tel.lastGatewayHttpProbe?.reachable),
         cached: true,
-        fetchedAt: telemetryState.lastSessionsFetchedAt,
+        fetchedAt: tel.lastSessionsFetchedAt,
       })
     }
 
-    return res.json({ sessions: telemetryState.lastSessions, cached: true, fetchedAt: telemetryState.lastSessionsFetchedAt })
+    return res.json({
+      sessions: tel.lastSessions,
+      gatewayReachable: Boolean(tel.lastGatewayHttpProbe?.reachable),
+      cached: true,
+      fetchedAt: tel.lastSessionsFetchedAt,
+    })
   }
 
   return res.json({
@@ -1377,6 +1599,7 @@ app.get('/api/openclaw/sessions', async (_req, res) => {
       errorCode: 'session_cache_warming',
       errorMessage: 'OpenClaw session telemetry has not arrived yet. This panel is cache-backed on purpose so the overview stays responsive.',
     }],
+    gatewayReachable: Boolean(tel.lastGatewayHttpProbe?.reachable),
     cached: true,
     fetchedAt: null,
     warmingUp: true,

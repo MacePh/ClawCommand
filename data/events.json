@@ -1,5 +1,62 @@
 [
   {
+    "id": "1774661793832-66b2d7",
+    "ts": "2026-03-28T01:36:33.832Z",
+    "type": "queue.do_now",
+    "message": "Moved queue task t_1774661772883_cd0f to the front at priority 1",
+    "meta": {
+      "taskId": "t_1774661772883_cd0f",
+      "priority": 1
+    }
+  },
+  {
+    "id": "1774661780609-00ca16",
+    "ts": "2026-03-28T01:36:20.609Z",
+    "type": "queue.approved",
+    "message": "Approved queued task: test",
+    "meta": {
+      "taskId": "t_1774661772883_cd0f",
+      "priority": 0,
+      "approvedBy": "text"
+    }
+  },
+  {
+    "id": "1774661772891-ae02c4",
+    "ts": "2026-03-28T01:36:12.891Z",
+    "type": "queue.proposed",
+    "message": "Proposed task awaiting approval: test",
+    "meta": {
+      "taskId": "t_1774661772883_cd0f",
+      "priority": 0,
+      "approvalState": "awaiting_approval"
+    }
+  },
+  {
+    "id": "1774661693441-58b37b",
+    "ts": "2026-03-28T01:34:53.441Z",
+    "type": "server.started",
+    "message": "ClawCommand API started on 4310",
+    "meta": {}
+  },
+  {
+    "id": "1774661469347-fe1f80",
+    "ts": "2026-03-28T01:31:09.347Z",
+    "type": "openclaw.status.change",
+    "message": "Gateway snapshot changed",
+    "meta": {
+      "gatewayState": "online",
+      "telegramState": "configured",
+      "sessionsSummary": "9 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
+    }
+  },
+  {
+    "id": "1774660669070-ad721f",
+    "ts": "2026-03-28T01:17:49.070Z",
+    "type": "server.started",
+    "message": "ClawCommand API started on 4310",
+    "meta": {}
+  },
+  {
     "id": "1774659469189-30b013",
     "ts": "2026-03-28T00:57:49.189Z",
     "type": "runtime.service.control.error",
@@ -3182,60 +3239,6 @@
   {
     "id": "1774596303497-4a1cdf",
     "ts": "2026-03-27T07:25:03.497Z",
-    "type": "openclaw.error",
-    "message": "Failed to fetch OpenClaw status",
-    "meta": {
-      "error": "spawn openclaw ENOENT"
-    }
-  },
-  {
-    "id": "1774596301237-23f005",
-    "ts": "2026-03-27T07:25:01.237Z",
-    "type": "openclaw.error",
-    "message": "Failed to fetch OpenClaw status",
-    "meta": {
-      "error": "spawn openclaw ENOENT"
-    }
-  },
-  {
-    "id": "1774596299014-944b5a",
-    "ts": "2026-03-27T07:24:59.014Z",
-    "type": "openclaw.error",
-    "message": "Failed to fetch OpenClaw status",
-    "meta": {
-      "error": "spawn openclaw ENOENT"
-    }
-  },
-  {
-    "id": "1774596293309-02e5f5",
-    "ts": "2026-03-27T07:24:53.309Z",
-    "type": "openclaw.error",
-    "message": "Failed to fetch OpenClaw status",
-    "meta": {
-      "error": "spawn openclaw ENOENT"
-    }
-  },
-  {
-    "id": "1774596291060-821d70",
-    "ts": "2026-03-27T07:24:51.060Z",
-    "type": "openclaw.error",
-    "message": "Failed to fetch OpenClaw status",
-    "meta": {
-      "error": "spawn openclaw ENOENT"
-    }
-  },
-  {
-    "id": "1774596288843-02d707",
-    "ts": "2026-03-27T07:24:48.843Z",
-    "type": "openclaw.error",
-    "message": "Failed to fetch OpenClaw status",
-    "meta": {
-      "error": "spawn openclaw ENOENT"
-    }
-  },
-  {
-    "id": "1774596283149-8601cb",
-    "ts": "2026-03-27T07:24:43.149Z",
     "type": "openclaw.error",
     "message": "Failed to fetch OpenClaw status",
     "meta": {

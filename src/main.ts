@@ -122,6 +122,7 @@ let geminiImageEditConfigState: GeminiImageEditsPayload['config'] | null = null
 let geminiImageEditInFlight = false
 let queuePanelExpanded = true
 let activeQueueTab: 'active' | 'done' | 'attention' = 'active'
+let cachedRealSessionsForPills: SessionItem[] = []
 
 const app = document.querySelector<HTMLDivElement>('#app')!
 app.innerHTML = `
@@ -404,6 +405,14 @@ function updateIndicatorState(id: string, state: 'online' | 'error' | 'warning' 
   if (text) {
     const textEl = pill.querySelector('.status-text')
     if (textEl) textEl.textContent = text
+  }
+}
+
+function applySessionDerivedPills() {
+  const telegramLive = cachedRealSessionsForPills.some((s) =>
+    String(s.key || '').toLowerCase().includes('telegram'))
+  if (telegramLive) {
+    updateIndicatorState('telegram-pill', 'online', 'Telegram')
   }
 }
 
@@ -1077,15 +1086,26 @@ async function loadHealth() {
 async function loadStatus() {
   const out = document.getElementById('status-output')!
   try {
-    const data = await fetchJson<{ output: string; parsed: StatusParsed; error?: string }>(`${apiBase}/openclaw/status`)
+    const data = await fetchJson<{
+      output: string
+      parsed: StatusParsed
+      error?: string | null
+      gatewayHttp?: { reachable: boolean; latencyMs?: number | null; baseUrl?: string }
+      cliStatus?: { ok: boolean | null; error?: string | null }
+    }>(`${apiBase}/openclaw/status`)
     out.textContent = data.output || 'No output'
-    const hasError = Boolean(data.error)
 
+    const httpOk = data.gatewayHttp?.reachable === true
+    const cliOk = data.cliStatus?.ok !== false
     const gwState = data.parsed.gatewayState.toLowerCase()
-    if (gwState.includes('running') || gwState.includes('online')) {
-      updateIndicatorState('gateway-pill', 'online', 'Gateway')
-    } else if (hasError || gwState === 'unknown') {
-      updateIndicatorState('gateway-pill', 'warning', 'Gateway: offline')
+
+    if (httpOk || gwState.includes('running') || gwState.includes('online')) {
+      const label = httpOk && data.gatewayHttp?.latencyMs != null
+        ? `Gateway (${data.gatewayHttp.latencyMs}ms)`
+        : 'Gateway'
+      updateIndicatorState('gateway-pill', 'online', label)
+    } else if (gwState === 'unknown') {
+      updateIndicatorState('gateway-pill', 'warning', 'Gateway: unreachable')
     } else {
       updateIndicatorState('gateway-pill', 'error', 'Gateway')
     }
@@ -1093,11 +1113,17 @@ async function loadStatus() {
     const tgState = data.parsed.telegramState.toLowerCase()
     if (tgState.includes('running') || tgState.includes('configured')) {
       updateIndicatorState('telegram-pill', 'online', 'Telegram')
-    } else if (tgState === 'unknown' || tgState === 'missing') {
-      updateIndicatorState('telegram-pill', 'warning', hasError ? 'Telegram: offline' : 'Telegram: not configured')
+    } else if (!cliOk && httpOk) {
+      updateIndicatorState('telegram-pill', 'warning', 'Telegram: unknown (CLI)')
+    } else if (tgState === 'unknown') {
+      updateIndicatorState('telegram-pill', 'warning', 'Telegram: unknown')
+    } else if (tgState === 'missing') {
+      updateIndicatorState('telegram-pill', 'warning', 'Telegram: not configured')
     } else {
       updateIndicatorState('telegram-pill', 'error', 'Telegram')
     }
+
+    applySessionDerivedPills()
   } catch (err) {
     out.textContent = `Status fetch failed\n\n${String(err)}`
     updateIndicatorState('gateway-pill', 'error', 'Gateway')
@@ -1108,18 +1134,47 @@ async function loadStatus() {
 async function loadSessions() {
   const wrap = document.getElementById('sessions')!
   try {
-    const data = await fetchJson<{ sessions: SessionItem[]; error?: string; errorCode?: string }>(`${apiBase}/openclaw/sessions`)
-    const items = data.sessions || []
+    const data = await fetchJson<{
+      sessions: SessionItem[]
+      error?: string
+      errorCode?: string
+      gatewayReachable?: boolean
+      listingUnavailable?: boolean
+      listingDetail?: string
+    }>(`${apiBase}/openclaw/sessions`)
+
+    const rawSessions = data.sessions || []
+    const hasRealSessions = rawSessions.some((item) => !item.errorCode)
+
+    if (data.listingUnavailable && data.gatewayReachable && !hasRealSessions) {
+      cachedRealSessionsForPills = []
+      updateIndicatorState('session-pill', 'warning', 'Workers: list unavailable (CLI)')
+      const detail = detailPreview(data.listingDetail || '', 220)
+      wrap.innerHTML = `
+        <div class="session-error-state" data-state="warning">
+          <div class="session-error-title">Gateway is up; session list via CLI failed</div>
+          <div class="session-error-copy">The OpenClaw HTTP gateway is reachable, but <code>openclaw sessions --json</code> did not return usable data from this process. Boris may still be running; only the CLI bridge from ClawCommand failed.</div>
+          ${detail ? `<div class="session-error-copy muted">${escapeHtml(detail)}</div>` : ''}
+        </div>
+      `
+      return
+    }
+
+    const items = rawSessions
     const realSessions = items.filter((item) => !item.errorCode)
+    cachedRealSessionsForPills = realSessions
     const syntheticErrors = items.filter((item) => item.errorCode)
 
     if (syntheticErrors.length && !realSessions.length) {
-      updateIndicatorState('session-pill', 'warning', 'Workers: offline')
+      cachedRealSessionsForPills = []
+      updateIndicatorState('session-pill', 'warning', data.gatewayReachable ? 'Workers: list failed' : 'Workers: offline')
       const errorDetail = detailPreview(syntheticErrors[0]?.errorMessage || data.error || '', 200)
       wrap.innerHTML = `
         <div class="session-error-state" data-state="warning">
-          <div class="session-error-title">OpenClaw gateway offline</div>
-          <div class="session-error-copy">Session listing unavailable because the gateway is not responding. Start the gateway from the Runtime tab or run <code>openclaw gateway start</code>.</div>
+          <div class="session-error-title">${data.gatewayReachable ? 'Session listing unavailable' : 'OpenClaw gateway offline'}</div>
+          <div class="session-error-copy">${data.gatewayReachable
+            ? 'Gateway responded to HTTP, but session listing via OpenClaw CLI failed. Check Runtime and Deep Dive → Raw OpenClaw Status.'
+            : 'Session listing unavailable because the gateway is not responding. Start the gateway from the Runtime tab or run <code>openclaw gateway start</code>.'}</div>
           ${errorDetail ? `<div class="session-error-copy muted">${escapeHtml(errorDetail)}</div>` : ''}
         </div>
       `
@@ -1180,6 +1235,7 @@ async function loadSessions() {
       })
     })
   } catch (err) {
+    cachedRealSessionsForPills = []
     updateIndicatorState('session-pill', 'error', 'Workers')
     wrap.innerHTML = `
       <div class="session-error-state" data-state="error">
@@ -1636,7 +1692,8 @@ async function runRuntimeAction(serviceId: string, action: string) {
     alert(`Runtime action failed: ${String(err)}`)
   } finally {
     runtimeActionInFlight.delete(key)
-    await Promise.all([loadRuntimeServices(), loadStatus(), loadEvents()])
+    await Promise.all([loadRuntimeServices(), loadStatus(), loadSessions(), loadEvents()])
+    applySessionDerivedPills()
   }
 }
 
@@ -1653,6 +1710,7 @@ async function refreshDashboard() {
     loadCommandStatus(),
     loadMemoryPanel(),
   ])
+  applySessionDerivedPills()
 }
 
 document.getElementById('refresh-btn')!.addEventListener('click', refreshDashboard)
@@ -1737,6 +1795,7 @@ async function refreshCorePanels() {
       activeView === 'runtime' ? loadRuntimeServices() : Promise.resolve(),
       activeView === 'image-lab' ? loadGeminiImageEdits() : Promise.resolve(),
     ])
+    applySessionDerivedPills()
   } finally {
     coreRefreshInFlight = false
   }
