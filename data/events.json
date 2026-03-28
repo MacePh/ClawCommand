@@ -1,5 +1,64 @@
 [
   {
+    "id": "1774669232913-984119",
+    "ts": "2026-03-28T03:40:32.913Z",
+    "type": "openclaw.session.started",
+    "message": "Session appeared: agent:main:subagent:2ae20f5d-9669-4bef-8974-4e6786e4b528",
+    "meta": {
+      "key": "agent:main:subagent:2ae20f5d-9669-4bef-8974-4e6786e4b528",
+      "age": 1774669226566,
+      "updatedAt": 1774669226566,
+      "model": "gpt-5.4",
+      "kind": "direct",
+      "tokens": "",
+      "status": "active",
+      "channel": "openai-codex",
+      "sessionId": "10cd55d1-65e6-483e-840d-357be735c42f"
+    }
+  },
+  {
+    "id": "1774669232912-aef41b",
+    "ts": "2026-03-28T03:40:32.912Z",
+    "type": "openclaw.session.count",
+    "message": "Session count changed: 9 -> 10",
+    "meta": {
+      "count": 10
+    }
+  },
+  {
+    "id": "1774669232911-99217b",
+    "ts": "2026-03-28T03:40:32.911Z",
+    "type": "openclaw.status.change",
+    "message": "Gateway snapshot changed",
+    "meta": {
+      "gatewayState": "online",
+      "telegramState": "configured",
+      "sessionsSummary": "10 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json       │"
+    }
+  },
+  {
+    "id": "1774668660916-e2a847",
+    "ts": "2026-03-28T03:31:00.916Z",
+    "type": "queue.approved",
+    "message": "Approved queued task: I have everything I need. Here's the prompt: --- **Boris prompt — GPU dictation upgrade** --- I need you to make three targeted changes across the mpd-streamdeck project at `F:\\mpd-streamdeck`. Read each file carefully before editing. Do not restructure anything outside the specific changes listed. --- **Change 1 — `core/dictation_service.py`** Two things to fix here. **1a. GPU inference in `_get_model`** Find this block: ```python self._model_cache[model_size] = WhisperModel( model_size, device=\"cpu\", compute_type=\"int8\", ) ``` Replace with: ```python import torch as _torch # local import, only used here _device = \"cuda\" if _torch.cuda.is_available() else \"cpu\" _compute = \"float16\" if _device == \"cuda\" else \"int8\" self._log(f\"[dictation] using device={_device} compute={_compute}\") self._model_cache[model_size] = WhisperModel( model_size, device=_device, compute_type=_compute, ) ``` This auto-falls back to CPU if CUDA is unavailable, so it stays safe on other machines. **1b. Pre-warm the model at startup** In `DictationService.__init__`, after `self._model_cache: dict[str, Any] = {}`, add: ```python self._prewarm_model: str | None = None ``` Then add a new public method: ```python def prewarm(self, model_size: str = \"large-v3\") -> None: \"\"\"Load the model in a background thread so the first pad press is instant.\"\"\" self._prewarm_model = model_size threading.Thread( target=self._do_prewarm, args=(model_size,), daemon=True, name=\"dictation-prewarm\", ).start() def _do_prewarm(self, model_size: str) -> None: try: self._log(f\"[dictation] pre-warming model '{model_size}'...\") self._get_model(model_size) self._log(f\"[dictation] pre-warm complete for '{model_size}'\") except Exception as exc: self._log(f\"[dictation] pre-warm failed: {exc}\") ``` **1c. Remove the temp WAV file round-trip** In `_do_transcribe`, find these lines: ```python with tempfile.NamedTemporaryFile(suffix=\".wav\", delete=False) as tmp: temp_path = Path(tmp.name) sf.write(str(temp_path), audio, samplerate=samplerate) model_size = str(session.get(\"model\", \"base.en\")) language = str(session.get(\"language\", \"en\")) model = self._get_model(model_size) segments, _info = model.transcribe( str(temp_path), language=language, vad_filter=True, condition_on_previous_text=False, ) ``` Replace with: ```python model_size = str(session.get(\"model\", \"large-v3\")) language = str(session.get(\"language\", \"en\")) model = self._get_model(model_size) segments, _info = model.transcribe( audio, language=language, vad_filter=True, condition_on_previous_text=False, ) ``` `faster-whisper`'s `transcribe()` accepts a numpy float32 array directly — no file needed. Remove the `temp_path` cleanup in the `finally` block as well since `temp_path` will now always be `None`. Keep the `temp_path: Path | None = None` declaration at the top of `_do_transcribe` and the `finally` block structure, just remove the `unlink` call (or guard it with `if temp_path is not None`— it already is, so it'll just be a no-op). Also remove the `import tempfile` at the top of the file if it's no longer used anywhere else. Check first. --- **Change 2 — `core/meeting_transcriber.py`** In `_load_model`, find: ```python self._model = WhisperModel(self._model_size, device=\"cpu\", compute_type=\"int8\") ``` Replace with: ```python try: import torch as _torch _device = \"cuda\" if _torch.cuda.is_available() else \"cpu\" except ImportError: _device = \"cpu\" _compute = \"float16\" if _device == \"cuda\" else \"int8\" self._log(f\"[transcriber] using device={_device} compute={_compute}\") self._model = WhisperModel(self._model_size, device=_device, compute_type=_compute) ``` --- **Change 3 — `core/action_runner.py`** In `ActionRunner.__init__`, find where `_dictation_service` is constructed: ```python self._dictation_service = ( DictationService(logger=self._log) if DictationService else None ) ``` After that line, add: ```python if self._dictation_service is not None: self._dictation_service.prewarm(\"large-v3\") ``` This fires the background pre-warm immediately when the controller starts, so the model is hot before any pad is pressed. --- **Change 4 — `config.json`** Find every pad action that has `\"type\": \"dictate\"` or `\"type\": \"dictate_to_telegram\"` and update `\"model\": \"base.en\"` to `\"model\": \"large-v3\"`. There should be at least pad 75. Check the full config for any others. --- **Verification steps — run these separately, not chained:** First, check CUDA is visible to Python: ``` python -c \"import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))\" ``` Expected: `True NVIDIA GeForce RTX 5090` If that passes, restart the controller: ``` .\\run.ps1 ``` Watch the startup logs. You should see within a few seconds: ``` [dictation] pre-warming model 'large-v3'... [dictation] using device=cuda compute=float16 [dictation] pre-warm complete for 'large-v3' ``` Then press pad 75, say something, release. Time from release to text appearing should be under 500ms. Report back the CUDA check result and the pre-warm log lines so we can confirm it's actually hitting the GPU before you test latency.",
+    "meta": {
+      "taskId": "t_1774668632479_9e8f",
+      "priority": 10,
+      "approvedBy": "text"
+    }
+  },
+  {
+    "id": "1774668632481-c83911",
+    "ts": "2026-03-28T03:30:32.481Z",
+    "type": "queue.proposed",
+    "message": "Proposed task awaiting approval: I have everything I need. Here's the prompt: --- **Boris prompt — GPU dictation upgrade** --- I need you to make three targeted changes across the mpd-streamdeck project at `F:\\mpd-streamdeck`. Read each file carefully before editing. Do not restructure anything outside the specific changes listed. --- **Change 1 — `core/dictation_service.py`** Two things to fix here. **1a. GPU inference in `_get_model`** Find this block: ```python self._model_cache[model_size] = WhisperModel( model_size, device=\"cpu\", compute_type=\"int8\", ) ``` Replace with: ```python import torch as _torch # local import, only used here _device = \"cuda\" if _torch.cuda.is_available() else \"cpu\" _compute = \"float16\" if _device == \"cuda\" else \"int8\" self._log(f\"[dictation] using device={_device} compute={_compute}\") self._model_cache[model_size] = WhisperModel( model_size, device=_device, compute_type=_compute, ) ``` This auto-falls back to CPU if CUDA is unavailable, so it stays safe on other machines. **1b. Pre-warm the model at startup** In `DictationService.__init__`, after `self._model_cache: dict[str, Any] = {}`, add: ```python self._prewarm_model: str | None = None ``` Then add a new public method: ```python def prewarm(self, model_size: str = \"large-v3\") -> None: \"\"\"Load the model in a background thread so the first pad press is instant.\"\"\" self._prewarm_model = model_size threading.Thread( target=self._do_prewarm, args=(model_size,), daemon=True, name=\"dictation-prewarm\", ).start() def _do_prewarm(self, model_size: str) -> None: try: self._log(f\"[dictation] pre-warming model '{model_size}'...\") self._get_model(model_size) self._log(f\"[dictation] pre-warm complete for '{model_size}'\") except Exception as exc: self._log(f\"[dictation] pre-warm failed: {exc}\") ``` **1c. Remove the temp WAV file round-trip** In `_do_transcribe`, find these lines: ```python with tempfile.NamedTemporaryFile(suffix=\".wav\", delete=False) as tmp: temp_path = Path(tmp.name) sf.write(str(temp_path), audio, samplerate=samplerate) model_size = str(session.get(\"model\", \"base.en\")) language = str(session.get(\"language\", \"en\")) model = self._get_model(model_size) segments, _info = model.transcribe( str(temp_path), language=language, vad_filter=True, condition_on_previous_text=False, ) ``` Replace with: ```python model_size = str(session.get(\"model\", \"large-v3\")) language = str(session.get(\"language\", \"en\")) model = self._get_model(model_size) segments, _info = model.transcribe( audio, language=language, vad_filter=True, condition_on_previous_text=False, ) ``` `faster-whisper`'s `transcribe()` accepts a numpy float32 array directly — no file needed. Remove the `temp_path` cleanup in the `finally` block as well since `temp_path` will now always be `None`. Keep the `temp_path: Path | None = None` declaration at the top of `_do_transcribe` and the `finally` block structure, just remove the `unlink` call (or guard it with `if temp_path is not None`— it already is, so it'll just be a no-op). Also remove the `import tempfile` at the top of the file if it's no longer used anywhere else. Check first. --- **Change 2 — `core/meeting_transcriber.py`** In `_load_model`, find: ```python self._model = WhisperModel(self._model_size, device=\"cpu\", compute_type=\"int8\") ``` Replace with: ```python try: import torch as _torch _device = \"cuda\" if _torch.cuda.is_available() else \"cpu\" except ImportError: _device = \"cpu\" _compute = \"float16\" if _device == \"cuda\" else \"int8\" self._log(f\"[transcriber] using device={_device} compute={_compute}\") self._model = WhisperModel(self._model_size, device=_device, compute_type=_compute) ``` --- **Change 3 — `core/action_runner.py`** In `ActionRunner.__init__`, find where `_dictation_service` is constructed: ```python self._dictation_service = ( DictationService(logger=self._log) if DictationService else None ) ``` After that line, add: ```python if self._dictation_service is not None: self._dictation_service.prewarm(\"large-v3\") ``` This fires the background pre-warm immediately when the controller starts, so the model is hot before any pad is pressed. --- **Change 4 — `config.json`** Find every pad action that has `\"type\": \"dictate\"` or `\"type\": \"dictate_to_telegram\"` and update `\"model\": \"base.en\"` to `\"model\": \"large-v3\"`. There should be at least pad 75. Check the full config for any others. --- **Verification steps — run these separately, not chained:** First, check CUDA is visible to Python: ``` python -c \"import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))\" ``` Expected: `True NVIDIA GeForce RTX 5090` If that passes, restart the controller: ``` .\\run.ps1 ``` Watch the startup logs. You should see within a few seconds: ``` [dictation] pre-warming model 'large-v3'... [dictation] using device=cuda compute=float16 [dictation] pre-warm complete for 'large-v3' ``` Then press pad 75, say something, release. Time from release to text appearing should be under 500ms. Report back the CUDA check result and the pre-warm log lines so we can confirm it's actually hitting the GPU before you test latency.",
+    "meta": {
+      "taskId": "t_1774668632479_9e8f",
+      "priority": 0,
+      "approvalState": "awaiting_approval"
+    }
+  },
+  {
     "id": "1774667626337-ca84fe",
     "ts": "2026-03-28T03:13:46.337Z",
     "type": "openclaw.refresh",
@@ -3355,61 +3414,6 @@
       "gatewayState": "online",
       "telegramState": "configured",
       "sessionsSummary": "4 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
-    }
-  },
-  {
-    "id": "1774637387489-18411f",
-    "ts": "2026-03-27T18:49:47.489Z",
-    "type": "openclaw.session.ended",
-    "message": "Session disappeared: agent:main:subagent:b8c88bb5-90a8-4db7-8db8-e6be90033a1f",
-    "meta": {
-      "key": "agent:main:subagent:b8c88bb5-90a8-4db7-8db8-e6be90033a1f",
-      "age": 1774637351873,
-      "model": "gpt-5.4",
-      "kind": "direct",
-      "tokens": ""
-    }
-  },
-  {
-    "id": "1774637387488-1949fb",
-    "ts": "2026-03-27T18:49:47.488Z",
-    "type": "openclaw.session.count",
-    "message": "Session count changed: 4 -> 3",
-    "meta": {
-      "count": 3
-    }
-  },
-  {
-    "id": "1774637387487-aef98b",
-    "ts": "2026-03-27T18:49:47.487Z",
-    "type": "openclaw.status.change",
-    "message": "Gateway snapshot changed",
-    "meta": {
-      "gatewayState": "online",
-      "telegramState": "configured",
-      "sessionsSummary": "3 active · default gpt-5.4 (200k ctx) · ~\\.openclaw\\agents\\main\\sessions\\sessions.json        │"
-    }
-  },
-  {
-    "id": "1774637285520-028c91",
-    "ts": "2026-03-27T18:48:05.520Z",
-    "type": "openclaw.session.started",
-    "message": "Session appeared: agent:main:subagent:b8c88bb5-90a8-4db7-8db8-e6be90033a1f",
-    "meta": {
-      "key": "agent:main:subagent:b8c88bb5-90a8-4db7-8db8-e6be90033a1f",
-      "age": 1774637275425,
-      "model": "gpt-5.4",
-      "kind": "direct",
-      "tokens": ""
-    }
-  },
-  {
-    "id": "1774637285519-71479c",
-    "ts": "2026-03-27T18:48:05.519Z",
-    "type": "openclaw.session.count",
-    "message": "Session count changed: 3 -> 4",
-    "meta": {
-      "count": 4
     }
   }
 ]

@@ -724,6 +724,10 @@ h1 {
   background: rgba(63, 185, 80, 0.05);
 }
 
+.queue-task-card-triage-stale {
+  opacity: 0.76;
+}
+
 .queue-task-card-failed,
 .queue-task-card-dead {
   border-color: rgba(248, 81, 73, 0.32);
@@ -822,6 +826,36 @@ h1 {
   line-height: 1.4;
 }
 
+.queue-triage-freshness {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(88, 166, 255, 0.24);
+  background: rgba(88, 166, 255, 0.08);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.queue-triage-freshness-stale,
+.queue-review-stale-note {
+  color: #ffd479;
+}
+
+.queue-triage-freshness-stale {
+  border-color: rgba(255, 212, 121, 0.36);
+  background: rgba(255, 212, 121, 0.08);
+}
+
+.queue-review-stale-note {
+  font-weight: 700;
+}
+
 .session-meta {
   display: flex;
   align-items: center;
@@ -846,6 +880,31 @@ h1 {
 
 .compact-kanban {
   min-height: 360px;
+}
+
+.planning-board-banner {
+  margin: 0 var(--spacing) var(--spacing);
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(240, 186, 64, 0.35);
+  background: rgba(240, 186, 64, 0.08);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.planning-board-banner strong {
+  color: var(--yellow);
+}
+
+.planning-board-banner code {
+  font-size: 0.8rem;
+}
+
+.planning-board-banner .ghost {
+  flex-shrink: 0;
 }
 
 .lane {

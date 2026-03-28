@@ -29,6 +29,13 @@ type QueueTriage = {
   reviewed_at?: string
 }
 type QueueReviewPayload = { reviewed_at?: string; pending_count?: number; recommended_order?: string[] }
+
+type QueueTriageFreshness = {
+  label: string
+  stale: boolean
+  reviewedAtIso: string | null
+  reviewedAtText: string | null
+}
 type MemoryItem = {
   id: string
   title?: string
@@ -196,7 +203,7 @@ app.innerHTML = `
       <section class="view-panel active" id="overview-view">
         <section class="overview-grid minimal-overview-grid">
           <div class="overview-primary">
-            <div class="panel glass queue-ops-panel">
+            <div class="panel glass queue-ops-panel" id="task-queue-panel">
               <div class="panel-header queue-panel-header compact-panel-header">
                 <div>
                   <div class="panel-title">
@@ -344,6 +351,13 @@ app.innerHTML = `
                   </div>
                   <div class="panel-subtitle">Useful scratchpad, but honest about scope: moving cards here does not change runtime or queue execution.</div>
                 </div>
+              </div>
+              <div class="planning-board-banner" role="note" aria-label="Planning board scope notice">
+                <div>
+                  <strong>Planning only.</strong> This board is stored in <code>data/tasks.json</code> and is not wired to the real Boris workspace queue.
+                  Dragging a card to <strong>Done</strong> does not dispatch, complete, or approve anything.
+                </div>
+                <button class="ghost" id="planning-board-open-queue" type="button">Open real queue</button>
               </div>
               <div class="kanban compact-kanban" id="kanban">Loading...</div>
             </div>
@@ -504,6 +518,29 @@ function formatRelativeAge(value?: string | number | null) {
   return formatRelativeAge(diffMs)
 }
 
+function triageFreshness(reviewedAt?: string | null, staleAfterMs = 2 * 60 * 60 * 1000): QueueTriageFreshness | null {
+  if (!reviewedAt) return null
+  const reviewedDate = new Date(reviewedAt)
+  if (Number.isNaN(reviewedDate.getTime())) {
+    return {
+      label: `triage reviewed ${reviewedAt}`,
+      stale: false,
+      reviewedAtIso: null,
+      reviewedAtText: reviewedAt,
+    }
+  }
+
+  const ageMs = Date.now() - reviewedDate.getTime()
+  const ageLabel = formatRelativeAge(Math.max(0, ageMs))
+  const stale = ageMs >= staleAfterMs
+  return {
+    label: stale ? `triaged ${ageLabel} · stale` : `triaged ${ageLabel}`,
+    stale,
+    reviewedAtIso: reviewedDate.toISOString(),
+    reviewedAtText: reviewedDate.toLocaleString(),
+  }
+}
+
 function formatTokenCount(value?: string | number) {
   if (value === null || value === undefined || value === '') return '—'
   const numeric = typeof value === 'number' ? value : Number(String(value).replace(/,/g, ''))
@@ -550,7 +587,8 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
   const doneTasks = tasks.filter((task) => task.queue_dir === 'done')
   const attentionTasks = tasks.filter((task) => ['failed', 'dead'].includes(task.queue_dir || '') || ['failed', 'error', 'dead'].includes(task.status))
   const activeTasks = [...proposedTasks, ...runningTasks, ...queuedTasks]
-  const reviewStamp = review?.reviewed_at ? new Date(review.reviewed_at).toLocaleTimeString() : null
+  const reviewFreshness = triageFreshness(review?.reviewed_at)
+  const reviewStamp = reviewFreshness?.reviewedAtText || null
 
   if (activeQueueTab === 'done' && !doneTasks.length && activeTasks.length) activeQueueTab = 'active'
   if (activeQueueTab === 'attention' && !attentionTasks.length && activeTasks.length) activeQueueTab = 'active'
@@ -561,10 +599,14 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
     const attempt = typeof task.attempt === 'number' && task.attempt > 0 ? ` · attempt ${task.attempt}` : ''
     const state = queueTaskState(task)
     const triage = task.triage
+    const triageStamp = triageFreshness(triage?.reviewed_at || review?.reviewed_at)
     const related = (triage?.similar_tasks || []).slice(0, 2).map((item) => `${escapeHtml(item.relation || 'related')}: ${escapeHtml(item.title || item.task_id)}`).join('<br/>')
     const vagueness = (triage?.vagueness_flags || []).map((item) => escapeHtml(item)).join(' · ')
     const conflicts = (triage?.conflict_flags || []).slice(0, 1).map((item) => `conflict with ${escapeHtml(item.task_id)}${item.reason ? ` — ${escapeHtml(item.reason)}` : ''}`).join('<br/>')
     const plan = (triage?.execution_plan || []).slice(0, 3).map((step) => `<li>${escapeHtml(step)}</li>`).join('')
+    const triageFreshnessBadge = triageStamp
+      ? `<div class="queue-triage-freshness${triageStamp.stale ? ' queue-triage-freshness-stale' : ''}"${triageStamp.reviewedAtIso ? ` title="Reviewed ${escapeHtml(triageStamp.reviewedAtText || triageStamp.reviewedAtIso)}"` : ''}>${escapeHtml(triageStamp.label)}</div>`
+      : ''
     const title = escapeHtml(task.title || task.text)
     const detailText = escapeHtml(task.text)
     const statusLabel = escapeHtml(task.status)
@@ -625,7 +667,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
         : ''
 
     return `
-      <details class="queue-task-card neon-card queue-task-card-${task.queue_dir || task.status}" data-state="${state}" ${['proposed', 'running', 'claimed', 'pending'].includes(task.queue_dir || '') ? 'open' : ''}>
+      <details class="queue-task-card neon-card queue-task-card-${task.queue_dir || task.status}${triageStamp?.stale ? ' queue-task-card-triage-stale' : ''}" data-state="${state}" ${['proposed', 'running', 'claimed', 'pending'].includes(task.queue_dir || '') ? 'open' : ''}>
         <summary class="detail-summary" style="padding:0; border-bottom:none;">
           <div class="queue-card-topline">
             <div>
@@ -635,6 +677,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
             <div class="queue-status-pill" data-state="${state}">${statusLabel}</div>
           </div>
           <div class="session-meta">${escapeHtml(when)}${attempt}${triage?.recommended_action ? ` · ${escapeHtml(triage.recommended_action)}` : ''}</div>
+          ${triageFreshnessBadge}
           ${triage?.summary ? `<div class="task-detail" style="margin-top:8px; margin-bottom:0;">${escapeHtml(triage.summary)}</div>` : ''}
         </summary>
         <div class="detail-body" style="padding-top:10px;">
@@ -690,7 +733,7 @@ function renderQueueTasks(tasks: QueueTask[], review?: QueueReviewPayload | null
         <div class="queue-summary-label">running now</div>
       </div>
     </div>
-    ${reviewStamp ? `<div class="session-meta" style="margin: 0 0 8px 0;">triage reviewed ${reviewStamp}</div>` : ''}
+    ${reviewFreshness ? `<div class="session-meta${reviewFreshness.stale ? ' queue-review-stale-note' : ''}" style="margin: 0 0 8px 0;">${escapeHtml(reviewFreshness.label)}${reviewStamp ? ` · ${escapeHtml(reviewStamp)}` : ''}</div>` : ''}
   `
 
   const activeView = `
@@ -1334,6 +1377,13 @@ function renderTask(task: Task, lane: string) {
 
 async function loadTasks() {
   const wrap = document.getElementById('kanban')!
+  const openQueueButton = document.getElementById('planning-board-open-queue') as HTMLButtonElement | null
+  if (openQueueButton) {
+    openQueueButton.onclick = () => {
+      setActiveView('overview')
+      document.getElementById('task-queue-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
   try {
     const data = await fetchJson<TasksPayload>(`${apiBase}/tasks`)
     wrap.innerHTML = Object.entries(data.columns).map(([lane, tasks]) => `
